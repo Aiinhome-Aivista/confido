@@ -4,7 +4,7 @@ import ChatScreen from "../../features/screens/ChatScreen"
 function Index() {
     return (
         <Routes>
-            <Route path="chat-screen" element={<ChatScreen />} />
+            <Route path="" element={<ChatScreen />} />
         </Routes>
     )
 }
