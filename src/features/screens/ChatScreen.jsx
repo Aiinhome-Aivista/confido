@@ -13,8 +13,7 @@ function ChatScreen() {
           <ChatSectionAvatar />
         </div>
         <div className="flex flex-col justify-between bg-gray-400 w-6/8">
-          <div className=''>chat scrollbar</div>
-          <div className=''>input field</div>
+          <ChatSectionText />
         </div>
       </div>
     </div>
