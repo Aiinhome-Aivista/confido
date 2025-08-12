@@ -1,12 +1,14 @@
-import { useState } from 'react'
-import SplashScreen from './screen/splashscreen'
+import { BrowserRouter } from "react-router-dom"
+import Index from "./common/routes/Index"
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <SplashScreen/>
+      <BrowserRouter>
+        <Index />
+      </BrowserRouter>
     </>
   )
 }
