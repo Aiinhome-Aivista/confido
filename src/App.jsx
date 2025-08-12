@@ -1,14 +1,11 @@
-import { BrowserRouter } from "react-router-dom"
-import Index from "./common/routes/Index"
-
+import { useState } from 'react'
+import SplashScreen from './screen/splashscreen'
 
 function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <Index />
-      </BrowserRouter>
+      <SplashScreen/>
     </>
   )
 }
