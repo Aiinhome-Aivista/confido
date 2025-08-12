@@ -44,23 +44,38 @@ function SplashScreen() {
         </h1>
       </div>
 
-      {/* Animated Heading */}
+     
       <AnimatedSplitText
-        text="Say Hello to Great Conversation."
+        text="Say Hello to Great"
         split="words"
         delay={0}
         duration={500}
         staggerDelay={0.2}
         className="text-4xl md:text-5xl font-bold"
       />
-
+     
+      <AnimatedSplitText
+        text="Conversation."
+        split="words"
+        delay={0}
+        duration={500}
+        staggerDelay={0.2}
+        className="text-4xl md:text-5xl font-bold"
+      />
+       
+     <br />
+     
       <div className="flex flex-col items-center max-w-2xl">
-        {/* Subtitle */}
-        <p className="mt-3 text-gray-600 text-lg">
-          Overcome shyness with a simple hello.
-        </p>
+        <AnimatedSplitText
+          text="Overcome shyness with a simple hello."
+          split="words"
+          delay={0.5}
+          duration={500}
+          staggerDelay={0.15}
+          className="mt-3 text-gray-600 text-lg"
+        />
 
-        {/* Why you'll love it */}
+       
         <div className="mt-6">
           <h2 className="font-semibold mb-2 text-lg">Why you’ll love it:</h2>
           <p className="text-gray-700 leading-relaxed">
@@ -71,7 +86,6 @@ function SplashScreen() {
           </p>
         </div>
 
-        {/* Button */}
         <button
           onClick={() => alert("Start Conversation Clicked!")}
           className="mt-6 px-6 py-3 text-black rounded-lg shadow-md transition-colors bg-white hover:bg-gray-100"
@@ -79,7 +93,6 @@ function SplashScreen() {
           Start Conversation
         </button>
 
-        {/* Avatar */}
         <div className="mt-8">
           <img
             src="https://via.placeholder.com/150"
