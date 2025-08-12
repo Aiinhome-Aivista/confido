@@ -1,6 +1,6 @@
 import React from 'react'
 
-function helper() {
+function ChatSectionText() {
   return (
     <div>
       
@@ -8,4 +8,4 @@ function helper() {
   )
 }
 
-export default helper
+export default ChatSectionText
