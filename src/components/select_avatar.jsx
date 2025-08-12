@@ -1,19 +1,24 @@
 import React from "react";
+import ravi from "../assets/2D/ravi.svg";
+import hema from "../assets/2D/hema.svg";
+import subho from "../assets/2D/subho.svg";
+import sita from "../assets/2D/sita.svg";
 
 const avatars = [
-  { name: "Ravi", img: "/assets/2D/ravi.svg" },
-  { name: "Hema", img: "/assets/2D/hema.svg" },
-  { name: "Subho", img: "/assets/2D/subho.svg" },
-  { name: "Sita", img: "/assets/2D/sita.svg" },
+  { name: "Ravi", img: ravi },
+  { name: "Hema", img: hema },
+  { name: "Subho", img: subho },
+  { name: "Sita", img: sita },
 ];
 
 export default function ChooseAvatar({ onSelect }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-gray-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-gray-100">
+
       <h1 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">
         Choose your avatar
       </h1>
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
         {avatars.map((avatar) => (
           <div
@@ -25,12 +30,14 @@ export default function ChooseAvatar({ onSelect }) {
               <img
                 src={avatar.img}
                 alt={avatar.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover scale-[2] translate-y-20"
               />
             </div>
-            <p className="mt-3 text-lg font-medium text-gray-700 group-hover:text-green-600">
+
+            <p className="mt-3 text-base font-bold nunito text-gray-700 group-hover:text-green-600">
               {avatar.name}
             </p>
+
           </div>
         ))}
       </div>

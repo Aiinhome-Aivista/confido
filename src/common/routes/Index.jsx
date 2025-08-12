@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import ChatScreen from "../../features/screens/ChatScreen"
-import ChooseAvatar from "../../components/select_avtar"
+import ChooseAvatar from "../../components/select_avatar"
 
 function Index() {
     return (
