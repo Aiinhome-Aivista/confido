@@ -10,10 +10,12 @@ function ChatScreen() {
 
       <div className="flex h-9/10">
         <div className='bg-blue-200 w-2/8'>
-        <ChatSectionAvatar/>
+          <ChatSectionAvatar />
         </div>
-
-        <div className="flex bg-gray-200 w-6/8">chat section</div>
+        <div className="flex flex-col justify-between bg-gray-400 w-6/8">
+          <div className=''>chat scrollbar</div>
+          <div className=''>input field</div>
+        </div>
       </div>
     </div>
   )
