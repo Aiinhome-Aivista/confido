@@ -9,6 +9,7 @@ function Index() {
             <Route path="chat-screen" element={<ChatScreen />} />
             <Route path="/select-avatar" element={<ChooseAvatar />} />
             <Route path="splash-screen" element={<SplashScreen />} />
+            <Route path="" element={<ChatScreen />} />
         </Routes>
     )
 }

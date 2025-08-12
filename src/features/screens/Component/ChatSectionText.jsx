@@ -2,9 +2,10 @@ import React from 'react'
 
 function ChatSectionText() {
   return (
-    <div>
-      
-    </div>
+    <>
+      <div className=''>chat scrollbar</div>
+      <div className=''>input field</div>
+    </>
   )
 }
 
