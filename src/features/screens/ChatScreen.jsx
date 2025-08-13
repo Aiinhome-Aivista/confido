@@ -8,11 +8,11 @@ function ChatScreen() {
 
       <div className='bg-blue-400 h-1/10'>header section</div>
 
-      <div className="flex h-9/10">
-        <div className='bg-blue-200 w-2/8'>
+      <div className="flex h-9/10 bg-[#FFFFFF]/90">
+        <div className='w-2/8'>
           <ChatSectionAvatar />
         </div>
-        <div className="flex flex-col justify-between bg-gray-400 w-6/8">
+        <div className="w-6/8 px-3">
           <ChatSectionText />
         </div>
       </div>
