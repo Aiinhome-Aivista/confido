@@ -9,13 +9,29 @@ function SplashScreen() {
     { size: '350px', top: '40%', left: '60%', duration: 10, delay: 2 },
     { size: '450px', top: '70%', left: '30%', duration: 12, delay: 4 },
   ];
+  // Animated words for 'Great'
+  const words = ["Great", "Amazing", "Fun", "Real", "Inspiring", "Friendly", "Supportive", "Exciting", "Open"];
+  const [wordIndex, setWordIndex] = React.useState(0);
+  const [headlineVisible, setHeadlineVisible] = React.useState(false);
+  React.useEffect(() => {
+    // Animate headline in first, then start word animation
+    setTimeout(() => setHeadlineVisible(true), 700);
+    let interval;
+    setTimeout(() => {
+      interval = setInterval(() => {
+        setWordIndex((prev) => (prev + 1) % words.length);
+      }, 1800);
+    }, 1400);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       style={{
         position: 'relative',
         width: '100%',
         height: '100vh',
-        backgroundColor: '#FFFFFF', 
+        backgroundColor: '#FFFFFF',
         overflow: 'hidden',
       }}
     >
@@ -61,13 +77,33 @@ function SplashScreen() {
         }}
       />
       <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito text-black pt-20 z-2">
-        <h1 className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight">Say Hello to Great<br />Conversation.</h1>
+        <motion.h1
+          className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight"
+          initial={{ opacity: 0, y: -40 }}
+          animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+        >
+          Say Hello to{' '}
+          <motion.span
+            key={wordIndex}
+            initial={{ y: wordIndex % 2 === 0 ? -60 : 60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: wordIndex % 2 === 0 ? 60 : -60, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            style={{ color: '#000', display: 'inline-block', margin: '0 8px' }}
+          >
+            {words[wordIndex]}
+          </motion.span>
+          <br />Conversation.
+        </motion.h1>
         <p className="font-normal text-lg text-center mb-6">Overcome shyness with a simple hello.</p>
         <div className="font-bold text-lg text-center mb-2">Why you’ll love it:</div>
         <p className="font-normal text-base text-center max-w-xl mb-8">
           This is your space to talk about anything - no judgment, not pressure, Just real conversations with people who get it. Whether you’re feeling shy, lonely, or just need someone to chat with, we’re here to make it easy and confortable.
         </p>
         <button className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow">Start conversation</button>
+        {/* Avatar image at the bottom */}
+      
       </div>
     </div>
   );
