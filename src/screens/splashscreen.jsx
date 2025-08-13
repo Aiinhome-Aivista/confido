@@ -1,5 +1,4 @@
 import React from 'react';
-// Tailwind CSS classes will be used for styling
 import { motion } from 'framer-motion';
 import confidoSvg from '../assets/icons/confido_logo.svg';
 
@@ -10,11 +9,11 @@ function SplashScreen() {
     { size: '450px', top: '70%', left: '30%', duration: 12, delay: 4 },
   ];
   // Animated words for 'Great'
-  const words = ["Great", "Amazing", "Fun", "Real", "Inspiring", "Friendly", "Supportive", "Exciting", "Open"];
+  const words = ["Great","Super", "Prime", "Elite", "Topaz", "Happy"];
   const [wordIndex, setWordIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
   React.useEffect(() => {
-    // Animate headline in first, then start word animation
+
     setTimeout(() => setHeadlineVisible(true), 700);
     let interval;
     setTimeout(() => {
@@ -101,7 +100,7 @@ function SplashScreen() {
         <p className="font-normal text-base text-center max-w-xl mb-8">
           This is your space to talk about anything - no judgment, not pressure, Just real conversations with people who get it. Whether you’re feeling shy, lonely, or just need someone to chat with, we’re here to make it easy and confortable.
         </p>
-        <button className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow">Start conversation</button>
+        <button onClick={()=> alert("Start Conversation Clicked!")} className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow">Start conversation</button>
         {/* Avatar image at the bottom */}
       </div>
     </div>
