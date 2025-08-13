@@ -21,21 +21,19 @@ export default function Header({
 
   return (
     <header
-      className={`w-full bg-white/70 backdrop-blur-sm drop-shadow-sm ${className}`}
+      className={`w-full bg-transparent ${className}`}
       role="banner"
     >
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div className="flex items-center justify-between w-full px-4 py-4">
         {/* Left: Logo */}
-        <div className="flex items-center">
-          <img
-            src={logo}
-            alt="Confido"
-            className="h-10 md:h-12 object-contain"
-            draggable="false"
-          />
-        </div>
+        <img
+          src={logo}
+          alt="Confido"
+          className="h-8 object-contain"
+          draggable="false"
+        />
 
-        {/* Right: Icon buttons */}
+        {/* Right: Icons */}
         <div className="flex items-center gap-3">
           {icons.map((ic, idx) => (
             <button
@@ -43,9 +41,14 @@ export default function Header({
               type="button"
               onClick={ic.onClick}
               aria-label={ic.alt || `icon-${idx}`}
-              className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+              className="flex items-center justify-center w-10 h-10 rounded-lg bg-white shadow hover:bg-gray-100 focus:outline-none transition"
             >
-              <img src={ic.src} alt={ic.alt} className="w-6 h-6" draggable="false" />
+              <img
+                src={ic.src}
+                alt={ic.alt}
+                className="w-5 h-5 object-contain"
+                draggable="false"
+              />
             </button>
           ))}
         </div>
