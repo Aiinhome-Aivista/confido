@@ -97,13 +97,12 @@ function SplashScreen() {
           <br />Conversation.
         </motion.h1>
         <p className="font-normal text-lg text-center mb-6">Overcome shyness with a simple hello.</p>
-        <div className="font-bold text-lg text-center mb-2">Why you’ll love it:</div>
+        <div className="font-semibold text-lg text-center mb-2">Why you’ll love it:</div>
         <p className="font-normal text-base text-center max-w-xl mb-8">
           This is your space to talk about anything - no judgment, not pressure, Just real conversations with people who get it. Whether you’re feeling shy, lonely, or just need someone to chat with, we’re here to make it easy and confortable.
         </p>
         <button className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow">Start conversation</button>
         {/* Avatar image at the bottom */}
-      
       </div>
     </div>
   );
