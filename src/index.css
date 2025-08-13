@@ -2,9 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
 @import "tailwindcss";
 
-.nunito {
+
+
+.font-nunito {
   font-family: 'Nunito', sans-serif;
 }
+
 
 html, body, #root {
   height: 100%;
@@ -34,4 +37,9 @@ html, body, #root {
 .chat-avatar {
   height: 30rem;
   width: 15rem;
+}
+.iridescence-container {
+  width: 100%;
+  height: 100%;
+  
 }
