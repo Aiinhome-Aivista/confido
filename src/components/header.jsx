@@ -18,13 +18,19 @@ export default function Header({
       title: "Language",
       dropdown: ["English", "Bengali", "Hindi"],
     },
-    {
+       {
       src: settingsIcon,
       alt: "Settings",
-      // title: "Settings",
-      // dropdown: ["Profile", "Preferences", "Logout"],
+      title: "Settings",
+      dropdown: ["Audio Off", "Audio On"],
     },
-    { src: signinIcon, alt: "Sign in", onClick: () => console.log("Sign in clicked") },
+    {
+      src: signinIcon,
+      alt: "Sign in",
+      title: "Login",
+      dropdown: [],
+      onClick: () => console.log("Sign in clicked"),
+    },
   ];
 
   const icons = iconsOverride || defaultIcons;
