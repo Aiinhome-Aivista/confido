@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import TextType from "../components/animatedText/texttypes";
 import { colors, colorsArr } from "../css/css";
 import ShinyText from "../components/animatedText/shinytext";
+import { Experience } from "../features/characters/hema/experience";
 
 function getRandomColor() {
   return colors[Math.floor(Math.random() * colors.length)];
@@ -67,7 +68,7 @@ function SplashScreen() {
 
   return (
     <motion.div
-      className="relative flex flex-col items-center justify-center w-screen h-screen text-center px-6"
+      className="splashScreen"
       initial={{
         background: `linear-gradient(to bottom, ${gradientColors.from}, ${gradientColors.to})`,
       }}
@@ -82,7 +83,7 @@ function SplashScreen() {
         </h1>
       </div> */}
 
-      <div className="flex flex-col items-center pb-50">
+      <div className="flex flex-col items-center pb-10">
         <div className="text-4xl md:text-5xl font-bold text-gray-800 ">
           <TextType
             text={["Say Hello to", " "]}
@@ -145,7 +146,13 @@ function SplashScreen() {
             Start conversation
           </button>
         </div>
-      </div>
+       
+     
+     
+     </div>
+      <div style={{ width: "100%", height: "100vh" }}>
+          <Experience/>
+        </div>
     </motion.div>
   );
 }

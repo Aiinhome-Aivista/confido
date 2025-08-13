@@ -78,3 +78,13 @@ html, body, #root {
 .shiny-text.disabled {
   animation: none;
 }
+
+
+.splashScreen {
+    display: flex
+;
+    height: 100vh;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
