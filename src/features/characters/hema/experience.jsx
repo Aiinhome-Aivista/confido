@@ -11,17 +11,17 @@ export const Experience = React.memo(() => {
   camera={{
     // Camera position in 3D space: [x, y, z]
     // x → left/right, y → up/down, z → forward/back from model
-    position: [0, 1.8, 3], // Slightly above the head level, close enough for zoom
-    fov: 20 // Field of View (smaller = more zoomed in, larger = wider view)
+    position: [0, 1.6, 3], // Slightly above the head level, close enough for zoom
+    fov: 40 // Field of View (smaller = more zoomed in, larger = wider view)
   }}
 >
   {/* OrbitControls target sets the point camera looks at */}
   {/* [x, y, z] → y is most important for vertical focus */}
-  <OrbitControls target={[0, 2, 0]} /> // Focus on head area
+  <OrbitControls target={[0, 1.2, 0]} /> // Focus on head area
 
   {/* Model position in 3D space: [x, y, z] */}
   {/* Increasing y moves the model UP in frame, decreasing y moves it DOWN */}
-  <Hema position={[0, -1.2, 0]} scale={2} />
+  <Hema position={[0, -1.4, 0]} scale={2} />
 
   {/* Environment lighting preset */}
   <Environment preset="sunset" />
