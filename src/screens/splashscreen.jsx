@@ -10,7 +10,16 @@ function SplashScreen() {
     { size: '450px', top: '70%', left: '30%', duration: 12, delay: 4 },
   ];
   // Animated words for 'Great'
-  const words = ["Great", "Amazing", "Fun", "Real", "Inspiring", "Friendly", "Supportive", "Exciting", "Open"];
+ const words = [
+  "Great",
+  "Amazing",
+  "Excellent",
+  "Wonderful",
+  "Outstanding",
+  "Fantastic",
+  "Brilliant"
+];
+
   const [wordIndex, setWordIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
   React.useEffect(() => {
