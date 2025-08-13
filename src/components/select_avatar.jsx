@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import Header from "../components/header"; 
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
@@ -21,6 +21,7 @@ export default function ChooseAvatar() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-gray-100">
+        <Header />
       <h1 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">
         Choose your avatar
       </h1>
