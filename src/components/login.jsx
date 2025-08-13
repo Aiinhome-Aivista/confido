@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
+import Header from "./header";
 
 export default function Login() {
   const location = useLocation();
@@ -13,7 +14,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-white">
+        <Header />
       <div className="flex flex-col items-center space-y-6">
         
         {/* Avatar */}
@@ -31,12 +33,12 @@ export default function Login() {
         </p>
 
         {/* Social buttons */}
-        <div className="flex space-x-4">
-          <button className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition">
-            <FaGoogle className="text-gray-600" size={20} />
+        <div className="flex space-x-8">
+          <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+            <FaGoogle className="text-gray-300" size={20} />
           </button>
-          <button className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition">
-            <FaFacebookF className="text-gray-600" size={20} />
+          <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+            <FaFacebookF className="text-gray-300" size={20} />
           </button>
         </div>
       </div>
