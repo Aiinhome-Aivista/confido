@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/header"; 
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
@@ -12,9 +13,15 @@ const avatars = [
   { name: "Sita", img: sita },
 ];
 
-export default function ChooseAvatar({ onSelect }) {
+export default function ChooseAvatar() {
+  const navigate = useNavigate();
+
+  const handleSelect = (avatar) => {
+    navigate("/login", { state: { avatar } });
+  };
+
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-gray-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white">
         <Header />
       <h1 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">
         Choose your avatar
@@ -24,7 +31,7 @@ export default function ChooseAvatar({ onSelect }) {
         {avatars.map((avatar) => (
           <div
             key={avatar.name}
-            onClick={() => onSelect && onSelect(avatar.name)}
+            onClick={() => handleSelect(avatar)}
             className="flex flex-col items-center cursor-pointer group"
           >
             <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
@@ -34,11 +41,9 @@ export default function ChooseAvatar({ onSelect }) {
                 className="w-full h-full object-cover scale-[2] translate-y-20"
               />
             </div>
-
             <p className="mt-3 text-base font-bold nunito text-gray-700 group-hover:text-green-600">
               {avatar.name}
             </p>
-
           </div>
         ))}
       </div>
