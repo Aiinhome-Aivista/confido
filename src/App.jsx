@@ -1,12 +1,16 @@
-import React from "react";
-import SplashScreen from "./screens/splashscreen";
+
+import { BrowserRouter } from 'react-router-dom'
+import Index from './common/routes/Index'
 
 function App() {
+
   return (
-    <div>
-      <SplashScreen />
-    </div>
-  );
+    <>
+      <BrowserRouter>
+        <Index />
+      </BrowserRouter>
+    </>
+  )
 }
 
-export default App;
+export default App

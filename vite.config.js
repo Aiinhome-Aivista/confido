@@ -6,4 +6,10 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(),],
+  optimizeDeps: {
+    exclude: [
+      'react-native-web',
+      'react-native-web/dist/apis/StyleSheet/registry'
+    ]
+  }
 })
