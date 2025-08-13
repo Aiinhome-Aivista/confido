@@ -21,7 +21,7 @@ export default function Header({
 
   return (
     <header
-      className={`w-full bg-white/70 backdrop-blur-sm drop-shadow-sm ${className}`}
+      className={`w-full backdrop-blur-sm drop-shadow-sm ${className}`}
       role="banner"
     >
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">

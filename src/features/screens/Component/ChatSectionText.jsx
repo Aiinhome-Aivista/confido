@@ -20,10 +20,15 @@ const ChatSectionText = ({
   const [sessionController, setSessionController] = useState(0);
   const [showNewSessionBtn, setShowNewSessionBtn] = useState(false);
   const [isAILoading, setIsAILoading] = useState(false);
-
   const chatRef = useRef(null);
   const endOfChatRef = useRef(null);
   const sessionControllerRef = useRef(0); // persists value across re-renders
+  const [userInput, setUserInput] = useState("");
+  const userInputRef = useRef("");
+  const inactivityTimer = useRef(null);
+  const stageRef = useRef("language");
+
+
 
 
 
@@ -87,8 +92,6 @@ const ChatSectionText = ({
     clearTimeout(inactivityTimer.current);
     sessionControllerRef.current = 0;
     setSessionController(0);
-
-    clearTimeout(inactivityTimer.current);
     const userMsg = {
       role: "user",
       message: text,
@@ -97,7 +100,6 @@ const ChatSectionText = ({
 
     setSession((prev) => [...prev, userMsg]);
     console.log("session", session);
-
     setUserInput("");
 
     // Stage 1: Language selection
@@ -213,93 +215,111 @@ const ChatSectionText = ({
 
   return (
     <div className='flex flex-col justify-between p-3 h-[100%]'>
-      <div className="curved-tops py-3">
-        {/* Chat messages */}
-        <div
-          ref={chatRef}
-          className="overflow-y-auto rounded-xl padding-top bg-[#1E1E1E]/7 text-black max-w-[60%]"
+      {/* Chat messages */}
+      <div
+        ref={chatRef}
+        className="overflow-y-auto rounded-xl padding-top text-black max-w-[100%]"
 
-        >
-          {session.map((item, index) => (
-            <React.Fragment key={index}>
-              <div
-                className={`mb-4 flex ${item.role === "ai" ? "items-start" : "justify-end"
-                  }`}
-              >
-                {item.role === "ai" ? (
+      >
+        {session.map((item, index) => (
+          <React.Fragment key={index}>
+            <div
+              className={`mb-4 flex ${item.role === "ai" ? "items-start" : "justify-end"
+                }`}
+            >
+              {item.role === "ai" ? (
+                <div
+                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-xs ai-msg ${(formatMessage(item.message))
+                    ? "items-center"
+                    : "items-start"
+                    }`}
+                >
                   <div
-                    className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-xs ai-bg username ${(formatMessage(item.message))
-                      ? "items-center"
-                      : "items-start"
-                      }`}
-                  >
-                    <div
-                      className="flex"
-                      onClick={(e) => handleMessageClick(e)}
-                      dangerouslySetInnerHTML={{
-                        __html: formatMessage(item.message),
-                      }}
-                    ></div>
-                  </div>
-                ) : (
-                  <div className="max-w-[60%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-xs userbg username">
-                    {item.message}
-                  </div>
-                )}
-              </div>
-
-              {/* Typing loader for last AI message */}
-              {isAILoading && index === session.length - 1 && (
-                <div className="mb-4 flex items-start">
-                  <div className="max-w-[60%] flex items-start gap-3 px-4 py-3 rounded-t-3xl rounded-b-3xl text-xs ai-bg username animate-pulse">
-                    <img
-                      src={aiAvatar}
-                      alt="AI"
-                      className="w-7 h-7 ai-img rounded-full z-10 opacity-70"
-                    />
-                    <div className="text-[#ccc] italic">Typing...</div>
-                  </div>
+                    className="flex"
+                    onClick={(e) => handleMessageClick(e)}
+                    dangerouslySetInnerHTML={{
+                      __html: formatMessage(item.message),
+                    }}
+                  ></div>
+                </div>
+              ) : (
+                <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-xs user-msg">
+                  {item.message}
                 </div>
               )}
-            </React.Fragment>
-          ))}
-        </div>
+            </div>
 
-        {/* New session button */}
-        {showNewSessionBtn && (
-          <div className="flex justify-center" ref={endOfChatRef}>
-            <button
-              className="chatlist-bg text-gray-400 px-6 py-2 rounded-xl cursor-pointer hover:text-white transition duration-200"
-              onClick={() => {
-                setShowNewSessionBtn(false);
-                setIsTerminated(false);
-                setSession([chatSession[0]]);
-                generateRandomID();
-                setIsRecorderActive(true);
-              }}
-            >
-              Do you want to start new session?
-            </button>
-          </div>
-        )}
+            {/* Typing loader for last AI message */}
+            {isAILoading && index === session.length - 1 && (
+              <div className="mb-4 flex items-start">
+                <div className="max-w-[60%] flex items-start gap-3 px-4 py-3 rounded-t-3xl rounded-b-3xl text-xs ai-bg username animate-pulse">
+                  <img
+                    src={aiAvatar}
+                    alt="AI"
+                    className="w-7 h-7 ai-img rounded-full z-10 opacity-70"
+                  />
+                  <div className="text-[#ccc] italic">Typing...</div>
+                </div>
+              </div>
+            )}
+          </React.Fragment>
+        ))}
       </div>
+
+      {/* New session button */}
+      {showNewSessionBtn && (
+        <div className="flex justify-center" ref={endOfChatRef}>
+          <button
+            className="px-6 py-2 rounded-xl cursor-pointer transition duration-200"
+            onClick={() => {
+              setShowNewSessionBtn(false);
+              setIsTerminated(false);
+              setSession([chatSession[0]]);
+              generateRandomID();
+              setIsRecorderActive(true);
+            }}
+          >
+            Do you want to start new session?
+          </button>
+        </div>
+      )}
       <div className="text-input-section flex justify-between items-center mt-4 gap-4 w-full">
-        <div className="flex flex-1 items-center px-3 py-2 rounded-2xl bg-[#1E1E1E]/7">
+        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
           <input
             type="text"
-            className="flex-1 rounded-2xl h-[2.6rem] outline-none placeholder:font-medium placeholder:text-[#000000]/25"
+            value={userInput}
+            onChange={(e) => {
+              setUserInput(e.target.value);
+              userInputRef.current = e.target.value;
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleUserMessage(userInputRef.current);
+                setUserInput("");
+                userInputRef.current = "";
+              }
+            }}
+            className="flex-1 rounded-2xl h-[2.6rem] outline-none placeholder:font-medium"
             placeholder="Type here" />
           <div className='buttons flex gap-2'>
-            <button className="bg-[#000000]/25 rounded-full w-[2.3rem] h-[2.3rem]">
-              <SettingsVoiceRoundedIcon className='text-[#000000]/25' />
+            <button className="input-icon rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer">
+              <SettingsVoiceRoundedIcon />
             </button>
-            <button className="bg-[#000000]/25 rounded-full w-[2.3rem] h-[2.3rem]">
-              <CameraAltRoundedIcon className='text-[#000000]/25' />
+            <button className="input-icon rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer">
+              <CameraAltRoundedIcon />
             </button>
           </div>
         </div>
-        <button className="w-[3.5rem] h-[3.5rem] bg-[#1E1E1E]/7 rounded-2xl">
-          <SendRoundedIcon fontSize='large' className='text-[#000000]/25' />
+        <button disabled={isTerminated}
+          onClick={() => {
+            handleUserMessage(userInputRef.current);
+            setUserInput("");
+            userInputRef.current = "";
+          }}
+          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer">
+
+          <SendRoundedIcon fontSize='large' />
         </button>
       </div>
     </div>
