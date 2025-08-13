@@ -27,6 +27,8 @@ const ChatSectionText = ({
   const userInputRef = useRef("");
   const inactivityTimer = useRef(null);
   const stageRef = useRef("language");
+  const [speakingText, setSpeakingText] = useState("");
+  const [avatarReading, setAvatarReading] = useState(false);
 
 
 
@@ -213,12 +215,32 @@ const ChatSectionText = ({
   };
 
 
+  const speakAndAdd = async (message) => {
+    setAvatarReading(true);
+
+    return new Promise((resolve) => {
+      setSpeakingText(message);
+      const utter = new SpeechSynthesisUtterance(message);
+      utter.onend = () => {
+        startInactivityTimer();
+        resolve();
+        setAvatarReading(false);
+      };
+      window.speechSynthesis.speak(utter);
+
+      setSession((prev) => [
+        ...prev,
+        { role: "ai", message, time: new Date().toLocaleTimeString() },
+      ]);
+    });
+  };
+
   return (
     <div className='flex flex-col justify-between p-3 h-[100%]'>
       {/* Chat messages */}
       <div
         ref={chatRef}
-        className="overflow-y-auto rounded-xl padding-top text-black max-w-[100%]"
+        className="custom-scrollbar overflow-y-auto rounded-xl padding-top text-black max-w-[100%]"
 
       >
         {session.map((item, index) => (

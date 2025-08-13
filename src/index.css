@@ -62,3 +62,12 @@ background-color: var(--ai-msg-color)
   background-color: var(--ai-msg-color);
   color: var(--input-icon-bgColor);
 }
+
+.custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
