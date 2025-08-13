@@ -7,8 +7,8 @@ function Index() {
     return (
         <Routes>
             {/* <Route path="chat-screen" element={<ChatScreen />} /> */}
-            <Route path="" element={<ChooseAvatar />} />
-            {/* <Route path="" element={<SplashScreen />} /> */}
+            {/* <Route path="" element={<ChooseAvatar />} /> */}
+            <Route path="" element={<SplashScreen />} />
             {/* <Route path="" element={<ChatScreen />} /> */}
         </Routes>
     )
