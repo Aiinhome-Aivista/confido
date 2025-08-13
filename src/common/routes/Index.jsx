@@ -3,8 +3,6 @@ import { Routes, Route } from "react-router-dom"
 // import ChatScreen from "../../features/screens/ChatScreen"
 // import ChooseAvatar from "../../components/select_avatar/ChooseAvatar"
 import SplashScreen  from "../../screens/splashscreen"
-
-import SplashScreen from "../../screen/SplashScreen"
 import Login from "../../components/login"
 
 function Index() {
