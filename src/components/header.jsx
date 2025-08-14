@@ -1,113 +1,135 @@
-import React from "react";
+import React, { useState } from "react";
 import logoSrc from "../assets/icons/confido_logo.svg";
 import languageIcon from "../assets/icons/language_icon.svg";
 import settingsIcon from "../assets/icons/settings_icon.svg";
 import signinIcon from "../assets/icons/signin_icon.svg";
 
-export default function Header({
-  logoSrc: logoOverride,
-  icons: iconsOverride,
-  className = "",
-}) {
-  const logo = logoOverride || logoSrc;
+export default function Header() {
+  const [hovered, setHovered] = useState(null);
 
-  const defaultIcons = [
+  const icons = [
     {
-      src: languageIcon,
-      alt: "Language",
+      id: "language",
       title: "Language",
-      dropdown: ["English", "Bengali", "Hindi"],
+      icon: languageIcon,
+      options: ["English", "Hindi", "Bengali"],
     },
     {
-      src: settingsIcon,
-      alt: "Settings",
-      // title: "Settings",
-      // dropdown: ["Profile", "Preferences", "Logout"],
+      id: "settings",
+      title: "Settings",
+      icon: settingsIcon,
+      options: ["Audio Off", "Audio On"],
     },
-    { src: signinIcon, alt: "Sign in", onClick: () => console.log("Sign in clicked") },
+    {
+      id: "login",
+      title: "Login",
+      icon: signinIcon,
+      options: [],
+    },
   ];
 
-  const icons = iconsOverride || defaultIcons;
-
   return (
-    <header
-      className={`w-full fixed top-0 left-0 right-0 z-50 ${className}`}
-      role="banner"
-    >
-      <div className="flex items-center justify-between w-full px-4 py-4">
-        {/* Left: Logo */}
-        <img
-          src={logo}
-          alt="Confido"
-          className="h-8 object-contain"
-          draggable="false"
-        />
+    <>
+      <style>
+        {`
+          @keyframes expandIcon {
+            0% {
+              width: 40px;
+              height: 40px;
+              border-radius: 9999px;
+              padding: 0;
+            }
+            100% {
+              width: 170px;
+              height: auto;
+              border-radius: 12px;
+              padding: 8px 12px;
+            }
+          }
+          @keyframes collapseIcon {
+            0% {
+              width: 170px;
+              height: auto;
+              border-radius: 12px;
+              padding: 8px 12px;
+            }
+            100% {
+              width: 40px;
+              height: 40px;
+              border-radius: 9999px;
+              padding: 0;
+            }
+          }
+        `}
+      </style>
 
-        {/* Right: Icons */}
-        <div className="flex items-center gap-3">
-          {icons.map((ic, idx) => (
-            <div key={idx} className="relative group">
-              <button
-                type="button"
-                onClick={ic.onClick}
-                aria-label={ic.alt || `icon-${idx}`}
-                className="flex items-center justify-center w-10 h-10 rounded-full shadow focus:outline-none transition"
-                style={{ backgroundColor: "rgba(30,30,30,0.07)" }}
-              >
-                <img
-                  src={ic.src}
-                  alt={ic.alt}
-                  className="w-5 h-5 object-contain"
-                  draggable="false"
-                />
-              </button>
-
-              {/* Dropdown menu with header */}
-              {ic.dropdown && (
-                <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-
-                  {/* Dropdown title */}
-                  <div
-                    className="px-4 py-2 border-b border-gray-200"
-                    style={{
-                      fontFamily: "Nunito, sans-serif",
-                      fontWeight: 500,       
-                      fontSize: "18px",
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                      verticalAlign: "middle",
-                      color: "rgba(30, 30, 30, 1)", 
-                    }}
-                  >
-                    {ic.title}
-                  </div>
-
-
-                  {/* Dropdown options with Nunito styling */}
-                  {ic.dropdown.map((item, i) => (
-                    <div
-                      key={i}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      style={{
-                        fontFamily: "Nunito, sans-serif",
-                        fontWeight: 400,
-                        fontSize: "16px",
-                        lineHeight: "100%",
-                        letterSpacing: "0%",
-                        verticalAlign: "middle",
-                        color: "rgba(30, 30, 30, 1)",
-                      }}
-                    >
-                      {item}
-                    </div>
-                  ))}
-
-                </div>
-              )}
-            </div>
-          ))}
+      <header className="fixed top-0 left-0 right-0 z-[999] flex justify-between items-start px-5 py-2 bg-transparent">
+        {/* Logo */}
+        <div className="flex items-center">
+          <img src={logoSrc} alt="Logo" className="h-10" />
         </div>
-      </div>
-    </header>
+
+        {/* Right icons */}
+        <div className="flex items-center gap-3">
+          {icons.map((item) => {
+            const isHovered = hovered === item.id;
+            return (
+              <div
+                key={item.id}
+                className={`relative overflow-hidden bg-[rgba(30,30,30,0.07)] flex-shrink-0
+                  ${isHovered ? "shadow-lg" : ""}
+                  ${
+                    isHovered
+                      ? "animate-[expandIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
+                      : "animate-[collapseIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
+                  }
+                `}
+                onMouseEnter={() => setHovered(item.id)}
+                onMouseLeave={() => setHovered(null)}
+              >
+                {isHovered ? (
+                  // Expanded content: aligned title & options
+                  <>
+                    <div className="flex flex-col w-full pr-9">
+                      <div className="font-nunito text-[16px] font-medium mb-1 text-[rgba(30,30,30,1)] whitespace-nowrap text-left">
+                        {item.title}
+                      </div>
+                      {item.options.length > 0 && (
+                        <div className="flex flex-col gap-1 text-left">
+                          {item.options.map((opt, i) => (
+                            <div
+                              key={i}
+                              className="font-nunito text-sm font-normal text-[rgba(30,30,30,1)] cursor-pointer px-0 py-1 rounded-md hover:bg-black/5"
+                            >
+                              {opt}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <img
+                      src={item.icon}
+                      alt={item.title}
+                      className="w-5 h-5 absolute top-2 right-2 pointer-events-none"
+                    />
+                  </>
+                ) : (
+                  // Collapsed content: centered icon
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <img
+                      src={item.icon}
+                      alt={item.title}
+                      className="w-5 h-5 pointer-events-none"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </header>
+
+      <div className="h-[60px]" aria-hidden="true" />
+    </>
   );
 }
