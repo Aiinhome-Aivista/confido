@@ -50,6 +50,7 @@ background-color: var(--ai-msg-color);
 .input-text-box {
   background-color: var(--ai-msg-color);
   color: var(--msg-text-color);
+  opacity: 0.5;
 }
 
 .input-text-box input::placeholder {
@@ -100,7 +101,7 @@ background-color: var(--ai-msg-color);
 }
 
 
-.glass-card {
+/* .glass-card {
   backdrop-filter: blur(5rem);
   -webkit-backdrop-filter: blur(5rem);
   border-radius: 20px;
@@ -142,4 +143,4 @@ background-color: var(--ai-msg-color);
     transparent,
     rgba(255, 255, 255, 0.3)
   );
-}
+} */

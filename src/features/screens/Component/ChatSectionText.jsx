@@ -309,7 +309,7 @@ const ChatSectionText = ({
         </div>
       )}
       <div className="text-input-section flex justify-between items-center mt-4 gap-4 w-full">
-        <div className="input-text-box glass-card flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
+        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
           <input
             type="text"
             value={userInput}
@@ -353,7 +353,7 @@ const ChatSectionText = ({
             setUserInput("");
             userInputRef.current = "";
           }}
-          className="send-icon glass-card w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
+          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
 
           <SendRoundedIcon fontSize='large' />
         </button>

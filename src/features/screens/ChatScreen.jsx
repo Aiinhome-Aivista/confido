@@ -9,12 +9,14 @@ function ChatScreen() {
       <div className='h-1/10'>
         <Header />
       </div>
-
       <div className="flex h-9/10">
         <div className='w-2/8'>
           <ChatSectionAvatar />
         </div>
         <div className="w-6/8 px-3">
+          <div className="flex justify-center">
+            <hr className='text-lg text-black opacity-20 w-[100%]' />
+          </div>
           <ChatSectionText />
         </div>
       </div>
