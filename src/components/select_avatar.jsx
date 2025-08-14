@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/header"; 
+import Header from "../components/header";
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
@@ -25,10 +25,10 @@ export default function ChooseAvatar() {
   //   }
   // }, [navigate]);
 
- const handleSelect = (avatar) => {
-    const storedEmail = sessionStorage.getItem("email");
-    const storedName = sessionStorage.getItem("name");
-
+  const handleSelect = (avatar) => {
+    const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+    const storedEmail = storedUser.email || "";
+    const storedName = storedUser.name || "";
     if (storedEmail && storedName) {
       navigate("/chat");
     } else {
