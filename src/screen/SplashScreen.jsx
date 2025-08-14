@@ -1,7 +1,12 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+<<<<<<<<< Temporary merge branch 1
+// Tailwind CSS classes will be used for styling
+=========
+>>>>>>>>> Temporary merge branch 2
+import { motion } from "framer-motion";
 import confidoSvg from "../assets/icons/confido_logo.svg";
 import { Experience } from "../features/characters/hema/experience";
+import Header from "../components/header";
 
 function SplashScreen() {
   const blobs = [
@@ -29,28 +34,18 @@ function SplashScreen() {
   }, []);
 
   return (
+    <div>
+      <Header />
+    
     <div
       style={{
         position: "relative",
         width: "100%",
         height: "100vh",
-        backgroundColor: "#FFFFFF",
+        //backgroundColor: "#FFFFFF",
         overflow: "hidden",
       }}
     >
-      {/* Logo on top */}
-      <img
-        src={confidoSvg}
-        alt="Confido Logo"
-        style={{
-          position: "absolute",
-          top: "9px",
-          left: "20px",
-          height: "85px",
-          width: "120px",
-          zIndex: 10,
-        }}
-      />
       {blobs.map((blob, index) => (
         <motion.div
           key={index}
@@ -62,20 +57,59 @@ function SplashScreen() {
             height: blob.size,
             background: "radial-gradient(circle, #76DE48 0%, #B2EF61 100%)",
             borderRadius: "50%",
+<<<<<<<<< Temporary merge branch 1
+            filter: "blur(150px)", // subtle glow
+            zIndex: 0,
+          }}
+          animate={{
+            x: ["0px", "50px", "-50px", "0px"],
+            y: ["0px", "-50px", "50px", "0px"],
+          }}
+=========
             filter: "blur(150px)",
             zIndex: 0,
           }}
           initial={{ y: "100vh" }} // start from below screen
           animate={{ y: "-120vh" }} // move to above screen
+>>>>>>>>> Temporary merge branch 2
           transition={{
             duration: blob.duration * 0.7, // slightly faster
             repeat: Infinity,
             repeatType: "loop",
+<<<<<<<<< Temporary merge branch 1
+            ease: "easeInOut",
+=========
             ease: "linear", // smooth continuous movement
+>>>>>>>>> Temporary merge branch 2
             delay: blob.delay,
           }}
         />
       ))}
+      {/* Logo on top */}
+      <img
+        src={confidoSvg}
+        alt="Confido Logo"
+        style={{
+          position: "absolute",
+          top: "9px",
+          left: "20px",
+          height: "85px",
+          width: "120px",
+          zIndex: 1,
+        }}
+      />
+<<<<<<<<< Temporary merge branch 1
+      <div className="w-full min-h-screen flex flex-col items-center justify-start text-black pt-20 z-2">
+        <h1 className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight">
+          Say Hello to Great
+          <br />
+          Conversation.
+        </h1>
+        <p className="font-normal text-lg text-center mb-6">
+          Overcome shyness with a simple hello.
+        </p>
+        <div className="font-bold text-lg text-center mb-2">
+=========
       <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito text-black pt-20 z-2">
         <motion.h1
           className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
@@ -145,15 +179,16 @@ function SplashScreen() {
             left: "50%",
             transform: "translateX(-50%)",
             width: "100%",
-            height: "60vh", // taller so hand isn't cropped
+            height: "60vh", 
             zIndex: 2,
-            overflow: "visible", // allow waving hand outside frame
+            overflow: "visible",
             pointerEvents: "auto",
           }}
         >
           <Experience />
         </div>
       </div>
+    </div>
     </div>
   );
 }
