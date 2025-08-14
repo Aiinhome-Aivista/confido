@@ -11,26 +11,17 @@ import { apiService } from "../Service/apiService";
 
 import { GET_url } from "../connection/connection .jsx"; 
 
-
 export default function Header() {
   const [hovered, setHovered] = useState(null);
+  const [languages, setLanguages] = useState([]);
+  const leaveTimer = useRef(null);
   const navigate = useNavigate();
+
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
   const storedEmail = storedUser.email || "";
-  const handleLogout = async () => {
-    try {
-      const res = await apiService({
-        url: POST_url.logout,
-        method: "POST",
-        data: {
-          email: storedEmail,
-          is_logged_in: "false",
-        },
-      });
- 
 
-
+  // Fetch languages on mount
   useEffect(() => {
     const fetchLanguages = async () => {
       const res = await apiService({
@@ -46,11 +37,23 @@ export default function Header() {
     fetchLanguages();
   }, []);
 
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      const res = await apiService({
+        url: POST_url.logout,
+        method: "POST",
+        data: {
+          email: storedEmail,
+          is_logged_in: "false",
+        },
+      });
+
       if (res?.error) {
         throw new Error(res.message || "Logout failed");
       }
 
-      // API success — clear sessionStorage
+      // Clear session and refresh
       sessionStorage.clear();
       window.location.reload();
     } catch (error) {
@@ -58,13 +61,14 @@ export default function Header() {
       alert("Error logging out. Please try again.");
     }
   };
+
+  // Login handler
   const handleLoginClick = () => {
     if (!storedEmail || !storedName) {
-      navigate("/login"); // If not logged in → go to login page
+      navigate("/login");
     }
   };
-   const [languages, setLanguages] = useState([]);
-     const leaveTimer = useRef(null);
+
   const icons = [
     {
       id: "language",
@@ -95,6 +99,7 @@ export default function Header() {
     leaveTimer.current = setTimeout(() => setHovered(null), 120);
   };
 
+
   return (
     <>
       <header className="header">
@@ -111,6 +116,7 @@ export default function Header() {
                 className={`icon-box ${expanded ? "expanded" : ""}`}
                 onMouseEnter={() => handleEnter(item.id)}
                 onMouseLeave={handleLeave}
+                onClick={item.id === "login" ? handleLoginClick : undefined}
               >
                 <img src={item.icon} alt={item.title} className="icon-badge" />
                 <div className="icon-body">
