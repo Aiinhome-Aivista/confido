@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import confidoSvg from "../assets/icons/confido_logo.svg";
 import { Experience } from "../features/characters/hema/experience";
 
@@ -9,19 +9,22 @@ function SplashScreen() {
     { size: "350px", top: "40%", left: "60%", duration: 10, delay: 2 },
     { size: "450px", top: "70%", left: "30%", duration: 12, delay: 4 },
   ];
-  // Animated words for 'Great'
+  const colors = ["#76DE48", "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#FF7B54"];
   const words = ["Great", "Super", "Prime", "Elite", "Topaz", "Happy"];
   const [wordIndex, setWordIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
+  const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
   React.useEffect(() => {
     // Animate headline in first, then start word animation
     setTimeout(() => setHeadlineVisible(true), 700);
     let interval;
+    // Start word animation only after headline animation is done
     setTimeout(() => {
+      setWordAnimationStarted(true);
       interval = setInterval(() => {
         setWordIndex((prev) => (prev + 1) % words.length);
       }, 1800);
-    }, 1400);
+    }, 1400); // headline animation duration
     return () => clearInterval(interval);
   }, []);
 
@@ -35,6 +38,19 @@ function SplashScreen() {
         overflow: "hidden",
       }}
     >
+      {/* Logo on top */}
+      <img
+        src={confidoSvg}
+        alt="Confido Logo"
+        style={{
+          position: "absolute",
+          top: "9px",
+          left: "20px",
+          height: "85px",
+          width: "120px",
+          zIndex: 10,
+        }}
+      />
       {blobs.map((blob, index) => (
         <motion.div
           key={index}
@@ -60,37 +76,50 @@ function SplashScreen() {
           }}
         />
       ))}
-      {/* Logo on top */}
-      <img
-        src={confidoSvg}
-        alt="Confido Logo"
-        style={{
-          position: "absolute",
-          top: "9px",
-          left: "20px",
-          height: "85px",
-          width: "120px",
-          zIndex: 1,
-        }}
-      />
       <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito text-black pt-20 z-2">
         <motion.h1
-          className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight"
+          className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
           initial={{ opacity: 0, y: -40 }}
           animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          Say Hello to{" "}
-          <motion.span
-            key={wordIndex}
-            initial={{ y: wordIndex % 2 === 0 ? -60 : 60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: wordIndex % 2 === 0 ? 60 : -60, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            style={{ color: "#000", display: "inline-block", margin: "0 8px" }}
-          >
-            {words[wordIndex]}
-          </motion.span>
+          <span className="text-black align-middle leading-[3.5rem] justify-center ml-20">
+            Say Hello to{" "}
+          </span>
+
+          <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[8ch] h-[4.5rem] md:h-[4.75rem]">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={wordIndex}
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{
+                  y: "0%",
+                  opacity: 1,
+                  color:
+                    !wordAnimationStarted
+                      ? "#000"
+                      : colors[wordIndex % colors.length],
+                  transition: {
+                    y: { duration: 0.4, ease: "easeOut" },
+                    opacity: { duration: 0.4, ease: "easeOut" },
+                    color: { duration: 0.3, ease: "easeIn" }
+                  }
+                }}
+                exit={{
+                  y: "-100%",
+                  opacity: 0,
+                  transition: {
+                    y: { duration: 0.4, ease: "easeIn", delay: 0.5 },
+                    opacity: { duration: 0.4, ease: "easeIn", delay: 0.5 },
+                    color: { duration: 0.3, ease: "easeIn" }
+                  }
+                }}
+                className="absolute left-0 top-0 w-full text-left leading-[4.5rem] font-extrabold"
+              >
+                {words[wordIndex]}
+              </motion.span>
+            </AnimatePresence>
+          </span>
           <br />
           Conversation.
         </motion.h1>
@@ -109,7 +138,6 @@ function SplashScreen() {
         <button className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow">
           Start conversation
         </button>
-
         <div
           style={{
             position: "absolute",
@@ -131,3 +159,7 @@ function SplashScreen() {
 }
 
 export default SplashScreen;
+
+
+
+
