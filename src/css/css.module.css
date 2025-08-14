@@ -1,0 +1,89 @@
+.splashButton {
+  position: absolute;
+  width: 349px;
+  height: 51px;
+  left: 581px;
+  top: 473px;
+  background: rgba(30, 30, 30, 0.07);
+  border-radius: 25px;
+  color: #1E1E1E;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confidoLogo {
+  position: absolute;
+  top: 19px;
+  left: 25px;
+  height: 85px;
+  width: 149px;
+}
+
+.splashContentText {
+  position: absolute;
+  width: 770px;
+  height: 81px;
+  left: 371px;
+  top: 382px;
+  opacity: 1;
+  font-family: 'Nunito';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: middle;
+  color: #1E1E1E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} 
+
+.splashMainText {
+  position: absolute;
+  width: 750px;
+  height: 126px;
+  left: 435px;
+  top: 127px;
+  opacity: 1;
+  font-family: 'Nunito';
+  font-weight: 800;
+  font-style: normal; /* ExtraBold is font-weight: 800 */
+  font-size: 61px;
+  line-height: 63px;
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: middle;
+  color: #1E1E1E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  pointer-events: none;
+} 
+
+.why-love-text {
+  position: absolute;
+  top: 329px;
+  left: 501px;
+  width: 510px;
+  height: 27px;
+
+  font-family: 'Nunito';
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%; 
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: middle;
+  color: #1E1E1E;
+  opacity: 1;
+}
