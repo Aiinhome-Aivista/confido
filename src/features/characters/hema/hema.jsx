@@ -4,21 +4,35 @@ Command: npx gltfjsx@6.5.3 public/models/newAvatart.glb -o src/components/Avatar
 */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useGraph } from '@react-three/fiber'
+import { useFrame, useGraph, useLoader } from '@react-three/fiber'
 import { useAnimations, useFBX, useGLTF } from '@react-three/drei'
 import { SkeletonUtils } from 'three-stdlib'
 import * as THREE from 'three';
 import { useControls } from 'leva';
 
+const corresponding = {
+  A: "viseme_PP",
+  B: "viseme_kk",
+  C: "viseme_I",
+  D: "viseme_AA",
+  E: "viseme_O",
+  F: "viseme_U",
+  G: "viseme_FF",
+  H: "viseme_TH",
+  X: "viseme_PP"
+}
+
 export const Hema = React.memo((props) => {
 
-  // const {playAudio, script} = useControls({
-  //   playAudio: false,
-  //   script: {value: "welcome", options: ["welcome"]},
+  const {playAudio, script} = useControls({
+    playAudio: false,
+    script: {value: "welcome", options: ["welcome"]},
 
-  // })
+  })
 
-  const audio = useMemo(()=> new Audio(``))
+  const audio = useMemo(()=> new Audio(`/characters/hema/audio/${script}.mp3`), [script]);
+  const jsonFile = useLoader(THREE.FileLoader, `/characters/hema/audio/${script}.json` );
+  const lipSync = JSON.parse(jsonFile);
   const { scene } = useGLTF('/characters/hema/model/hema.glb');
   const { animations: IdleAnimation } = useFBX('/characters/hema/animations/Standing Idle.fbx');
   const { animations: Waving } = useFBX('/characters/hema/animations/Waving.fbx');
@@ -38,7 +52,32 @@ export const Hema = React.memo((props) => {
   const blinkInterval = useRef();
   const blinkTimeout = useRef();
 
+  useFrame(()=>{
+    const currentAudioTime = audio.currentTime;
+    for(let i = 0; i <lipSync.mouthCues.length; i++){
+       const mouthCue = lipSync.mouthCues[i]
+       if(currentAudioTime >= mouthCue.start && currentAudioTime<= mouthCue.end){
+          console.log(mouthCue.value);
+       }
+    }
+  })
+
   // Alternative blinking using scale animation
+  useEffect(() => {
+    if(playAudio){
+      audio.play();
+    } else{
+      audio.pause();
+    }
+  }, [playAudio, script]);
+
+  useEffect(() => {
+    console.log(nodes.Wolf3D_Head.morphTargetDictionary);
+    nodes.Wolf3D_Head.morphTargetInfluences[nodes.Wolf3D_Head.morphTargetDictionary["viseme_O"]] = 1;
+    nodes.Wolf3D_Teeth.morphTargetInfluences[nodes.Wolf3D_Teeth.morphTargetDictionary["viseme_O"]] = 1
+  }, []);
+  
+
   useEffect(() => {
     const blink = () => {
       if (!eyeLeftRef.current || !eyeRightRef.current) return;
@@ -126,6 +165,9 @@ const handlePointerOut = () => {
     actions["Idle"]?.reset().fadeIn(0.2).play();
   }
 };
+
+
+
 
   return (
     <group {...props} dispose={null} ref={group}    onPointerOver={handlePointerOver}

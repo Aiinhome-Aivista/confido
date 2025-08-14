@@ -8,6 +8,7 @@ import confidoSvg from "../assets/icons/confido_logo.svg";
 import { Experience } from "../features/characters/hema/experience";
 import { createNoise2D } from "simplex-noise";
 import Header from "../components/header";
+import { useNavigate } from "react-router-dom";
 
 // 🐝 Bee Component
 function Bee({ mousePosition }) {
@@ -86,6 +87,7 @@ function BeeScene({ mousePosition }) {
 }
 
 function SplashScreen() {
+    const navigate = useNavigate();
  
   const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
   //const colors = ["#76DE48", "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#FF7B54"];
@@ -131,6 +133,7 @@ useEffect(() => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       console.log("Microphone access granted:", stream);
+      navigate("/choose-avatar");
       // You can now start conversation logic here
     } catch (err) {
       console.error("Microphone access denied:", err);
@@ -211,7 +214,7 @@ useEffect(() => {
           </p>
 
           <button
-            className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow"
+            className="px-8 py-3 rounded-full bg-gray-200 text-black z-4 font-bold text-lg border-none cursor-pointer mb-8 shadow"
             onClick={requestMicrophonePermission}
           >
             Start conversation
