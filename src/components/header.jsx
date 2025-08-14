@@ -36,13 +36,13 @@ export default function Header() {
             0% {
               width: 40px;
               height: 40px;
-              border-radius: 9999px;
+              border-radius: 50px;
               padding: 0;
             }
             100% {
               width: 170px;
               height: auto;
-              border-radius: 12px;
+              border-radius: 50px;
               padding: 8px 12px;
             }
           }
@@ -50,13 +50,13 @@ export default function Header() {
             0% {
               width: 170px;
               height: auto;
-              border-radius: 12px;
+              border-radius: 50px;
               padding: 8px 12px;
             }
             100% {
               width: 40px;
               height: 40px;
-              border-radius: 9999px;
+              border-radius: px;
               padding: 0;
             }
           }
