@@ -73,6 +73,51 @@ export default function Login() {
       setEmail(storedEmail);
     }
   }, []);
+  const socialButtonStyle = {
+    borderRadius: "50%",
+    backgroundColor: "rgb(243, 244, 246)",
+    transform: "scale(1)",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+    willChange: "transform, background-color, box-shadow",
+    transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    position: "relative",
+    overflow: "hidden",
+    width: "48px",
+    height: "48px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    cursor: "pointer",
+  };
+
+  const handleMouseEnter = (e) => {
+    e.currentTarget.style.transform = "scale(1.1)";
+    e.currentTarget.style.backgroundColor = "rgb(229, 231, 235)";
+    e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.12)";
+
+    const pulse = document.createElement("div");
+    pulse.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%) scale(0);
+      animation: pulse 0.6s ease-out;
+      pointer-events: none;
+    `;
+    e.currentTarget.appendChild(pulse);
+    setTimeout(() => pulse.remove(), 600);
+  };
+
+  const handleMouseLeave = (e) => {
+    e.currentTarget.style.transform = "scale(1)";
+    e.currentTarget.style.backgroundColor = "rgb(243, 244, 246)";
+    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
@@ -93,24 +138,48 @@ export default function Login() {
         </p>
 
         {/* Social buttons */}
-        <div className="flex space-x-4">
+         {/* Social buttons */}
+        <div className="flex space-x-8">
           <button
+            style={socialButtonStyle}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             onClick={handleGoogleLogin}
-            className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition"
           >
-            <FaGoogle className="text-gray-600" size={20} />
+            <FaGoogle
+              style={{
+                color: "rgb(107, 114, 128)",
+                fontSize: "20px",
+                pointerEvents: "none",
+                willChange: "color",
+                transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              }}
+            />
           </button>
-          <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
-            <FaFacebookF className="text-gray-300" size={20} />
+          <button
+            style={socialButtonStyle}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <FaFacebookF
+              style={{
+                color: "rgb(107, 114, 128)",
+                fontSize: "20px",
+                pointerEvents: "none",
+                willChange: "color",
+                transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              }}
+            />
           </button>
         </div>
 
+
         {/* Show logged-in email */}
-        {email && (
+        {/* {email && (
           <p className="text-sm text-gray-600 mt-2">
             Signed in as <strong>{email}</strong>
           </p>
-        )}
+        )} */}
       </div>
     </div>
   );
