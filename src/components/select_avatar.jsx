@@ -21,7 +21,7 @@ export default function ChooseAvatar() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-green-50 to-gray-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white">
         <Header />
       <h1 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">
         Choose your avatar

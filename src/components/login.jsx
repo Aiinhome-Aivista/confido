@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
 import { auth, googleProvider } from "../firebaseConfig"; // adjusted path
 import { signInWithPopup } from "firebase/auth";
+import Header from "./header";
 
 export default function Login() {
   const location = useLocation();
@@ -37,7 +38,8 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-white">
+        <Header />
       <div className="flex flex-col items-center space-y-6">
         {/* Avatar */}
         <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
@@ -61,8 +63,8 @@ export default function Login() {
           >
             <FaGoogle className="text-gray-600" size={20} />
           </button>
-          <button className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition">
-            <FaFacebookF className="text-gray-600" size={20} />
+          <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+            <FaFacebookF className="text-gray-300" size={20} />
           </button>
         </div>
 
