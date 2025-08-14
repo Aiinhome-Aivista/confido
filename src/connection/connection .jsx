@@ -1,4 +1,5 @@
 import { devUrl } from "../env/env.jsx";
+import { baseUrl } from "../env/env.jsx";
 
 export const POST_url = {
     greeting: devUrl + "greet",
@@ -10,5 +11,5 @@ export const POST_url = {
 };
 
 export const GET_url = {
-
+  languages: baseUrl + "get_language",
 };
