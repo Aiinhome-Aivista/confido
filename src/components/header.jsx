@@ -30,62 +30,105 @@ export default function Header() {
 
   return (
     <>
+      <style>
+        {`
+          @keyframes expandIcon {
+            0% {
+              width: 40px;
+              height: 40px;
+              border-radius: 9999px;
+              padding: 0;
+            }
+            100% {
+              width: 170px;
+              height: auto;
+              border-radius: 12px;
+              padding: 8px 12px;
+            }
+          }
+          @keyframes collapseIcon {
+            0% {
+              width: 170px;
+              height: auto;
+              border-radius: 12px;
+              padding: 8px 12px;
+            }
+            100% {
+              width: 40px;
+              height: 40px;
+              border-radius: 9999px;
+              padding: 0;
+            }
+          }
+        `}
+      </style>
+
       <header className="fixed top-0 left-0 right-0 z-[999] flex justify-between items-start px-5 py-2 bg-transparent">
-        {/* Logo - fixed left */}
+        {/* Logo */}
         <div className="flex items-center">
           <img src={logoSrc} alt="Logo" className="h-10" />
         </div>
 
         {/* Right icons */}
         <div className="flex items-center gap-3">
-          {icons.map((item) => (
-            <div
-              key={item.id}
-              className={`relative overflow-hidden flex items-start justify-start 
-                transition-all duration-100 ease-[cubic-bezier(.2,.9,.2,1)]
-                ${
-                  hovered === item.id
-                    ? " rounded-xl min-w-[170px] h-auto px-3 py-2 shadow-lg"
-                    : "bg-[rgba(30,30,30,0.07)] rounded-full w-10 h-10"
-                }
-                ${hovered === "settings" && item.id === "language" ? "translate-x-[-12px]" : ""}
-              `}
-              onMouseEnter={() => setHovered(item.id)}
-              onMouseLeave={() => setHovered(null)}
-            >
-              {/* Expanded content */}
-              {hovered === item.id && (
-                <div className="flex flex-col w-full pr-9">
-                  <div className="font-nunito text-[16px] font-medium mb-1 text-[rgba(30,30,30,1)] whitespace-nowrap">
-                    {item.title}
-                  </div>
-                  {item.options.length > 0 && (
-                    <div className="flex flex-col gap-1">
-                      {item.options.map((opt, i) => (
-                        <div
-                          key={i}
-                          className="font-nunito text-sm font-normal text-[rgba(30,30,30,1)] cursor-pointer px-2 py-1 rounded-md hover:bg-black/5"
-                        >
-                          {opt}
+          {icons.map((item) => {
+            const isHovered = hovered === item.id;
+            return (
+              <div
+                key={item.id}
+                className={`relative overflow-hidden bg-[rgba(30,30,30,0.07)] flex-shrink-0
+                  ${isHovered ? "shadow-lg" : ""}
+                  ${
+                    isHovered
+                      ? "animate-[expandIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
+                      : "animate-[collapseIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
+                  }
+                `}
+                onMouseEnter={() => setHovered(item.id)}
+                onMouseLeave={() => setHovered(null)}
+              >
+                {isHovered ? (
+                  // Expanded content: aligned title & options
+                  <>
+                    <div className="flex flex-col w-full pr-9">
+                      <div className="font-nunito text-[16px] font-medium mb-1 text-[rgba(30,30,30,1)] whitespace-nowrap text-left">
+                        {item.title}
+                      </div>
+                      {item.options.length > 0 && (
+                        <div className="flex flex-col gap-1 text-left">
+                          {item.options.map((opt, i) => (
+                            <div
+                              key={i}
+                              className="font-nunito text-sm font-normal text-[rgba(30,30,30,1)] cursor-pointer px-0 py-1 rounded-md hover:bg-black/5"
+                            >
+                              {opt}
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
-
-              {/* Icon top-right */}
-              <img
-                src={item.icon}
-                alt={item.title}
-                className="w-5 h-5 absolute top-2 right-2 pointer-events-none"
-              />
-            </div>
-          ))}
+                    <img
+                      src={item.icon}
+                      alt={item.title}
+                      className="w-5 h-5 absolute top-2 right-2 pointer-events-none"
+                    />
+                  </>
+                ) : (
+                  // Collapsed content: centered icon
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <img
+                      src={item.icon}
+                      alt={item.title}
+                      className="w-5 h-5 pointer-events-none"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </header>
 
-      {/* Spacer so content isn't hidden behind fixed header */}
       <div className="h-[60px]" aria-hidden="true" />
     </>
   );
