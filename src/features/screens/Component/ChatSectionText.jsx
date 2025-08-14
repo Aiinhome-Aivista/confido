@@ -85,7 +85,7 @@ const ChatSectionText = ({
       clearTimeout(inactivityTimer.current);
       //setIsTerminated(true);
       setShowNewSessionBtn(true);
-      setIsRecorderActive(false);
+      //setIsRecorderActive(false);
     }
   }, [sessionController]);
 
@@ -301,7 +301,7 @@ const ChatSectionText = ({
               //setIsTerminated(false);
               setSession([chatSession[0]]);
               generateRandomID();
-              setIsRecorderActive(true);
+              //setIsRecorderActive(true);
             }}
           >
             Do you want to start new session?
