@@ -32,63 +32,63 @@ function Bee({ mousePosition }) {
     setNewIdleTarget();
   }, []);
 
-useFrame((state, delta) => {
-  setTime((t) => t + delta);
+  useFrame((state, delta) => {
+    setTime((t) => t + delta);
 
-  if (!beeRef.current) return;
+    if (!beeRef.current) return;
 
-  let targetX, targetY;
+    let targetX, targetY;
 
-  if (mousePosition.current) {
-    // Convert mouse to NDC (-1 to 1)
-    const ndcX = (mousePosition.current.x / window.innerWidth) * 2 - 1;
-    const ndcY = -(mousePosition.current.y / window.innerHeight) * 2 + 1;
+    if (mousePosition.current) {
+      // Convert mouse to NDC (-1 to 1)
+      const ndcX = (mousePosition.current.x / window.innerWidth) * 2 - 1;
+      const ndcY = -(mousePosition.current.y / window.innerHeight) * 2 + 1;
 
-    // Create a vector at z=0 in NDC space
-    const vec = new THREE.Vector3(ndcX, ndcY, 0);
-    vec.unproject(state.camera); // Convert to world space
+      // Create a vector at z=0 in NDC space
+      const vec = new THREE.Vector3(ndcX, ndcY, 0);
+      vec.unproject(state.camera); // Convert to world space
 
-    targetX = vec.x;
-    targetY = vec.y;
-  } else {
-    // Idle movement
-    idleTimer.current += delta;
-    if (idleTimer.current > 3) {
-      setNewIdleTarget();
-      idleTimer.current = 0;
+      targetX = vec.x;
+      targetY = vec.y;
+    } else {
+      // Idle movement
+      idleTimer.current += delta;
+      if (idleTimer.current > 3) {
+        setNewIdleTarget();
+        idleTimer.current = 0;
+      }
+      targetX = idleTarget.current.x + noise2D(time * 0.5, 0) * 0.5;
+      targetY = idleTarget.current.y + noise2D(0, time * 0.5) * 0.5;
     }
-    targetX = idleTarget.current.x + noise2D(time * 0.5, 0) * 0.5;
-    targetY = idleTarget.current.y + noise2D(0, time * 0.5) * 0.5;
-  }
 
-  const speed = mousePosition.current ? 0.15 : 0.05;
-  beeRef.current.position.x += (targetX - beeRef.current.position.x) * speed;
-  beeRef.current.position.y += (targetY - beeRef.current.position.y) * speed;
+    const speed = mousePosition.current ? 0.15 : 0.05;
+    beeRef.current.position.x += (targetX - beeRef.current.position.x) * speed;
+    beeRef.current.position.y += (targetY - beeRef.current.position.y) * speed;
 
-  // Rotation for a "turning" effect
-  beeRef.current.rotation.z = (targetY - beeRef.current.position.y) * 0.1;
-  beeRef.current.rotation.y += delta * 8;
-});
+    // Rotation for a "turning" effect
+    beeRef.current.rotation.z = (targetY - beeRef.current.position.y) * 0.1;
+    beeRef.current.rotation.y += delta * 8;
+  });
 
   return <primitive ref={beeRef} object={scene} scale={0.2} />;
 }
 function BeeScene({ mousePosition }) {
   return (
-   <Canvas
-  style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
-  orthographic
-  camera={{ zoom: 100, position: [0, 0, 5] , }}
->
-  <ambientLight intensity={1} />
-  <directionalLight position={[5, 5, 5]} />
-  <Bee mousePosition={mousePosition} />
-</Canvas>
+    <Canvas
+      style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
+      orthographic
+      camera={{ zoom: 100, position: [0, 0, 5], }}
+    >
+      <ambientLight intensity={1} />
+      <directionalLight position={[5, 5, 5]} />
+      <Bee mousePosition={mousePosition} />
+    </Canvas>
   );
 }
 
-function SplashScreen() {
-    const navigate = useNavigate();
+
  
+function SplashScreen({ setLoadAvatars }) {
   const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
   //const colors = ["#76DE48", "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#FF7B54"];
   const colors = ["#797979"];
@@ -96,26 +96,26 @@ function SplashScreen() {
   const [wordIndex, setWordIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
 
- const mousePosition = useRef(null);
+  const mousePosition = useRef(null);
 
-useEffect(() => {
-  if (typeof window === "undefined") return; // prevent SSR issues
+  useEffect(() => {
+    if (typeof window === "undefined") return; // prevent SSR issues
 
-  let timeout;
-  const handleMove = (e) => {
-    mousePosition.current = { x: e.clientX, y: e.clientY };
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      mousePosition.current = null; // back to random mode after idle
-    }, 2000);
-  };
+    let timeout;
+    const handleMove = (e) => {
+      mousePosition.current = { x: e.clientX, y: e.clientY };
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        mousePosition.current = null; // back to random mode after idle
+      }, 2000);
+    };
 
-  window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mousemove", handleMove);
 
-  return () => {
-    window.removeEventListener("mousemove", handleMove);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+    };
+  }, []);
 
   React.useEffect(() => {
     setTimeout(() => setHeadlineVisible(true), 700);
@@ -143,7 +143,6 @@ useEffect(() => {
 
   return (
     <div>
-      <Header />
       <div
         style={{
           position: "relative",
@@ -214,8 +213,11 @@ useEffect(() => {
           </p>
 
           <button
-            className="px-8 py-3 rounded-full bg-gray-200 text-black z-4 font-bold text-lg border-none cursor-pointer mb-8 shadow"
-            onClick={requestMicrophonePermission}
+            className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow z-3"
+            onClick={() => {
+              requestMicrophonePermission();
+              setLoadAvatars(true);
+            }}
           >
             Start conversation
           </button>
@@ -243,7 +245,7 @@ useEffect(() => {
 
       {/* Bee buzzing sound */}
       {/* <audio src="/sounds/bee-buzz.mp3" autoPlay loop /> */}
-    </div>
+    </div >
   );
 }
 

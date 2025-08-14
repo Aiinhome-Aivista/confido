@@ -11,6 +11,7 @@ import { apiService } from "../Service/apiService";
 
 import { GET_url } from "../connection/connection .jsx";
 
+
 export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [languages, setLanguages] = useState([]);
@@ -22,20 +23,23 @@ export default function Header() {
   const storedEmail = storedUser.email || "";
 
   // Fetch languages on mount
-  useEffect(() => {
-    const fetchLanguages = async () => {
-      const res = await apiService({
-        url: GET_url.languages,
-        method: "GET",
-      });
+  
+  
 
-      if (!res.error && res.status && Array.isArray(res.data)) {
-        setLanguages(res.data.map(lang => lang.language_name));
-      }
-    };
+      useEffect(() => {
+        const fetchLanguages = async () => {
+          const res = await apiService({
+            url: GET_url.languages,
+            method: "GET",
+          });
 
-    fetchLanguages();
-  }, []);
+          if (!res.error && res.status && Array.isArray(res.data)) {
+            setLanguages(res.data.map(lang => lang.language_name));
+          }
+        };
+
+        fetchLanguages();
+      }, []);
 
   // Logout handler
   const handleLogout = async () => {
@@ -68,6 +72,7 @@ export default function Header() {
       navigate("/login");
     }
   };
+
 
   const icons = [
     {
