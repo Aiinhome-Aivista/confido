@@ -15,7 +15,7 @@ function Index() {
             <Route path="" element={<SplashScreen/>} />
             {/* <Route path="" element={<ChooseAvatar />} /> */}
             {/* <Route path="" element={<SplashScreen />} /> */}
-            {/* <Route path="" element={<ChatScreen />} /> */}
+            <Route path="/chat" element={<ChatScreen />} />
         </Routes>
     )
 }
