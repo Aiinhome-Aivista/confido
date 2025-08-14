@@ -1,12 +1,46 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logoSrc from "../assets/icons/confido_logo.svg";
 import languageIcon from "../assets/icons/language_icon.svg";
 import settingsIcon from "../assets/icons/settings_icon.svg";
 import signinIcon from "../assets/icons/signin_icon.svg";
+import { POST_url } from "../connection/connection ";
+import { apiService } from "../Service/apiService";
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
+  const navigate = useNavigate();
+  const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const storedName = storedUser.name || "";
+  const storedEmail = storedUser.email || "";
+  const handleLogout = async () => {
+    try {
+      const res = await apiService({
+        url: POST_url.logout,
+        method: "POST",
+        data: {
+          email: storedEmail,
+          is_logged_in: "false",
+        },
+      });
 
+      if (res?.error) {
+        throw new Error(res.message || "Logout failed");
+      }
+
+      // API success — clear sessionStorage
+      sessionStorage.clear();
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Error logging out. Please try again.");
+    }
+  };
+  const handleLoginClick = () => {
+    if (!storedEmail || !storedName) {
+      navigate("/login"); // If not logged in → go to login page
+    }
+  };
   const icons = [
     {
       id: "language",
@@ -22,7 +56,7 @@ export default function Header() {
     },
     {
       id: "login",
-      title: "Login",
+      title: storedName ? storedName : "Login",
       icon: signinIcon,
       options: [],
     },
@@ -78,14 +112,14 @@ export default function Header() {
                 key={item.id}
                 className={`relative overflow-hidden bg-[rgba(30,30,30,0.07)] flex-shrink-0
                   ${isHovered ? "shadow-lg" : ""}
-                  ${
-                    isHovered
-                      ? "animate-[expandIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
-                      : "animate-[collapseIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
+                  ${isHovered
+                    ? "animate-[expandIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
+                    : "animate-[collapseIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
                   }
                 `}
                 onMouseEnter={() => setHovered(item.id)}
                 onMouseLeave={() => setHovered(null)}
+                onClick={item.id === "login" ? handleLoginClick : undefined}
               >
                 {isHovered ? (
                   // Expanded content: aligned title & options
@@ -94,6 +128,15 @@ export default function Header() {
                       <div className="font-nunito text-[16px] font-medium mb-1 text-[rgba(30,30,30,1)] whitespace-nowrap text-left">
                         {item.title}
                       </div>
+                      {/* Logout button when user is logged in */}
+                      {item.id === "login" && storedName && (
+                        <button
+                          onClick={handleLogout}
+                          className="mt-1 font-nunito text-sm text-[rgba(30,30,30,1)] hover:text-red-800 text-left"
+                        >
+                          Logout
+                        </button>
+                      )}
                       {item.options.length > 0 && (
                         <div className="flex flex-col gap-1 text-left">
                           {item.options.map((opt, i) => (

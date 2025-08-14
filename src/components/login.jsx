@@ -4,6 +4,8 @@ import { FaGoogle, FaFacebookF } from "react-icons/fa";
 import { auth, googleProvider } from "../firebaseConfig"; // adjusted path
 import { signInWithPopup } from "firebase/auth";
 import Header from "./header";
+import { POST_url } from "../connection/connection ";
+import { apiService } from "../Service/apiService";
 
 export default function Login() {
   const location = useLocation();
@@ -20,18 +22,53 @@ export default function Login() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const userEmail = result.user.email;
-      setEmail(userEmail);
-      localStorage.setItem("email", userEmail);
+      const userName = result.user.displayName;
+      const loginType = "google";
 
-      // Redirect after login
-      navigate("/chat"); // make sure your route matches this path
+      // Use apiService instead of fetch
+      const data = await apiService({
+        url: POST_url.login,
+        method: "POST",
+        data: {
+          name: userName,
+          email: userEmail,
+          loginType: loginType,
+        },
+      });
+
+      if (data.status && (data.statusCode === 201 || data.statusCode === 200)) {
+        const userData = {
+          email: data.data.email,
+          name: data.data.name,
+          user_id: data.data.user_id,
+          loginType: loginType
+        };
+
+        // Store all data as one JSON string
+        sessionStorage.setItem("user", JSON.stringify(userData));
+
+        if (data.statusCode === 201) {
+          console.log("First-time login:", data.message);
+        } else if (data.statusCode === 200) {
+          console.log("Returning user:", data.message);
+        }
+
+        navigate("/chat");
+      } else {
+        console.error("Login failed:", data.message);
+        alert("Login failed: " + data.message);
+      }
     } catch (error) {
       console.error("Google Sign-In Error:", error);
+      alert("Google login failed. Please try again.");
     }
   };
 
+
+
+
   useEffect(() => {
-    const storedEmail = localStorage.getItem("email");
+    const storedEmail = sessionStorage.getItem("email");
     if (storedEmail) {
       setEmail(storedEmail);
     }
@@ -39,7 +76,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-        <Header />
+      <Header />
       <div className="flex flex-col items-center space-y-6">
         {/* Avatar */}
         <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">

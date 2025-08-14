@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/header"; 
 import ravi from "../assets/2D/ravi.svg";
@@ -16,17 +16,32 @@ const avatars = [
 export default function ChooseAvatar() {
   const navigate = useNavigate();
 
-  const handleSelect = (avatar) => {
-    navigate("/login", { state: { avatar } });
+  // useEffect(() => {
+  //   const storedEmail = sessionStorage.getItem("email");
+  //   const storedName = sessionStorage.getItem("name");
+  //   if (storedEmail && storedName) {
+  //     // already logged in
+  //     navigate("/chat");
+  //   }
+  // }, [navigate]);
+
+ const handleSelect = (avatar) => {
+    const storedEmail = sessionStorage.getItem("email");
+    const storedName = sessionStorage.getItem("name");
+
+    if (storedEmail && storedName) {
+      navigate("/chat");
+    } else {
+      navigate("/login", { state: { avatar } });
+    }
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white">
-        <Header />
+      <Header />
       <h1 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">
         Choose your avatar
       </h1>
-
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
         {avatars.map((avatar) => (
           <div
