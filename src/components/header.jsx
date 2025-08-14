@@ -30,7 +30,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[999] flex justify-between items-center px-5 py-2 bg-transparent">
+      <header className="fixed top-0 left-0 right-0 z-[999] flex justify-between items-start px-5 py-2 bg-transparent">
         {/* Logo - fixed left */}
         <div className="flex items-center">
           <img src={logoSrc} alt="Logo" className="h-10" />
@@ -41,7 +41,7 @@ export default function Header() {
           {icons.map((item) => (
             <div
               key={item.id}
-              className={`relative overflow-hidden flex items-start justify-end 
+              className={`relative overflow-hidden flex items-start justify-start 
                 transition-all duration-100 ease-[cubic-bezier(.2,.9,.2,1)]
                 ${
                   hovered === item.id
