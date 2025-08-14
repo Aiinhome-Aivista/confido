@@ -29,7 +29,9 @@ const ChatSectionText = ({
   const stageRef = useRef("language");
   const [speakingText, setSpeakingText] = useState("");
   const [avatarReading, setAvatarReading] = useState(false);
-
+  const [isMicHovered, setIsMicHovered] = useState(false);
+  const [isCameraHovered, setIsCameraHovered] = useState(false);
+  const [isMicActive, setIsMicActive] = useState(false);
 
 
 
@@ -81,7 +83,7 @@ const ChatSectionText = ({
   useEffect(() => {
     if (sessionController === inactiveMsgList.length) {
       clearTimeout(inactivityTimer.current);
-      setIsTerminated(true);
+      //setIsTerminated(true);
       setShowNewSessionBtn(true);
       setIsRecorderActive(false);
     }
@@ -89,6 +91,7 @@ const ChatSectionText = ({
 
   const handleUserMessage = async (text) => {
     if (!text) return;
+    setIsMicActive(false);
 
     // RESET timeout state on user input
     clearTimeout(inactivityTimer.current);
@@ -246,12 +249,12 @@ const ChatSectionText = ({
         {session.map((item, index) => (
           <React.Fragment key={index}>
             <div
-              className={`mb-4 flex ${item.role === "ai" ? "items-start" : "justify-end"
+              className={`mb-4 px-2 flex ${item.role === "ai" ? "items-start" : "justify-end"
                 }`}
             >
               {item.role === "ai" ? (
                 <div
-                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-xs ai-msg ${(formatMessage(item.message))
+                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg ${(formatMessage(item.message))
                     ? "items-center"
                     : "items-start"
                     }`}
@@ -265,7 +268,7 @@ const ChatSectionText = ({
                   ></div>
                 </div>
               ) : (
-                <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-xs user-msg">
+                <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
                   {item.message}
                 </div>
               )}
@@ -295,7 +298,7 @@ const ChatSectionText = ({
             className="px-6 py-2 rounded-xl cursor-pointer transition duration-200"
             onClick={() => {
               setShowNewSessionBtn(false);
-              setIsTerminated(false);
+              //setIsTerminated(false);
               setSession([chatSession[0]]);
               generateRandomID();
               setIsRecorderActive(true);
@@ -306,7 +309,7 @@ const ChatSectionText = ({
         </div>
       )}
       <div className="text-input-section flex justify-between items-center mt-4 gap-4 w-full">
-        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
+        <div className="input-text-box glass-card flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
           <input
             type="text"
             value={userInput}
@@ -325,10 +328,21 @@ const ChatSectionText = ({
             className="flex-1 rounded-2xl h-[2.6rem] outline-none placeholder:font-medium"
             placeholder="Type here" />
           <div className='buttons flex gap-2'>
-            <button className="input-icon rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer">
+            <button
+              className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
+                } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
+              onClick={() => setIsMicActive(prev => !prev)}
+              onMouseEnter={() => setIsMicHovered(true)}
+              onMouseLeave={() => setIsMicHovered(false)}
+            >
               <SettingsVoiceRoundedIcon />
             </button>
-            <button className="input-icon rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer">
+            <button
+              className={`${isCameraHovered ? "input-icon-hover" : "input-icon"
+                } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
+              onMouseEnter={() => setIsCameraHovered(true)}
+              onMouseLeave={() => setIsCameraHovered(false)}
+            >
               <CameraAltRoundedIcon />
             </button>
           </div>
@@ -339,7 +353,7 @@ const ChatSectionText = ({
             setUserInput("");
             userInputRef.current = "";
           }}
-          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer">
+          className="send-icon glass-card w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
 
           <SendRoundedIcon fontSize='large' />
         </button>
