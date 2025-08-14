@@ -23,6 +23,7 @@ function AnimatedBlobs() {
             borderRadius: "50%",
             filter: "blur(150px)",
             zIndex: 0,
+            pointerEvents: "none",
           }}
           animate={{
             y: ["0vh", "-10vh", "0vh"],

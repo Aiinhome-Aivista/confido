@@ -37,6 +37,7 @@ function SplashScreen() {
         height: "100vh",
         //backgroundColor: "#FFFFFF",
         overflow: "hidden",
+       
       }}
     >
      
@@ -86,9 +87,9 @@ function SplashScreen() {
             left: "50%",
             transform: "translateX(-50%)",
             width: "100%",
-            height: "60vh", // taller so hand isn't cropped
+            height: "60vh", 
             zIndex: 2,
-            overflow: "visible", // allow waving hand outside frame
+            overflow: "visible",
             pointerEvents: "auto",
           }}
         >
