@@ -12,5 +12,5 @@ export const POST_url = {
 };
 
 export const GET_url = {
-
+  languages: baseUrl + "get_language",
 };

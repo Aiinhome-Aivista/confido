@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import "./header.css";
 import logoSrc from "../assets/icons/confido_logo.svg";
 import languageIcon from "../assets/icons/language_icon.svg";
 import settingsIcon from "../assets/icons/settings_icon.svg";
 import signinIcon from "../assets/icons/signin_icon.svg";
 import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
+
+import { GET_url } from "../connection/connection .jsx"; 
+
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
@@ -23,6 +28,23 @@ export default function Header() {
           is_logged_in: "false",
         },
       });
+ 
+
+
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      const res = await apiService({
+        url: GET_url.languages,
+        method: "GET",
+      });
+
+      if (!res.error && res.status && Array.isArray(res.data)) {
+        setLanguages(res.data.map(lang => lang.language_name));
+      }
+    };
+
+    fetchLanguages();
+  }, []);
 
       if (res?.error) {
         throw new Error(res.message || "Logout failed");
@@ -41,12 +63,14 @@ export default function Header() {
       navigate("/login"); // If not logged in → go to login page
     }
   };
+   const [languages, setLanguages] = useState([]);
+     const leaveTimer = useRef(null);
   const icons = [
     {
       id: "language",
       title: "Language",
       icon: languageIcon,
-      options: ["English", "Hindi", "Bengali"],
+      options: languages,
     },
     {
       id: "settings",
@@ -62,117 +86,52 @@ export default function Header() {
     },
   ];
 
+  const handleEnter = (id) => {
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
+    setHovered(id);
+  };
+
+  const handleLeave = () => {
+    leaveTimer.current = setTimeout(() => setHovered(null), 120);
+  };
+
   return (
     <>
-      <style>
-        {`
-          @keyframes expandIcon {
-            0% {
-              width: 40px;
-              height: 40px;
-              border-radius: 50px;
-              padding: 0;
-            }
-            100% {
-              width: 170px;
-              height: auto;
-              border-radius: 50px;
-              padding: 8px 12px;
-            }
-          }
-          @keyframes collapseIcon {
-            0% {
-              width: 170px;
-              height: auto;
-              border-radius: 50px;
-              padding: 8px 12px;
-            }
-            100% {
-              width: 40px;
-              height: 40px;
-              border-radius: px;
-              padding: 0;
-            }
-          }
-        `}
-      </style>
-
-      <header className="fixed top-0 left-0 right-0 z-[999] flex justify-between items-start px-5 py-2 bg-transparent">
-        {/* Logo */}
-        <div className="flex items-center">
-          <img src={logoSrc} alt="Logo" className="h-10" />
+      <header className="header">
+        <div className="logo-container">
+          <img src={logoSrc} alt="Logo" className="logo" />
         </div>
 
-        {/* Right icons */}
-        <div className="flex items-center gap-3">
+        <div className="icon-wrapper">
           {icons.map((item) => {
-            const isHovered = hovered === item.id;
+            const expanded = hovered === item.id;
             return (
               <div
                 key={item.id}
-                className={`relative overflow-hidden bg-[rgba(30,30,30,0.07)] flex-shrink-0
-                  ${isHovered ? "shadow-lg" : ""}
-                  ${isHovered
-                    ? "animate-[expandIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
-                    : "animate-[collapseIcon_0.25s_cubic-bezier(.2,.9,.2,1)_forwards]"
-                  }
-                `}
-                onMouseEnter={() => setHovered(item.id)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={item.id === "login" ? handleLoginClick : undefined}
+                className={`icon-box ${expanded ? "expanded" : ""}`}
+                onMouseEnter={() => handleEnter(item.id)}
+                onMouseLeave={handleLeave}
               >
-                {isHovered ? (
-                  // Expanded content: aligned title & options
-                  <>
-                    <div className="flex flex-col w-full pr-9">
-                      <div className="font-nunito text-[16px] font-medium mb-1 text-[rgba(30,30,30,1)] whitespace-nowrap text-left">
-                        {item.title}
-                      </div>
-                      {/* Logout button when user is logged in */}
-                      {item.id === "login" && storedName && (
-                        <button
-                          onClick={handleLogout}
-                          className="mt-1 font-nunito text-sm text-[rgba(30,30,30,1)] hover:text-red-800 text-left"
-                        >
-                          Logout
-                        </button>
-                      )}
-                      {item.options.length > 0 && (
-                        <div className="flex flex-col gap-1 text-left">
-                          {item.options.map((opt, i) => (
-                            <div
-                              key={i}
-                              className="font-nunito text-sm font-normal text-[rgba(30,30,30,1)] cursor-pointer px-0 py-1 rounded-md hover:bg-black/5"
-                            >
-                              {opt}
-                            </div>
-                          ))}
+                <img src={item.icon} alt={item.title} className="icon-badge" />
+                <div className="icon-body">
+                  <div className="icon-title">{item.title}</div>
+                  {item.options.length > 0 && (
+                    <div className="icon-options">
+                      {item.options.map((opt, i) => (
+                        <div key={i} className="icon-option">
+                          {opt}
                         </div>
-                      )}
+                      ))}
                     </div>
-                    <img
-                      src={item.icon}
-                      alt={item.title}
-                      className="w-5 h-5 absolute top-2 right-2 pointer-events-none"
-                    />
-                  </>
-                ) : (
-                  // Collapsed content: centered icon
-                  <div className="flex items-center justify-center w-10 h-10">
-                    <img
-                      src={item.icon}
-                      alt={item.title}
-                      className="w-5 h-5 pointer-events-none"
-                    />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
       </header>
 
-      <div className="h-[60px]" aria-hidden="true" />
+      <div className="header-spacer" />
     </>
   );
 }
