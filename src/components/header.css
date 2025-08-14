@@ -1,8 +1,6 @@
 .header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 999;
   display: flex;
   justify-content: space-between;
@@ -11,67 +9,29 @@
   background: transparent;
 }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-}
+.logo-container { display: flex; align-items: center; }
+.logo { height: 40px; }
 
-.logo {
-  height: 40px;
-}
-
-/* Icons wrapper */
 .icon-wrapper {
   display: flex;
   align-items: flex-start;
-  justify-content: start;
   gap: 12px;
 }
 
-/* Animation keyframes */
-@keyframes expandIcon {
-  0% {
-    width: 40px;
-    height: 40px;
-    border-radius: 9999px;
-    padding: 0;
-  }
-  100% {
-    width: 170px;
-    height: auto;
-    border-radius: 12px;
-    padding: 8px 12px;
-  }
-}
-
-@keyframes collapseIcon {
-  0% {
-    width: 170px;
-    height: auto;
-    border-radius: 12px;
-    padding: 8px 12px;
-  }
-  100% {
-    width: 40px;
-    height: 40px;
-    border-radius: 9999px;
-    padding: 0;
-  }
-}
-
-/* Icon container */
+/* Card */
 .icon-box {
-  background: rgba(30, 30, 30, 0.07);
-  overflow: hidden;
-  flex-shrink: 0;
   position: relative;
-
-  /* Transition for smooth hover */
+  background: rgba(30, 30, 30, 0.07);
   width: 40px;
   height: 40px;
   border-radius: 9999px;
   padding: 0;
-  transition: all 0.25s cubic-bezier(.2, .9, .2, 1);
+  overflow: hidden; /* content should not spill out */
+  flex-shrink: 0;
+  transition: width 0.25s cubic-bezier(.2,.9,.2,1),
+              border-radius 0.25s cubic-bezier(.2,.9,.2,1),
+              padding 0.25s cubic-bezier(.2,.9,.2,1),
+              box-shadow 0.2s ease;
 }
 
 .icon-box.expanded {
@@ -79,20 +39,46 @@
   height: auto;
   border-radius: 12px;
   padding: 8px 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-
-.icon-box.collapsed {
-  animation: collapseIcon 0.25s cubic-bezier(.2, .9, .2, 1) forwards;
+/* The icon "badge" — always absolutely positioned INSIDE the card */
+.icon-badge {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  /* Start centered */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: top 0.2s ease, left 0.2s ease, right 0.2s ease, transform 0.2s ease;
 }
 
-/* Expanded content */
-.icon-content {
+/* When expanded, slide to top-right (inside) */
+.icon-box.expanded .icon-badge {
+  top: 8px;
+  right: 8px;
+  left: auto;            /* cancel left positioning */
+  transform: none;       /* no centering */
+}
+
+/* Content area */
+.icon-body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-right: 36px;
+  padding-right: 0;      /* grows when expanded to make space for the badge */
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.2s ease, padding-right 0.2s ease;
+}
+
+.icon-box.expanded .icon-body {
+  opacity: 1;
+  max-height: 300px;     /* large enough to reveal options */
+  padding-right: 36px;   /* keep text clear of the top-right icon */
 }
 
 .icon-title {
@@ -105,11 +91,7 @@
   text-align: left;
 }
 
-.icon-options {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+.icon-options { display: flex; flex-direction: column; gap: 4px; }
 
 .icon-option {
   font-family: "Nunito", sans-serif;
@@ -120,37 +102,6 @@
   padding: 4px 0;
   border-radius: 6px;
 }
+.icon-option:hover { background-color: rgba(0,0,0,0.05); }
 
-.icon-option:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-/* Expanded icon image top-right */
-.icon-img-topright {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  pointer-events: none;
-}
-
-/* Collapsed state icon */
-.icon-centered {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-}
-
-.icon-img {
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-}
-
-/* Spacer to prevent content overlap */
-.header-spacer {
-  height: 60px;
-}
+.header-spacer { height: 60px; }
