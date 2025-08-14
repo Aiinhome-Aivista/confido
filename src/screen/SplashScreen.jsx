@@ -106,23 +106,13 @@ function SplashScreen() {
           shy, lonely, or just need someone to chat with, we’re here to make it
           easy and confortable.
         </p>
-        <button className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow">
-          Start conversation
-        </button>
-
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "100%",
-            height: "60vh", // taller so hand isn't cropped
-            zIndex: 2,
-            overflow: "visible", // allow waving hand outside frame
-            pointerEvents: "auto",
-          }}
+        <button
+          onClick={() => alert("Start Conversation Clicked!")}
+          className="mt-6 px-6 py-3 text-black rounded-lg shadow-md transition-colors bg-white hover:bg-gray-100"
         >
+          Start Conversation
+        </button>
+        <div style={{ width: "100%", height: "100vh" }}>
           <Experience />
         </div>
       </div>
@@ -131,3 +121,4 @@ function SplashScreen() {
 }
 
 export default SplashScreen;
+   
