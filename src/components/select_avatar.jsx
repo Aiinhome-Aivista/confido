@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "../components/header";
+import React, { useEffect, useState } from "react";
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
 import sita from "../assets/2D/sita.svg";
+import Login from "./login";
 
 const avatars = [
   { name: "Ravi", img: ravi },
@@ -14,31 +13,30 @@ const avatars = [
 ];
 
 export default function ChooseAvatar() {
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const storedEmail = sessionStorage.getItem("email");
-  //   const storedName = sessionStorage.getItem("name");
-  //   if (storedEmail && storedName) {
-  //     // already logged in
-  //     navigate("/chat");
-  //   }
-  // }, [navigate]);
+  const [loadChatscreen, setLoadChatscreen] = useState("avatar");
 
   const handleSelect = (avatar) => {
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
     if (storedEmail && storedName) {
-      navigate("/chat");
+      setLoadChatscreen("chatscreen")
     } else {
-      navigate("/login", { state: { avatar } });
+      setLoadChatscreen("login")
     }
   };
 
+  if (loadChatscreen === "login") {
+    return <Login />;
+  }
+
+  if (loadChatscreen === "chatscreen") {
+    return <ChatScreen />;
+  }
+
   return (
+
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white">
-      <Header />
       <h1 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">
         Choose your avatar
       </h1>

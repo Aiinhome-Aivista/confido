@@ -9,7 +9,7 @@ import signinIcon from "../assets/icons/signin_icon.svg";
 import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
 
-import { GET_url } from "../connection/connection .jsx"; 
+import { GET_url } from "../connection/connection .jsx";
 
 
 export default function Header() {
@@ -28,23 +28,23 @@ export default function Header() {
           is_logged_in: "false",
         },
       });
- 
 
 
-  useEffect(() => {
-    const fetchLanguages = async () => {
-      const res = await apiService({
-        url: GET_url.languages,
-        method: "GET",
-      });
 
-      if (!res.error && res.status && Array.isArray(res.data)) {
-        setLanguages(res.data.map(lang => lang.language_name));
-      }
-    };
+      useEffect(() => {
+        const fetchLanguages = async () => {
+          const res = await apiService({
+            url: GET_url.languages,
+            method: "GET",
+          });
 
-    fetchLanguages();
-  }, []);
+          if (!res.error && res.status && Array.isArray(res.data)) {
+            setLanguages(res.data.map(lang => lang.language_name));
+          }
+        };
+
+        fetchLanguages();
+      }, []);
 
       if (res?.error) {
         throw new Error(res.message || "Logout failed");
@@ -63,8 +63,8 @@ export default function Header() {
       navigate("/login"); // If not logged in → go to login page
     }
   };
-   const [languages, setLanguages] = useState([]);
-     const leaveTimer = useRef(null);
+  const [languages, setLanguages] = useState([]);
+  const leaveTimer = useRef(null);
   const icons = [
     {
       id: "language",
