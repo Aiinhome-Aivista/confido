@@ -6,16 +6,16 @@ import { signInWithPopup } from "firebase/auth";
 import Header from "./header";
 import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
+import hema from "../assets/2D/hema.svg";
 
-export default function Login() {
+export default function Login({ avatar: propAvatar }) {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const avatar = location.state?.avatar || {
-    name: "Default",
-    img: "https://via.placeholder.com/150",
+ // Priority: prop > location.state > default Hema
+  const avatar = propAvatar || location.state?.avatar || {
+    name: "Hema",
+    img: hema,
   };
-
   const [email, setEmail] = useState("");
 
   const handleGoogleLogin = async () => {

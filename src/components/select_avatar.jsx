@@ -14,8 +14,9 @@ const avatars = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-
+  const [selectedAvatar, setSelectedAvatar] = useState(avatars[1]); // default Hema
   const handleSelect = (avatar) => {
+    setSelectedAvatar(avatar); // store clicked avatar
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
@@ -27,7 +28,8 @@ export default function ChooseAvatar() {
   };
 
   if (loadChatscreen === "login") {
-    return <Login />;
+    // return <Login />;
+    return <Login avatar={selectedAvatar} />;
   }
 
   if (loadChatscreen === "chatscreen") {
