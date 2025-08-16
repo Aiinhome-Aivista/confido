@@ -12,9 +12,11 @@ function App() {
       <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
         <AnimatedBlobs />
         <AuthProvider>
-          <BrowserRouter>
-            <Index />
-          </BrowserRouter>
+          < div style={{ position: "relative", zIndex: 10 }}>
+            <BrowserRouter>
+              <Index />
+            </BrowserRouter>
+          </div>
         </AuthProvider>
       </div>
     </>

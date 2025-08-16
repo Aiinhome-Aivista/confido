@@ -7,7 +7,8 @@ export const POST_url = {
     userTicket: devUrl + "uset_ticket",
     userTicketStatus: devUrl + "get_user_ticket_status",
     login: baseUrl + "auth/login",
-    logout: baseUrl + "auth/logout"
+    logout: baseUrl + "auth/logout",
+    session: baseUrl + "session"
 
 };
 
