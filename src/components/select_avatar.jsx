@@ -52,11 +52,11 @@ export default function ChooseAvatar() {
       });
 
       if (data) {
-        console.log("✅ Session Created:", data);
+        console.log("Session Created:", data);
         sessionStorage.setItem("session", JSON.stringify(data));
       }
     } catch (error) {
-      console.error("⚠️ Session API Failed:", error);
+      console.error("Session API Failed:", error);
     }
   };
 
@@ -75,7 +75,7 @@ export default function ChooseAvatar() {
   return (
 
     <div className="min-h-screen w-full flex flex-col items-center justify-center">
-      <h1 className="text-2xl md:text-3xl font-bold mb-8 text-gray-800">
+      <h1 className="text-2xl md:text-3xl font-bold mb-8 ">
         Choose your avatar
       </h1>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
@@ -92,7 +92,7 @@ export default function ChooseAvatar() {
                 className="w-full h-full object-cover scale-[2] translate-y-20"
               />
             </div>
-            <p className="mt-3 text-base font-bold nunito text-gray-700 group-hover:text-green-600">
+            <p className="mt-3 text-base font-bold nunito group-hover:text-green-600">
               {avatar.name}
             </p>
           </div>
