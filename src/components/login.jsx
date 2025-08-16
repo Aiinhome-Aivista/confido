@@ -96,20 +96,22 @@ export default function Login() {
     e.currentTarget.style.transform = "scale(1.1)";
     e.currentTarget.style.backgroundColor = "rgb(229, 231, 235)";
     e.currentTarget.style.boxShadow = "0 8px 25px rgba(0, 0, 0, 0.12)";
+    const icon = e.currentTarget.querySelector("svg");
+    if (icon) icon.style.opacity = "1";
 
     const pulse = document.createElement("div");
     pulse.style.cssText = `
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      transform: translate(-50%, -50%) scale(0);
-      animation: pulse 0.6s ease-out;
-      pointer-events: none;
-    `;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%) scale(0);
+    animation: pulse 0.6s ease-out;
+    pointer-events: none;
+  `;
     e.currentTarget.appendChild(pulse);
     setTimeout(() => pulse.remove(), 600);
   };
@@ -118,6 +120,8 @@ export default function Login() {
     e.currentTarget.style.transform = "scale(1)";
     e.currentTarget.style.backgroundColor = "rgb(243, 244, 246)";
     e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
+    const icon = e.currentTarget.querySelector("svg");
+    if (icon) icon.style.opacity = "0.5";
   };
 
   if (redirectToChat) {
@@ -153,6 +157,7 @@ export default function Login() {
               pointerEvents: "none",
               willChange: "color",
               transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              opacity: "0.5"
             }}
           />
         </button>
@@ -168,6 +173,7 @@ export default function Login() {
               pointerEvents: "none",
               willChange: "color",
               transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              opacity: "0.5"
             }}
           />
         </button>
