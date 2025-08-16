@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
 import { auth, googleProvider } from "../firebaseConfig"; // adjusted path
@@ -8,10 +8,16 @@ import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
 import ChatScreen from "../features/screens/ChatScreen.jsx";
 import { SubhoExperience } from "../features/characters/subho/subhoExperience.jsx";
+import { Experience } from "../features/characters/hema/experience.jsx";
+import { SitaExperience } from "../features/characters/sita/sitaExperience.jsx";
+import { RaviExperience } from "../features/characters/ravi/raviExperience.jsx";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
 
 export default function Login() {
   const location = useLocation();
   const [redirectToChat, setRedirectToChat] = useState(false)
+  const { selectedAvatar } = useContext(AuthContext)
+  console.log(selectedAvatar)
 
   const avatar = location.state?.avatar || {
     name: "Default",
@@ -129,10 +135,27 @@ export default function Login() {
     return <ChatScreen />;
   }
 
+  const renderAvatar = () => {
+    switch (selectedAvatar) {
+      case "Subho":
+        return <SubhoExperience />;
+      case "Sita":
+        return <SitaExperience />
+      case "Ravi":
+        return <RaviExperience />
+      case "Hema":
+        return <Experience />
+      default:
+        return (
+          <Experience />
+        );
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-[100%] pb-[calc(20vh)]">
       <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
-       <SubhoExperience/>
+        {renderAvatar()}
       </div>
       <p className="text-base font-extrabold py-[calc(1vh)]">
         Login here

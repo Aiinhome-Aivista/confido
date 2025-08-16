@@ -14,10 +14,10 @@ import { SubhoExperience } from "../features/characters/subho/subhoExperience";
 import { Experience } from "../features/characters/hema/experience";
 
 const avatars = [
-  { name: "Ravi", img: ravi , avatar: <RaviExperience/> },
-  { name: "Hema", img: hema,  avatar: <Experience/> },
-  { name: "Subho", img: subho,  avatar:  <SubhoExperience/>},
-  { name: "Sita", img: sita , avatar:  <SitaExperience/>},
+  { name: "Ravi", img: ravi, avatar: <RaviExperience /> },
+  { name: "Hema", img: hema, avatar: <Experience /> },
+  { name: "Subho", img: subho, avatar: <SubhoExperience /> },
+  { name: "Sita", img: sita, avatar: <SitaExperience /> },
 
 
 
@@ -25,11 +25,10 @@ const avatars = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { isLogin } = useContext(AuthContext);
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const { isLogin, setSelectedAvatar } = useContext(AuthContext);
 
   const handleSelect = async (avatar) => {
-    setSelectedAvatar(avatar);
+    setSelectedAvatar(avatar.name);
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
@@ -72,14 +71,14 @@ export default function ChooseAvatar() {
   }
 
   if (loadChatscreen === "login") {
-    return <Login avatar={selectedAvatar} onLoginSuccess={createSession} />;
+    return <Login onLoginSuccess={createSession} />;
   }
 
   if (loadChatscreen === "chatscreen") {
     return <ChatScreen />;
   }
 
- 
+
 
   return (
 
@@ -95,7 +94,7 @@ export default function ChooseAvatar() {
             className="flex flex-col items-center cursor-pointer group"
           >
             <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
-          {avatar.avatar}
+              {avatar.avatar}
             </div>
             <p className="mt-3 text-base font-bold nunito group-hover:text-green-600">
               {avatar.name}
