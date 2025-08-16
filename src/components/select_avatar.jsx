@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
-import React, { useState } from "react";
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
@@ -61,7 +60,7 @@ export default function ChooseAvatar() {
     }
   };
 
-  if (isLogin === "loginPrompt") {
+  if (isLogin) {
     return <Login />;
   }
 

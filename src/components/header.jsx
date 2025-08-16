@@ -68,7 +68,7 @@ export default function Header() {
   // Login handler
   const handleLoginClick = () => {
     if (!storedEmail || !storedName) {
-      setIsLogin("loginPrompt");
+      setIsLogin(true);
     }
   };
 
