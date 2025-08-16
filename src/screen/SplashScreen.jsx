@@ -90,7 +90,6 @@ function BeeScene({ mousePosition }) {
  
 function SplashScreen({ setLoadAvatars }) {
   const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
-  //const colors = ["#76DE48", "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#FF7B54"];
   const colors = ["#797979"];
   const words = ["Great", "Super", "Prime", "Elite", "Topaz", "Happy"];
   const [wordIndex, setWordIndex] = React.useState(0);
@@ -152,7 +151,7 @@ function SplashScreen({ setLoadAvatars }) {
         }}
 
       >
-        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito text-black pt-20 z-2">
+        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito text-black  z-2">
           <motion.h1
             className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
             initial={{ opacity: 0, y: -40 }}
@@ -213,7 +212,7 @@ function SplashScreen({ setLoadAvatars }) {
           </p>
 
           <button
-            className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow z-3"
+            className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-75"
             onClick={() => {
               requestMicrophonePermission();
               setLoadAvatars(true);
