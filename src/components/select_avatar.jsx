@@ -1,10 +1,12 @@
+import React, { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
 import React, { useState } from "react";
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
 import sita from "../assets/2D/sita.svg";
 import Login from "./login";
-import ChatScreen from "../features/screens/ChatScreen";
+import ChatScreen from "../features/screens/ChatScreen.jsx";
 import { apiService } from "../Service/apiService";
 import { POST_url } from "../connection/connection ";
 
@@ -17,6 +19,7 @@ const avatars = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
+  const { isLogin } = useContext(AuthContext);
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
   const handleSelect = async (avatar) => {
@@ -57,6 +60,10 @@ export default function ChooseAvatar() {
       console.error("Session API Failed:", error);
     }
   };
+
+  if (isLogin === "loginPrompt") {
+    return <Login />;
+  }
 
   if (loadChatscreen === "login") {
     return <Login avatar={selectedAvatar} onLoginSuccess={createSession} />;

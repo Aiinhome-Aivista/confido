@@ -8,8 +8,9 @@ import settingsIcon from "../assets/icons/settings_icon.svg";
 import signinIcon from "../assets/icons/signin_icon.svg";
 import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
-
 import { GET_url } from "../connection/connection .jsx";
+import { useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
 
 
 export default function Header() {
@@ -21,25 +22,23 @@ export default function Header() {
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
   const storedEmail = storedUser.email || "";
-
+  const { setIsLogin } = useContext(AuthContext);
   // Fetch languages on mount
-  
-  
 
-      useEffect(() => {
-        const fetchLanguages = async () => {
-          const res = await apiService({
-            url: GET_url.languages,
-            method: "GET",
-          });
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      const res = await apiService({
+        url: GET_url.languages,
+        method: "GET",
+      });
 
-          if (!res.error && res.status && Array.isArray(res.data)) {
-            setLanguages(res.data.map(lang => lang.language_name));
-          }
-        };
+      if (!res.error && res.status && Array.isArray(res.data)) {
+        setLanguages(res.data.map(lang => lang.language_name));
+      }
+    };
 
-        fetchLanguages();
-      }, []);
+    fetchLanguages();
+  }, []);
 
   // Logout handler
   const handleLogout = async () => {
@@ -69,7 +68,7 @@ export default function Header() {
   // Login handler
   const handleLoginClick = () => {
     if (!storedEmail || !storedName) {
-      navigate("/login");
+      setIsLogin("loginPrompt");
     }
   };
 
