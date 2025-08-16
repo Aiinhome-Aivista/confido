@@ -137,8 +137,6 @@ export default function Login() {
           Login here
         </p>
 
-        {/* Social buttons */}
-         {/* Social buttons */}
         <div className="flex space-x-8">
           <button
             style={socialButtonStyle}
