@@ -10,7 +10,7 @@ function ChatScreen() {
       </div>
       <div className="w-6/8 px-3">
         <div className="flex justify-center">
-          <hr className='text-lg text-black opacity-20 w-[100%]' />
+          <hr className='text-lg opacity-20 w-[100%]' />
         </div>
         <ChatSectionText />
       </div>

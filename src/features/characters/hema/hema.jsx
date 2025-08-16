@@ -24,14 +24,19 @@ const corresponding = {
 
 export const Hema = React.memo((props) => {
 
-  const {playAudio, script} = useControls({
+  useEffect(() => {
+    console.log("Hema component was called and mounted 1 time.");
+    console.trace("Mount stack trace:");
+  }, []); // Empty array ensures this runs only once
+
+  const { playAudio, script } = useControls({
     playAudio: false,
-    script: {value: "welcome", options: ["welcome"]},
+    script: { value: "welcome", options: ["welcome"] },
 
   })
 
-  const audio = useMemo(()=> new Audio(`/characters/hema/audio/${script}.mp3`), [script]);
-  const jsonFile = useLoader(THREE.FileLoader, `/characters/hema/audio/${script}.json` );
+  const audio = useMemo(() => new Audio(`/characters/hema/audio/${script}.mp3`), [script]);
+  const jsonFile = useLoader(THREE.FileLoader, `/characters/hema/audio/${script}.json`);
   const lipSync = JSON.parse(jsonFile);
   const { scene } = useGLTF('/characters/hema/model/hema.glb');
   const { animations: IdleAnimation } = useFBX('/characters/hema/animations/Standing Idle.fbx');
@@ -52,21 +57,21 @@ export const Hema = React.memo((props) => {
   const blinkInterval = useRef();
   const blinkTimeout = useRef();
 
-  useFrame(()=>{
+  useFrame(() => {
     const currentAudioTime = audio.currentTime;
-    for(let i = 0; i <lipSync.mouthCues.length; i++){
-       const mouthCue = lipSync.mouthCues[i]
-       if(currentAudioTime >= mouthCue.start && currentAudioTime<= mouthCue.end){
-          console.log(mouthCue.value);
-       }
+    for (let i = 0; i < lipSync.mouthCues.length; i++) {
+      const mouthCue = lipSync.mouthCues[i]
+      if (currentAudioTime >= mouthCue.start && currentAudioTime <= mouthCue.end) {
+        console.log(mouthCue.value);
+      }
     }
   })
 
   // Alternative blinking using scale animation
   useEffect(() => {
-    if(playAudio){
+    if (playAudio) {
       audio.play();
-    } else{
+    } else {
       audio.pause();
     }
   }, [playAudio, script]);
@@ -76,7 +81,7 @@ export const Hema = React.memo((props) => {
     nodes.Wolf3D_Head.morphTargetInfluences[nodes.Wolf3D_Head.morphTargetDictionary["viseme_O"]] = 1;
     nodes.Wolf3D_Teeth.morphTargetInfluences[nodes.Wolf3D_Teeth.morphTargetDictionary["viseme_O"]] = 1
   }, []);
-  
+
 
   useEffect(() => {
     const blink = () => {
@@ -84,18 +89,18 @@ export const Hema = React.memo((props) => {
       console.log("Blink")
       const blinkDuration = 0.2; // seconds
       const startTime = Date.now();
-      
+
       const animateBlink = () => {
         const elapsed = (Date.now() - startTime) / 1000;
         const progress = Math.min(elapsed / blinkDuration, 1);
-        
+
         // Create a smooth blink effect using scale
         const scaleY = Math.sin(progress * Math.PI) * 0.1 + 0.9; // Scales between 0.9 and 1.1
-        
+
         // Apply scale to eyes
         eyeLeftRef.current.scale.y = scaleY;
         eyeRightRef.current.scale.y = scaleY;
-        
+
         if (progress < 1) {
           requestAnimationFrame(animateBlink);
         } else {
@@ -104,7 +109,7 @@ export const Hema = React.memo((props) => {
           eyeRightRef.current.scale.y = 1;
         }
       };
-      
+
       requestAnimationFrame(animateBlink);
     };
 
@@ -135,16 +140,16 @@ export const Hema = React.memo((props) => {
   }, [eyeLeftRef.current, eyeRightRef.current]);
 
   // Animation controller
-// useEffect(() => {
-//   if (animation === "Waving") {
-//     const action = actions?.[animation];
-//     if (action) {
-//       action.reset().fadeIn(0.5).play().setLoop(THREE.LoopOnce, 1);
-//       action.clampWhenFinished = true;
-//       action.onFinish = () => setAnimation("Idle");
-//     }
-//   }
-// }, [animation, actions]);
+  // useEffect(() => {
+  //   if (animation === "Waving") {
+  //     const action = actions?.[animation];
+  //     if (action) {
+  //       action.reset().fadeIn(0.5).play().setLoop(THREE.LoopOnce, 1);
+  //       action.clampWhenFinished = true;
+  //       action.onFinish = () => setAnimation("Idle");
+  //     }
+  //   }
+  // }, [animation, actions]);
 
   React.useEffect(() => {
     if (actions["Idle"]) {
@@ -152,25 +157,25 @@ export const Hema = React.memo((props) => {
     }
   }, [actions]);
 
-const handlePointerOver = () => {
-  if (actions["Waving"]) {
-    actions["Idle"]?.fadeOut(0.2);
-    actions["Waving"].reset().fadeIn(0.2).play();
-  }
-};
+  const handlePointerOver = () => {
+    if (actions["Waving"]) {
+      actions["Idle"]?.fadeOut(0.2);
+      actions["Waving"].reset().fadeIn(0.2).play();
+    }
+  };
 
-const handlePointerOut = () => {
-  if (actions["Waving"]) {
-    actions["Waving"].fadeOut(0.2);
-    actions["Idle"]?.reset().fadeIn(0.2).play();
-  }
-};
+  const handlePointerOut = () => {
+    if (actions["Waving"]) {
+      actions["Waving"].fadeOut(0.2);
+      actions["Idle"]?.reset().fadeIn(0.2).play();
+    }
+  };
 
 
 
 
   return (
-    <group {...props} dispose={null} ref={group}    onPointerOver={handlePointerOver}
+    <group {...props} dispose={null} ref={group} onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut} >
       <primitive object={nodes.Hips} />
       <skinnedMesh geometry={nodes.Wolf3D_Hair.geometry} material={materials.Wolf3D_Hair} skeleton={nodes.Wolf3D_Hair.skeleton} />
@@ -178,7 +183,7 @@ const handlePointerOut = () => {
       <skinnedMesh geometry={nodes.Wolf3D_Outfit_Bottom.geometry} material={materials.Wolf3D_Outfit_Bottom} skeleton={nodes.Wolf3D_Outfit_Bottom.skeleton} />
       <skinnedMesh geometry={nodes.Wolf3D_Outfit_Footwear.geometry} material={materials.Wolf3D_Outfit_Footwear} skeleton={nodes.Wolf3D_Outfit_Footwear.skeleton} />
       <skinnedMesh geometry={nodes.Wolf3D_Body.geometry} material={materials.Wolf3D_Body} skeleton={nodes.Wolf3D_Body.skeleton} />
-      <skinnedMesh 
+      <skinnedMesh
         ref={eyeLeftRef}
         name="EyeLeft"
         geometry={nodes.EyeLeft.geometry}
@@ -187,7 +192,7 @@ const handlePointerOut = () => {
         morphTargetDictionary={nodes.EyeLeft.morphTargetDictionary}
         morphTargetInfluences={nodes.EyeLeft.morphTargetInfluences}
       />
-      <skinnedMesh 
+      <skinnedMesh
         ref={eyeRightRef}
         name="EyeRight"
         geometry={nodes.EyeRight.geometry}
@@ -196,7 +201,7 @@ const handlePointerOut = () => {
         morphTargetDictionary={nodes.EyeRight.morphTargetDictionary}
         morphTargetInfluences={nodes.EyeRight.morphTargetInfluences}
       />
-      <skinnedMesh 
+      <skinnedMesh
         name="Wolf3D_Head"
         geometry={nodes.Wolf3D_Head.geometry}
         material={materials.Wolf3D_Skin}
