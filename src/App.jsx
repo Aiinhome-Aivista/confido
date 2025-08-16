@@ -11,9 +11,11 @@ function App() {
       <MouseClickSounds />
     <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
       <AnimatedBlobs/>
+     < div style={{ position: "relative", zIndex: 10 }}>
       <BrowserRouter>
         <Index />
       </BrowserRouter>
+    </div>
     </div>
     </>
   )
