@@ -20,18 +20,18 @@ const corresponding = {
   X: "viseme_PP",
 };
 
-export const Hema = React.memo((props) => {
+export const Subho = React.memo((props) => {
   const [playAudio, setPlayAudio] = useState(false);
   const [script, setScript] = useState("welcome");
 
   const { scene } = useGLTF(
-    "/characters/hema/model/6895bab8ce2240ac4ff74492.glb"
+    "/characters/subho/model/68a065600e2041914e3644c0.glb"
   );
   const { animations: IdleAnimation } = useFBX(
-    "/characters/hema/animations/Standing Idle.fbx"
+    "/characters/subho/animations/Standing Idle.fbx"
   );
   const { animations: Waving } = useFBX(
-    "/characters/hema/animations/Waving.fbx"
+    "/characters/subho/animations/Waving.fbx"
   );
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
@@ -291,4 +291,4 @@ export const Hema = React.memo((props) => {
   );
 });
 
-useGLTF.preload("/characters/hema/model/6895bab8ce2240ac4ff74492.glb");
+useGLTF.preload("/characters/subho/model/68a065600e2041914e3644c0.glb");

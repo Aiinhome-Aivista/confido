@@ -66,7 +66,7 @@ function Bee({ mousePosition }) {
     beeRef.current.position.y += (targetY - beeRef.current.position.y) * speed;
 
     // Rotation for a "turning" effect
-    beeRef.current.rotation.z = (targetY - beeRef.current.position.y) * 0.1;
+    beeRef.current.rotation.z = (targetY - beeRef.current.position.y) * 0.9;
     beeRef.current.rotation.y += delta * 8;
   });
 
