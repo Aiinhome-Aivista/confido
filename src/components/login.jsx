@@ -75,7 +75,7 @@ export default function Login() {
   }, []);
   const socialButtonStyle = {
     borderRadius: "50%",
-    backgroundColor: "rgb(243, 244, 246)",
+    //backgroundColor: "rgb(243, 244, 246)",
     transform: "scale(1)",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
     willChange: "transform, background-color, box-shadow",
@@ -123,7 +123,6 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center ">
       <Header />
       <div className="flex flex-col items-center space-y-6">
-        {/* Avatar */}
         <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
           <img
             src={avatar.img}
@@ -131,9 +130,7 @@ export default function Login() {
             className="w-full h-full object-cover scale-[2] translate-y-20"
           />
         </div>
-
-        {/* Login label */}
-        <p className="text-base font-extrabold text-gray-800 nunito">
+        <p className="text-base font-extrabold nunito">
           Login here
         </p>
 
