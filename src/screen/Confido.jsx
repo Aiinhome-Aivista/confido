@@ -5,6 +5,7 @@ import ChooseAvatar from '../components/select_avatar';
 
 function Confido() {
     const [loadAvatars, setLoadAvatars] = useState(false)
+
     return (
         <div className='h-[calc(100vh)] w-[calc(100vw)] p-[0.5rem]'>
             <div className='h-1/10'>

@@ -6,10 +6,11 @@ import { signInWithPopup } from "firebase/auth";
 import Header from "./header";
 import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
+import ChatScreen from "../features/screens/ChatScreen.jsx";
 
 export default function Login() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const [redirectToChat, setRedirectToChat] = useState(false)
 
   const avatar = location.state?.avatar || {
     name: "Default",
@@ -53,7 +54,7 @@ export default function Login() {
           console.log("Returning user:", data.message);
         }
 
-        navigate("/chat");
+        setRedirectToChat(true)
       } else {
         console.error("Login failed:", data.message);
         alert("Login failed: " + data.message);
@@ -119,9 +120,12 @@ export default function Login() {
     e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.08)";
   };
 
+  if (redirectToChat) {
+    return <ChatScreen />;
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <Header />
+    <>
       <div className="flex flex-col items-center space-y-6">
         {/* Avatar */}
         <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
@@ -138,7 +142,7 @@ export default function Login() {
         </p>
 
         {/* Social buttons */}
-         {/* Social buttons */}
+        {/* Social buttons */}
         <div className="flex space-x-8">
           <button
             style={socialButtonStyle}
@@ -181,6 +185,6 @@ export default function Login() {
           </p>
         )} */}
       </div>
-    </div>
+    </>
   );
 }

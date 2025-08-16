@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
+
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
 import sita from "../assets/2D/sita.svg";
 import Login from "./login";
+import ChatScreen from "../features/screens/ChatScreen.jsx";
 
 const avatars = [
   { name: "Ravi", img: ravi },
@@ -14,6 +17,7 @@ const avatars = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
+  const { isLogin } = useContext(AuthContext);
 
   const handleSelect = (avatar) => {
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
@@ -25,6 +29,10 @@ export default function ChooseAvatar() {
       setLoadChatscreen("login")
     }
   };
+
+  if (isLogin === "loginPrompt") {
+    return <Login />;
+  }
 
   if (loadChatscreen === "login") {
     return <Login />;
