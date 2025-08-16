@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
-import { auth, googleProvider } from "../firebaseConfig"; // adjusted path
-import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider, facebookProvider } from "../firebaseConfig";
+import { signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
 import Header from "./header";
 
 export default function Login() {
@@ -15,31 +15,55 @@ export default function Login() {
   };
 
   const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const userEmail = result.user.email;
-      setEmail(userEmail);
-      localStorage.setItem("email", userEmail);
+      const userName = result.user.displayName || "User";
 
-      // Redirect after login
-      navigate("/chat"); // make sure your route matches this path
+      setEmail(userEmail);
+      setDisplayName(userName);
+
+      localStorage.setItem("email", userEmail);
+      localStorage.setItem("displayName", userName);
+
+      navigate("/chat");
     } catch (error) {
       console.error("Google Sign-In Error:", error);
     }
   };
 
+  const handleFacebookLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const info = getAdditionalUserInfo(result);
+      const userEmail = result.user.email;
+      const userName = result.user.displayName || info?.profile?.name || "User";
+
+      setEmail(userEmail);
+      setDisplayName(userName);
+
+      localStorage.setItem("email", userEmail);
+      localStorage.setItem("displayName", userName);
+
+      navigate("/chat");
+    } catch (error) {
+      console.error("Facebook Sign-In Error:", error);
+    }
+  };
+
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
+    const storedName = localStorage.getItem("displayName");
+    if (storedEmail) setEmail(storedEmail);
+    if (storedName) setDisplayName(storedName);
   }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-        <Header />
+      <Header />
       <div className="flex flex-col items-center space-y-6">
         {/* Avatar */}
         <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
@@ -63,15 +87,18 @@ export default function Login() {
           >
             <FaGoogle className="text-gray-600" size={20} />
           </button>
-          <button className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
-            <FaFacebookF className="text-gray-300" size={20} />
+          <button
+            onClick={handleFacebookLogin}
+            className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-300 transition"
+          >
+            <FaFacebookF className="text-gray-600" size={20} />
           </button>
         </div>
 
-        {/* Show logged-in email */}
-        {email && (
+        {/* Show logged-in info */}
+        {(email || displayName) && (
           <p className="text-sm text-gray-600 mt-2">
-            Signed in as <strong>{email}</strong>
+            Signed in as <strong>{displayName || email}</strong>
           </p>
         )}
       </div>
