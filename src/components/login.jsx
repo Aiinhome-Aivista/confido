@@ -76,7 +76,7 @@ export default function Login() {
   }, []);
   const socialButtonStyle = {
     borderRadius: "50%",
-    backgroundColor: "rgb(243, 244, 246)",
+    //backgroundColor: "rgb(243, 244, 246)",
     transform: "scale(1)",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
     willChange: "transform, background-color, box-shadow",
@@ -125,66 +125,61 @@ export default function Login() {
   }
 
   return (
-    <>
-      <div className="flex flex-col items-center space-y-6">
-        {/* Avatar */}
-        <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
-          <img
-            src={avatar.img}
-            alt={avatar.name}
-            className="w-full h-full object-cover scale-[2] translate-y-20"
+    <div className="flex flex-col items-center justify-center h-[100%] pb-[calc(20vh)]">
+      <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
+        <img
+          src={avatar.img}
+          alt={avatar.name}
+          className="w-full h-full object-cover scale-[2] translate-y-20"
+        />
+      </div>
+      <p className="text-base font-extrabold py-[calc(1vh)]">
+        Login here
+      </p>
+
+      {/* Social buttons */}
+      {/* Social buttons */}
+      <div className="flex space-x-8">
+        <button
+          style={socialButtonStyle}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleGoogleLogin}
+        >
+          <FaGoogle
+            style={{
+              color: "rgb(107, 114, 128)",
+              fontSize: "20px",
+              pointerEvents: "none",
+              willChange: "color",
+              transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            }}
           />
-        </div>
-
-        {/* Login label */}
-        <p className="text-base font-extrabold text-gray-800 nunito">
-          Login here
-        </p>
-
-        {/* Social buttons */}
-        {/* Social buttons */}
-        <div className="flex space-x-8">
-          <button
-            style={socialButtonStyle}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={handleGoogleLogin}
-          >
-            <FaGoogle
-              style={{
-                color: "rgb(107, 114, 128)",
-                fontSize: "20px",
-                pointerEvents: "none",
-                willChange: "color",
-                transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-              }}
-            />
-          </button>
-          <button
-            style={socialButtonStyle}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <FaFacebookF
-              style={{
-                color: "rgb(107, 114, 128)",
-                fontSize: "20px",
-                pointerEvents: "none",
-                willChange: "color",
-                transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-              }}
-            />
-          </button>
-        </div>
+        </button>
+        <button
+          style={socialButtonStyle}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <FaFacebookF
+            style={{
+              color: "rgb(107, 114, 128)",
+              fontSize: "20px",
+              pointerEvents: "none",
+              willChange: "color",
+              transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            }}
+          />
+        </button>
+      </div>
 
 
-        {/* Show logged-in email */}
-        {/* {email && (
+      {/* Show logged-in email */}
+      {/* {email && (
           <p className="text-sm text-gray-600 mt-2">
             Signed in as <strong>{email}</strong>
           </p>
         )} */}
-      </div>
-    </>
+    </div>
   );
 }

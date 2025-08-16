@@ -4,7 +4,7 @@ import ChatSectionText from './Component/ChatSectionText';
 
 function ChatScreen() {
   return (
-    <>
+    <div className="flex h-[100%]">
       <div className='w-2/8'>
         <ChatSectionAvatar />
       </div>
@@ -14,7 +14,7 @@ function ChatScreen() {
         </div>
         <ChatSectionText />
       </div>
-    </>
+    </div>
 
   )
 }

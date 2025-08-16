@@ -74,7 +74,7 @@ export default function ChooseAvatar() {
 
   return (
 
-    <div className="min-h-screen w-full flex flex-col items-center justify-center">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center pb-[calc(22vh)]">
       <h1 className="text-2xl md:text-3xl font-bold mb-8 ">
         Choose your avatar
       </h1>
