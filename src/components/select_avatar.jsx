@@ -4,7 +4,6 @@ import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
 import sita from "../assets/2D/sita.svg";
-import Login from "./login";
 import ChatScreen from "../features/screens/ChatScreen.jsx";
 import { apiService } from "../Service/apiService";
 import { POST_url } from "../connection/connection ";
@@ -29,7 +28,7 @@ const avatars = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { isLogin, setSelectedAvatar, setAvatarSpeech
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, 
  } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
@@ -47,7 +46,7 @@ export default function ChooseAvatar() {
       setLoadChatscreen("chatscreen");
     } else {
       // Not logged in → go to login
-      setLoadChatscreen("login");
+      setOpenLoginModal(true);
     }
   };
 
@@ -89,16 +88,8 @@ export default function ChooseAvatar() {
     }
   };
 
-  if (isLogin) {
-    return <Login />;
-  }
-
-  if (loadChatscreen === "login") {
-    return <Login onLoginSuccess={createSession} />;
-  }
-
   if (loadChatscreen === "chatscreen") {
-    return <ChatScreen />;
+    return <ChatScreen onLoginSuccess={createSession} />;
   }
 
 

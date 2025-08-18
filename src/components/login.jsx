@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
-import { auth, googleProvider } from "../firebaseConfig"; // adjusted path
-import { signInWithPopup } from "firebase/auth";
-import Header from "./header";
+import { auth, googleProvider, facebookProvider } from "../firebaseConfig";
+import { signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
 import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
-import ChatScreen from "../features/screens/ChatScreen.jsx";
+import ChooseAvatar from "../components/select_avatar.jsx";
 import { SubhoExperience } from "../features/characters/subho/subhoExperience.jsx";
 import { Experience } from "../features/characters/hema/experience.jsx";
 import { SitaExperience } from "../features/characters/sita/sitaExperience.jsx";
@@ -25,6 +24,7 @@ export default function Login() {
   };
 
   const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   const handleGoogleLogin = async () => {
     try {
@@ -72,13 +72,61 @@ export default function Login() {
     }
   };
 
+  const handleFacebookLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const info = getAdditionalUserInfo(result);
+      const userEmail = "null";
+      const userName = result.user.displayName || info?.profile?.name || "User";
+      const loginType = "facebook";
+
+      // Use apiService instead of fetch
+      const data = await apiService({
+        url: POST_url.login,
+        method: "POST",
+        data: {
+          name: userName,
+          email: userEmail,
+          loginType: loginType,
+        },
+      });
+
+      if (data.status && (data.statusCode === 201 || data.statusCode === 200)) {
+        const userData = {
+          email: data.data.email,
+          name: data.data.name,
+          user_id: data.data.user_id,
+          loginType: loginType
+        };
+
+        // Store all data as one JSON string
+        sessionStorage.setItem("user", JSON.stringify(userData));
+
+        if (data.statusCode === 201) {
+          console.log("First-time login:", data.message);
+        } else if (data.statusCode === 200) {
+          console.log("Returning user:", data.message);
+        }
+
+        setRedirectToChat(true)
+      } else {
+        console.error("Login failed:", data.message);
+        alert("Login failed: " + data.message);
+      }
+    } catch (error) {
+      console.error("Facebook Sign-In Error:", error);
+    }
+  };
 
 
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem("email");
+    const storedName = sessionStorage.getItem("displayName");
     if (storedEmail) {
       setEmail(storedEmail);
+      if (storedName) setDisplayName(storedName);
+
     }
   }, []);
   const socialButtonStyle = {
@@ -132,7 +180,7 @@ export default function Login() {
   };
 
   if (redirectToChat) {
-    return <ChatScreen />;
+    return <ChooseAvatar />;
   }
 
   const renderAvatar = () => {
@@ -182,6 +230,7 @@ export default function Login() {
           />
         </button>
         <button
+          onClick={handleFacebookLogin}
           style={socialButtonStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -203,7 +252,7 @@ export default function Login() {
       {/* Show logged-in email */}
       {/* {email && (
           <p className="text-sm text-gray-600 mt-2">
-            Signed in as <strong>{email}</strong>
+            Signed in as <strong>{displayName || email}</strong>
           </p>
         )} */}
     </div>
