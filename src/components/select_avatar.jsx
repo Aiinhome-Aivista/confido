@@ -71,6 +71,14 @@ export default function ChooseAvatar() {
         console.log("Session Created:", data);
         sessionStorage.setItem("session", JSON.stringify(data));
 
+        // ✅ Save only sessionId separately
+        if (data.data?.session_id || data.data?.sessionId) {
+          const sid = data.data.session_id || data.data.sessionId;
+          sessionStorage.setItem("sessionId", sid);
+        } else {
+          sessionStorage.setItem("sessionId", sessionId); // fallback to generated
+        }
+
         // Store dynamic first AI message globally
         setChatSession([
           {
