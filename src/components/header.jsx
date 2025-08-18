@@ -23,8 +23,10 @@ export default function Header() {
   const storedName = storedUser.name || "";
   const storedEmail = storedUser.email || "";
   const { setIsLogin } = useContext(AuthContext);
-  // Fetch languages on mount
+  const [selectedLanguage, setSelectedLanguage] = useState(sessionStorage.getItem("selectedLanguage") || "");
 
+
+  // Fetch languages on mount
   useEffect(() => {
     const fetchLanguages = async () => {
       const res = await apiService({
@@ -33,12 +35,26 @@ export default function Header() {
       });
 
       if (!res.error && res.status && Array.isArray(res.data)) {
-        setLanguages(res.data.map(lang => lang.language_name));
+        setLanguages(res.data.map((lang) => ({
+          id: lang.language_id,
+          name: lang.language_name,
+        })));
+
       }
     };
 
     fetchLanguages();
   }, []);
+
+  // 🔹 Restore saved language on mount
+  useEffect(() => {
+    const savedLang = sessionStorage.getItem("selectedLanguage");
+    if (savedLang) {
+      setSelectedLanguage(JSON.parse(savedLang));
+    }
+  }, []);
+
+
 
   // Logout handler
   const handleLogout = async () => {
@@ -133,12 +149,20 @@ export default function Header() {
                       Logout
                     </div>
                   )}
-
                   {item.options.length > 0 && (
                     <div className="icon-options">
                       {item.options.map((opt, i) => (
-                        <div key={i} className="icon-option">
-                          {opt}
+                        <div
+                          key={i}
+                          className="icon-option"
+                          onClick={() => {
+                            if (item.id === "language") {
+                              setSelectedLanguage(opt); 
+                              sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
+                            }
+                          }}
+                        >
+                          {opt.name}
                         </div>
                       ))}
                     </div>
