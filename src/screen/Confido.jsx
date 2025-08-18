@@ -10,7 +10,7 @@ function Confido() {
     const { isLogin } = useContext(AuthContext);
 
     return (
-        <div className='h-[calc(100vh)] w-[calc(100vw)] p-[0.5rem]'>
+        <div className='h-[calc(100vh)] w-[calc(100vw)]'>
             <div className='h-1/10'>
                 <Header />
             </div>

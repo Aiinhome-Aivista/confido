@@ -26,8 +26,10 @@ function ChatSectionAvatar() {
   };
 
   return (
-    <div className='flex items-end h-[100%]'>
-      {renderAvatar()}
+    <div className='flex items-end h-[100%] z-1 -mr-[calc(50%)]'>
+      <div className='h-[100%] w-100%'>
+        {renderAvatar()}
+      </div>
     </div>
   )
 }
