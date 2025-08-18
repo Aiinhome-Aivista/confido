@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
@@ -12,6 +12,10 @@ import { RaviExperience } from "../features/characters/ravi/raviExperience";
 import { SitaExperience } from "../features/characters/sita/sitaExperience";
 import { SubhoExperience } from "../features/characters/subho/subhoExperience";
 import { Experience } from "../features/characters/hema/experience";
+import {
+  playWelcomeWithDelay,
+  cancelWelcomeMessage
+} from "../utils/voiceUtils.js";
 
 const avatars = [
   { name: "Ravi", img: ravi, avatar: <RaviExperience /> },
@@ -26,8 +30,12 @@ const avatars = [
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
   const { isLogin, setSelectedAvatar } = useContext(AuthContext);
+  const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
+    // Cancel any pending hover voice
+    cancelWelcomeMessage(hoverTimeoutRef.current);
+
     setSelectedAvatar(avatar.name);
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
@@ -40,6 +48,20 @@ export default function ChooseAvatar() {
       // Not logged in → go to login
       setLoadChatscreen("login");
     }
+  };
+
+  const handleAvatarHover = (avatarName) => {
+    // Cancel any existing timeout
+    cancelWelcomeMessage(hoverTimeoutRef.current);
+
+    // Start new timeout for 3 second delay
+    hoverTimeoutRef.current = playWelcomeWithDelay(avatarName, 1000);
+  };
+
+  const handleAvatarLeave = () => {
+    // Cancel the pending voice when mouse leaves
+    cancelWelcomeMessage(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = null;
   };
 
   const createSession = async (user, avatar) => {
@@ -87,10 +109,12 @@ export default function ChooseAvatar() {
         Choose your avatar
       </h1>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-        {avatars.map((avatar, index) => (
+        {avatars.map((avatar) => (
           <div
-            key={avatar.id}
+            key={avatar.name}
             onClick={() => handleSelect(avatar)}
+            onMouseEnter={() => handleAvatarHover(avatar.name)}
+            onMouseLeave={handleAvatarLeave}
             className="flex flex-col items-center cursor-pointer group"
           >
             <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
