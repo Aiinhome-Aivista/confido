@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import SettingsVoiceRoundedIcon from '@mui/icons-material/SettingsVoiceRounded';
 import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -9,13 +9,14 @@ import { chatSession } from "../../../data/data";
 import { formatMessage } from "./textFormatter";
 import { greeting } from "../../../Service/greeting";
 import { aiResponse } from "../../../Service/aiResponse";
+import { AuthContext } from "../../../common/helper/AuthContext";
 
 const ChatSectionText = ({
   isTerminated,
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-
+  const {setAvatarSpeech} = useContext(AuthContext);
   const [session, setSession] = useState([chatSession[0]]);
   const [sessionController, setSessionController] = useState(0);
   const [showNewSessionBtn, setShowNewSessionBtn] = useState(false);
@@ -223,6 +224,7 @@ const ChatSectionText = ({
 
     return new Promise((resolve) => {
       setSpeakingText(message);
+      setAvatarSpeech(message);
       const utter = new SpeechSynthesisUtterance(message);
       utter.onend = () => {
         startInactivityTimer();
