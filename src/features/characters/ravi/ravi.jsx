@@ -8,6 +8,7 @@ import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 import { SkeletonUtils } from "three-stdlib";
 import * as THREE from "three";
 import { AuthContext } from "../../../common/helper/AuthContext";
+import { createVoiceUtterance } from "../../../utils/voiceUtils";
 
 const corresponding = {
   A: "viseme_PP",
@@ -23,7 +24,7 @@ const corresponding = {
 
 export const Ravi = React.memo((props) => {
 
-   const {  greeting, avatarSpeech, setAvatarSpeech } = useContext(AuthContext)
+   const {  greeting, avatarSpeech, setAvatarSpeech, selectedAvatar } = useContext(AuthContext)
   const [playAudio, setPlayAudio] = useState(false);
   const [script, setScript] = useState("welcome");
 
@@ -61,44 +62,28 @@ export const Ravi = React.memo((props) => {
 
   const voiceType = ["oldMan", "youngMan", "oldWoman", "youngWoman"];
   const selectedVoice = (value, text) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    /**
-     * for adultMan rate = .9 and pitch = .8
-     * for adultWoman rate = .8 and pitch = 1.1
-     * for oldMan rate = .7 and pitch = .6
-     * for oldWoman rate = .7 and pitch = .9
-     */
-    utterance.lang = "en-US";
-    utterance.rate = 0.9;
-    utterance.pitch = 0.8;
-    switch (value) {
-      case " adultMan":
-        utterance.rate = 0.9;
-        utterance.pitch = 0.8;
-
-        break;
-      case "oldWoman":
-        utterance.rate = 0.7;
-        utterance.pitch = 0.9;
-        break;
-
-      default:
-        break;
-    }
-
-    utterance.onend = () => {
-      clearInterval(lipSyncTimer.current);
-      currentViseme.current = null;
-    };
-
-    speechSynthesis.speak(utterance);
+  
+     const utterance  =  createVoiceUtterance(text, "Ravi");
+ 
+ 
+     /**
+      * for adultMan rate = .9 and pitch = .8
+      * for adultWoman rate = .8 and pitch = 1.1
+      * for oldMan rate = .7 and pitch = .6
+      * for oldWoman rate = .7 and pitch = .9
+      */
+  
+   
+     utterance.onend = () => {
+       clearInterval(lipSyncTimer.current);
+       currentViseme.current = null;
+     };
+ 
+     speechSynthesis.speak(utterance);
   };
 
   const startlipSyncFromText = (text) => {
-    if (speechSynthesis.speaking) {
-      // Already speaking → don't start again
-      return;
-    }
+    selectedVoice("adultMan", text);
 
     const visemes = Object.values(corresponding);
     const totalSteps = text.length * 2;
@@ -106,12 +91,6 @@ export const Ravi = React.memo((props) => {
 
     if (lipSyncTimer.current) clearInterval(lipSyncTimer.current);
 
-    // 🔊 Speak text as audio
-
-    // pick a voice (optional)
-    selectedVoice("adultMan", text);
-
-    // When finished speaking → clear visemes + stop lipSync
 
     // 👄 Animate visemes while speaking
     lipSyncTimer.current = setInterval(() => {
@@ -204,7 +183,11 @@ export const Ravi = React.memo((props) => {
   // ---------------------------
 
   useEffect(() => {
+     if(selectedAvatar == "Ravi"){
+      setScript("welcome");
       startlipSyncFromText(avatarSpeech);
+      }
+    
   }, [avatarSpeech])
   
 
@@ -217,10 +200,10 @@ export const Ravi = React.memo((props) => {
       setScript("welcome");
 
       
-      // if(avatarSpeech == ""){
-      //   startlipSyncFromText("Hi I am Ravi, your personal conversation buddy ");
+      if(avatarSpeech == "Hi I am Ravi. Your personal conversation buddy"){
+        startlipSyncFromText("Hi I am Ravi, your personal conversation buddy ");
         
-      // }
+      }
     
       
     }

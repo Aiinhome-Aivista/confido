@@ -23,7 +23,7 @@ const corresponding = {
 };
 
 export const Hema = React.memo((props) => {
-  const {greeting, avatarSpeech, setAvatarSpeech } = useContext(AuthContext);
+  const {greeting, avatarSpeech, setAvatarSpeech, selectedAvatar} = useContext(AuthContext);
   const [playAudio, setPlayAudio] = useState(false);
   const [script, setScript] = useState("welcome");
 
@@ -191,8 +191,12 @@ export const Hema = React.memo((props) => {
   // ---------------------------
   useEffect(() => {
       console.log("avatarSpeech", avatarSpeech);
+
+      if(selectedAvatar == "Hema"){
       setScript("welcome");
       startlipSyncFromText(avatarSpeech);
+      }
+    
   }, [avatarSpeech])
   
 
@@ -205,7 +209,7 @@ export const Hema = React.memo((props) => {
       setScript("welcome");
 
       
-      if(avatarSpeech == ""){
+      if(avatarSpeech == "Hi I am Hema. Your personal conversation buddy"){
         startlipSyncFromText("Hi I am Hema, your personal conversation buddy ");
         
         
