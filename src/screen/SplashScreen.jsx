@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
@@ -66,7 +65,7 @@ function Bee({ mousePosition }) {
     beeRef.current.position.y += (targetY - beeRef.current.position.y) * speed;
 
     // Rotation for a "turning" effect
-    beeRef.current.rotation.z = (targetY - beeRef.current.position.y) * 0.1;
+    beeRef.current.rotation.z = (targetY - beeRef.current.position.y) * 0.9;
     beeRef.current.rotation.y += delta * 8;
   });
 
@@ -90,7 +89,6 @@ function BeeScene({ mousePosition }) {
  
 function SplashScreen({ setLoadAvatars }) {
   const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
-  //const colors = ["#76DE48", "#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#FF7B54"];
   const colors = ["#797979"];
   const words = ["Great", "Super", "Prime", "Elite", "Topaz", "Happy"];
   const [wordIndex, setWordIndex] = React.useState(0);
@@ -152,14 +150,14 @@ function SplashScreen({ setLoadAvatars }) {
         }}
 
       >
-        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito text-black pt-20 z-2">
+        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito    z-2">
           <motion.h1
             className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
             initial={{ opacity: 0, y: -40 }}
             animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <span className="text-black align-middle leading-[3.5rem] justify-center ml-20">
+            <span className="  align-middle leading-[3.5rem] justify-center ml-20">
               Say Hello to{" "}
             </span>
             <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[8ch] h-[4.5rem] md:h-[4.75rem]">
@@ -213,7 +211,7 @@ function SplashScreen({ setLoadAvatars }) {
           </p>
 
           <button
-            className="px-8 py-3 rounded-full bg-gray-200 text-black font-bold text-lg border-none cursor-pointer mb-8 shadow z-3"
+            className=" start-button px-8 py-3 rounded-full font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-75"
             onClick={() => {
               requestMicrophonePermission();
               setLoadAvatars(true);

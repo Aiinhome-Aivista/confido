@@ -20,18 +20,18 @@ const corresponding = {
   X: "viseme_PP",
 };
 
-export const Hema = React.memo((props) => {
+export const Ravi = React.memo((props) => {
   const [playAudio, setPlayAudio] = useState(false);
   const [script, setScript] = useState("welcome");
 
   const { scene } = useGLTF(
-    "/characters/hema/model/6895bab8ce2240ac4ff74492.glb"
+    "/characters/ravi/model/68a06329bf8e07103ad164bd.glb"
   );
   const { animations: IdleAnimation } = useFBX(
-    "/characters/hema/animations/Standing Idle.fbx"
+    "/characters/ravi/animations/Idle.fbx"
   );
   const { animations: Waving } = useFBX(
-    "/characters/hema/animations/Waving.fbx"
+    "/characters/ravi/animations/Waving.fbx"
   );
 
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
@@ -291,4 +291,4 @@ export const Hema = React.memo((props) => {
   );
 });
 
-useGLTF.preload("/characters/hema/model/6895bab8ce2240ac4ff74492.glb");
+useGLTF.preload("/characters/ravi/model/68a06329bf8e07103ad164bd.glb");
