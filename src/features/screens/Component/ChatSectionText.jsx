@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import SettingsVoiceRoundedIcon from '@mui/icons-material/SettingsVoiceRounded';
 import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -9,14 +9,20 @@ import { chatSession } from "../../../data/data";
 import { formatMessage } from "./textFormatter";
 import { greeting } from "../../../Service/greeting";
 import { aiResponse } from "../../../Service/aiResponse";
+import { AuthContext } from "../../../common/helper/AuthContext";
+import { createVoiceUtterance } from "../../../utils/voiceUtils";
+import { apiService } from "../../../Service/apiService";
+import { POST_url } from "../../../connection/connection ";
 
 const ChatSectionText = ({
   isTerminated,
   setIsTerminated,
   setIsRecorderActive,
 }) => {
+  const {setAvatarSpeech} = useContext(AuthContext);
+  const { selectedAvatar } = useContext(AuthContext);
 
-  const [session, setSession] = useState([chatSession[0]]);
+  // const [session, setSession] = useState([chatSession[0]]);
   const [sessionController, setSessionController] = useState(0);
   const [showNewSessionBtn, setShowNewSessionBtn] = useState(false);
   const [isAILoading, setIsAILoading] = useState(false);
@@ -27,11 +33,12 @@ const ChatSectionText = ({
   const userInputRef = useRef("");
   const inactivityTimer = useRef(null);
   const stageRef = useRef("language");
-  const [speakingText, setSpeakingText] = useState("");
-  const [avatarReading, setAvatarReading] = useState(false);
+  // const [speakingText, setSpeakingText] = useState("");
+  // const [avatarReading, setAvatarReading] = useState(false);
   const [isMicHovered, setIsMicHovered] = useState(false);
   const [isCameraHovered, setIsCameraHovered] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
+  const [session, setSession] = useState(chatSession);
 
 
 
@@ -43,6 +50,11 @@ const ChatSectionText = ({
     setSessionController(0);
     setCurrentIndex(0);
   };
+
+  // When ChatScreen mounts, refresh from latest chatSession
+  useEffect(() => {
+    setSession(chatSession);
+  }, []);
 
   useEffect(() => {
     if (isTerminated) {
@@ -89,131 +101,195 @@ const ChatSectionText = ({
     }
   }, [sessionController]);
 
+  // const handleUserMessage = async (text) => {
+  //   if (!text) return;
+  //   setIsMicActive(false);
+
+  //   // RESET timeout state on user input
+  //   clearTimeout(inactivityTimer.current);
+  //   sessionControllerRef.current = 0;
+  //   setSessionController(0);
+  //   const userMsg = {
+  //     role: "user",
+  //     message: text,
+  //     time: new Date().toLocaleTimeString(),
+  //   };
+
+  //   setSession((prev) => [...prev, userMsg]);
+  //   console.log("session", session);
+  //   setUserInput("");
+
+  //   // Stage 1: Language selection
+  //   if (stageRef.current === "language") {
+  //     let message = "";
+  //     let validLang = false;
+
+  //     if (text.toLowerCase().includes("english")) {
+  //       message =
+  //         "Great! Let's continue in English. Thank you for your response. Please share your name & email to continue.";
+  //       validLang = true;
+  //     } else if (text.toLowerCase().includes("বাংলা")) {
+  //       message =
+  //         "চমৎকার! চলুন বাংলায় চালিয়ে যাই। অনুগ্রহ করে আপনার নাম এবং ইমেল দিন।";
+  //       validLang = true;
+  //     } else if (
+  //       text.toLowerCase().includes("hindi") ||
+  //       text.toLowerCase().includes("हिंदी")
+  //     ) {
+  //       message = "बहुत बढ़िया! कृपया अपना नाम और ईमेल साझा करें।";
+  //       validLang = true;
+  //     } else {
+  //       message =
+  //         "Language not recognized. Please respond with English, বাংলা (Bangla), or हिंदी (Hindi).";
+  //     }
+
+  //     await speakAndAdd(message);
+
+  //     if (validLang) {
+  //       setLanguage(text.toLowerCase());
+  //       setConversationStage("awaitingDetails");
+  //       stageRef.current = "awaitingDetails";
+  //     }
+  //   }
+
+  //   // Stage 2: Awaiting name and email
+  //   else if (stageRef.current === "awaitingDetails") {
+  //     const nameMatch = text.match(/(?:my name is|i am)\s+([a-z\s]+)/i);
+  //     const emailMatch = text.match(
+  //       /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
+  //     );
+
+  //     if (nameMatch && emailMatch) {
+  //       const extractedName = nameMatch[1].trim();
+  //       const extractedEmail = emailMatch[0].trim();
+
+  //       setUserName(extractedName);
+  //       setUserEmail(extractedEmail);
+
+  //       const response = await greeting({ text: text });
+  //       setGreetingText(response);
+  //       console.log("greeting API response", response);
+
+  //       await speakAndAdd(
+  //         `Thank you, ${extractedName}. You're all set to proceed!`
+  //       );
+
+  //       if (response.summary === "User not found in Users table") {
+  //         await speakAndAdd(
+  //           "Please include both your name and a valid email correctly to continue."
+  //         );
+  //       } else {
+  //         setIsAILoading(true);
+  //         await new Promise((res) => setTimeout(res, 1500));
+  //         console.log("greetingText", greetingText);
+  //         await speakAndAdd(response.summary);
+
+  //         const jsonObject = {
+  //           companies: response.companies,
+  //           email: response.email,
+  //           first_name: response.first_name,
+  //           id: random4DigitID,
+  //           question: response.summary,
+  //         };
+
+  //         const aiResponseText = await aiResponse(jsonObject);
+
+  //         greetingTextRef.current = jsonObject;
+  //         setIsAILoading(false);
+  //         await speakAndAdd(aiResponseText.summary);
+
+  //         setConversationStage("chat");
+  //         stageRef.current = "chat";
+  //       }
+
+  //       // ✅ Set chat stage
+  //     } else {
+  //       await speakAndAdd(
+  //         "Please include both your name and a valid email to continue."
+  //       );
+  //     }
+  //   }
+
+  //   // Stage 3: Chat continues in loop
+  //   else if (stageRef.current === "chat") {
+  //     setIsAILoading(true);
+  //     await new Promise((res) => setTimeout(res, 1500));
+  //     console.log("greetingTextRef", greetingTextRef.current);
+  //     const jsonObject = {
+  //       companies: greetingTextRef.current.companies,
+  //       email: greetingTextRef.current.email,
+  //       first_name: greetingTextRef.current.first_name,
+  //       id: greetingTextRef.current.id,
+  //       chat_history: session,
+  //       question: text,
+  //     };
+  //     const aiRes = await aiResponse(jsonObject);
+  //     setIsAILoading(false);
+  //     await speakAndAdd(aiRes.summary);
+  //   }
+  // };
+
+  const sessionId = sessionStorage.getItem("sessionId");
+
   const handleUserMessage = async (text) => {
     if (!text) return;
     setIsMicActive(false);
 
-    // RESET timeout state on user input
+    // Reset inactivity timers (if any)
     clearTimeout(inactivityTimer.current);
     sessionControllerRef.current = 0;
     setSessionController(0);
+
+    // Add user message
     const userMsg = {
       role: "user",
       message: text,
       time: new Date().toLocaleTimeString(),
     };
-
     setSession((prev) => [...prev, userMsg]);
-    console.log("session", session);
     setUserInput("");
 
-    // Stage 1: Language selection
-    if (stageRef.current === "language") {
-      let message = "";
-      let validLang = false;
-
-      if (text.toLowerCase().includes("english")) {
-        message =
-          "Great! Let's continue in English. Thank you for your response. Please share your name & email to continue.";
-        validLang = true;
-      } else if (text.toLowerCase().includes("বাংলা")) {
-        message =
-          "চমৎকার! চলুন বাংলায় চালিয়ে যাই। অনুগ্রহ করে আপনার নাম এবং ইমেল দিন।";
-        validLang = true;
-      } else if (
-        text.toLowerCase().includes("hindi") ||
-        text.toLowerCase().includes("हिंदी")
-      ) {
-        message = "बहुत बढ़िया! कृपया अपना नाम और ईमेल साझा करें।";
-        validLang = true;
-      } else {
-        message =
-          "Language not recognized. Please respond with English, বাংলা (Bangla), or हिंदी (Hindi).";
-      }
-
-      await speakAndAdd(message);
-
-      if (validLang) {
-        setLanguage(text.toLowerCase());
-        setConversationStage("awaitingDetails");
-        stageRef.current = "awaitingDetails";
-      }
-    }
-
-    // Stage 2: Awaiting name and email
-    else if (stageRef.current === "awaitingDetails") {
-      const nameMatch = text.match(/(?:my name is|i am)\s+([a-z\s]+)/i);
-      const emailMatch = text.match(
-        /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
-      );
-
-      if (nameMatch && emailMatch) {
-        const extractedName = nameMatch[1].trim();
-        const extractedEmail = emailMatch[0].trim();
-
-        setUserName(extractedName);
-        setUserEmail(extractedEmail);
-
-        const response = await greeting({ text: text });
-        setGreetingText(response);
-        console.log("greeting API response", response);
-
-        await speakAndAdd(
-          `Thank you, ${extractedName}. You're all set to proceed!`
-        );
-
-        if (response.summary === "User not found in Users table") {
-          await speakAndAdd(
-            "Please include both your name and a valid email correctly to continue."
-          );
-        } else {
-          setIsAILoading(true);
-          await new Promise((res) => setTimeout(res, 1500));
-          console.log("greetingText", greetingText);
-          await speakAndAdd(response.summary);
-
-          const jsonObject = {
-            companies: response.companies,
-            email: response.email,
-            first_name: response.first_name,
-            id: random4DigitID,
-            question: response.summary,
-          };
-
-          const aiResponseText = await aiResponse(jsonObject);
-
-          greetingTextRef.current = jsonObject;
-          setIsAILoading(false);
-          await speakAndAdd(aiResponseText.summary);
-
-          setConversationStage("chat");
-          stageRef.current = "chat";
-        }
-
-        // ✅ Set chat stage
-      } else {
-        await speakAndAdd(
-          "Please include both your name and a valid email to continue."
-        );
-      }
-    }
-
-    // Stage 3: Chat continues in loop
-    else if (stageRef.current === "chat") {
+    try {
       setIsAILoading(true);
-      await new Promise((res) => setTimeout(res, 1500));
-      console.log("greetingTextRef", greetingTextRef.current);
-      const jsonObject = {
-        companies: greetingTextRef.current.companies,
-        email: greetingTextRef.current.email,
-        first_name: greetingTextRef.current.first_name,
-        id: greetingTextRef.current.id,
-        chat_history: session,
-        question: text,
+
+      // Call backend chat API
+      const payload = {
+        session_id: sessionId,   
+        time: "50 min",
+        user_input: text,
       };
-      const aiRes = await aiResponse(jsonObject);
+
+      const res = await apiService({
+        url: POST_url.chat,
+        method: "POST",
+        data: payload,
+      });
+
+      console.log("Chat API response:", res);
+
+      // Add AI response to session
+      if (res?.data?.message) {
+        setSession((prev) => [
+          ...prev,
+          {
+            role: "ai",
+            message: res.data.message,
+            time: new Date().toLocaleTimeString(),
+          },
+        ]);
+      }
+    } catch (err) {
+      console.error("Chat API Error:", err);
+      setSession((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          message: "Oops! Something went wrong. Please try again.",
+          time: new Date().toLocaleTimeString(),
+        },
+      ]);
+    } finally {
       setIsAILoading(false);
-      await speakAndAdd(aiRes.summary);
     }
   };
 
@@ -223,13 +299,19 @@ const ChatSectionText = ({
 
     return new Promise((resolve) => {
       setSpeakingText(message);
+
+      setAvatarSpeech(message);
       const utter = new SpeechSynthesisUtterance(message);
+
+      // Use avatar-specific voice configuration
+     
+
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
-      window.speechSynthesis.speak(utter);
+     
 
       setSession((prev) => [
         ...prev,
@@ -278,11 +360,11 @@ const ChatSectionText = ({
             {isAILoading && index === session.length - 1 && (
               <div className="mb-4 flex items-start">
                 <div className="max-w-[60%] flex items-start gap-3 px-4 py-3 rounded-t-3xl rounded-b-3xl text-xs ai-bg username animate-pulse">
-                  <img
+                  {/* <img
                     src={aiAvatar}
                     alt="AI"
                     className="w-7 h-7 ai-img rounded-full z-10 opacity-70"
-                  />
+                  /> */}
                   <div className="text-[#ccc] italic">Typing...</div>
                 </div>
               </div>
