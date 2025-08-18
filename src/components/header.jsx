@@ -157,16 +157,17 @@ export default function Header() {
                           className="icon-option"
                           onClick={() => {
                             if (item.id === "language") {
-                              setSelectedLanguage(opt); 
+                              setSelectedLanguage(opt);
                               sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
                             }
                           }}
                         >
-                          {opt.name}
+                          {typeof opt === "string" ? opt : opt.name}
                         </div>
                       ))}
                     </div>
                   )}
+
                 </div>
               </div>
             );
