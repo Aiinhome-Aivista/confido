@@ -217,10 +217,10 @@ export const Ravi = React.memo((props) => {
       setScript("welcome");
 
       
-      if(avatarSpeech == ""){
-        startlipSyncFromText("Hi I am Ravi, your personal conversation buddy ");
+      // if(avatarSpeech == ""){
+      //   startlipSyncFromText("Hi I am Ravi, your personal conversation buddy ");
         
-      }
+      // }
     
       
     }

@@ -10,6 +10,7 @@ import { formatMessage } from "./textFormatter";
 import { greeting } from "../../../Service/greeting";
 import { aiResponse } from "../../../Service/aiResponse";
 import { AuthContext } from "../../../common/helper/AuthContext";
+import { createVoiceUtterance } from "../../../utils/voiceUtils";
 
 const ChatSectionText = ({
   isTerminated,
@@ -17,6 +18,8 @@ const ChatSectionText = ({
   setIsRecorderActive,
 }) => {
   const {setAvatarSpeech} = useContext(AuthContext);
+  const { selectedAvatar } = useContext(AuthContext);
+
   const [session, setSession] = useState([chatSession[0]]);
   const [sessionController, setSessionController] = useState(0);
   const [showNewSessionBtn, setShowNewSessionBtn] = useState(false);
@@ -224,14 +227,19 @@ const ChatSectionText = ({
 
     return new Promise((resolve) => {
       setSpeakingText(message);
+
       setAvatarSpeech(message);
       const utter = new SpeechSynthesisUtterance(message);
+
+      // Use avatar-specific voice configuration
+     
+
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
-      window.speechSynthesis.speak(utter);
+     
 
       setSession((prev) => [
         ...prev,

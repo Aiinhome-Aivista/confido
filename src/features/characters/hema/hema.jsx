@@ -8,6 +8,7 @@ import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 import { SkeletonUtils } from "three-stdlib";
 import * as THREE from "three";
 import { AuthContext } from "../../../common/helper/AuthContext";
+import { createVoiceUtterance } from "../../../utils/voiceUtils";
 
 const corresponding = {
   A: "viseme_PP",
@@ -59,31 +60,19 @@ export const Hema = React.memo((props) => {
 
   const voiceType = ["oldMan", "youngMan", "oldWoman", "youngWoman"];
   const selectedVoice = (value, text) => {
-    const utterance = new SpeechSynthesisUtterance(text);
+    
+
+    const utterance  =  createVoiceUtterance(text, "Hema");
+
+
     /**
      * for adultMan rate = .9 and pitch = .8
      * for adultWoman rate = .8 and pitch = 1.1
      * for oldMan rate = .7 and pitch = .6
      * for oldWoman rate = .7 and pitch = .9
      */
-    utterance.lang = "en-US";
-    utterance.rate = 0.9;
-    utterance.pitch = 0.8;
-    switch (value) {
-      case " adultMan":
-        utterance.rate = 0.9;
-        utterance.pitch = 0.8;
-
-        break;
-      case "oldWoman":
-        utterance.rate = 0.7;
-        utterance.pitch = 0.9;
-        break;
-
-      default:
-        break;
-    }
-
+ 
+  
     utterance.onend = () => {
       clearInterval(lipSyncTimer.current);
       currentViseme.current = null;
@@ -218,6 +207,7 @@ export const Hema = React.memo((props) => {
       
       if(avatarSpeech == ""){
         startlipSyncFromText("Hi I am Hema, your personal conversation buddy ");
+        
         
       }
     
