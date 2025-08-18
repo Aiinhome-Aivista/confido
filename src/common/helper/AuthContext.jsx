@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
      const [currentVoiceType, setCurrentVoiceType] = useState("adultWoman");
     const [greeting, setGreeting] = useState(true);
     const [avatarSpeech, setAvatarSpeech] = useState("");
-        const [openLoginModal, setOpenLoginModal] = useState(false);
+    const [openLoginModal, setOpenLoginModal] = useState(false);
 
  
 
@@ -24,6 +24,8 @@ export function AuthProvider({ children }) {
             avatarSpeech, setAvatarSpeech,
              openLoginModal, setOpenLoginModal
         }}>
+
+            {children}
   
         </AuthContext.Provider>
     );
