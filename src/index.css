@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
 @import "tailwindcss";
 
@@ -7,7 +6,9 @@
 
 
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -32,16 +33,16 @@ html, body, #root {
   --input-icon-bgColor: rgba(0, 0, 0, 0.25);
   --msg-text-color: rgba(30, 30, 30);
   --msg-text-color-rgb: 30, 30, 30;
-  --button-bg-color:rgba(30, 30, 30, 0.07)
-  
+  --button-bg-color: rgba(30, 30, 30, 0.07)
 }
+
 .chat-avatar {
   height: 30rem;
   width: 15rem;
 }
 
 .ai-msg {
-background-color: var(--ai-msg-color);
+  background-color: var(--ai-msg-color);
 }
 
 .user-msg {
@@ -101,6 +102,20 @@ background-color: var(--ai-msg-color);
   display: none;
 }
 
+/* formatted message */
+.impact-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* .impact-card {
+  flex: 1 1 250px;
+  max-width: 300px;
+  min-width: 220px;
+ 
+} */
+
+
 
 /* .glass-card {
   backdrop-filter: blur(5rem);
@@ -145,6 +160,6 @@ background-color: var(--ai-msg-color);
     rgba(255, 255, 255, 0.3)
   );
 } */
-.start-button{
+.start-button {
   background-color: var(--button-bg-color);
 }
