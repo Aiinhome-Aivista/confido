@@ -73,13 +73,36 @@ export default function Login() {
     }
   };
 
+  const handleFacebookLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const info = getAdditionalUserInfo(result);
+      const userEmail = result.user.email;
+      const userName = result.user.displayName || info?.profile?.name || "User";
+
+      setEmail(userEmail);
+      setDisplayName(userName);
+
+     sessionStorage.setItem("email", userEmail);
+     sessionStorage.setItem("displayName", userName);
+
+       setRedirectToChat(true)
+    } catch (error) {
+      console.error("Facebook Sign-In Error:", error);
+    }
+  };
+
+
 
 
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem("email");
+     const storedName = sessionStorage.getItem("displayName");
     if (storedEmail) {
       setEmail(storedEmail);
+      if(storedName) setDisplayName(storedName);
+
     }
   }, []);
   const socialButtonStyle = {
@@ -183,6 +206,7 @@ export default function Login() {
           />
         </button>
         <button
+              onClick={handleFacebookLogin}
           style={socialButtonStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
