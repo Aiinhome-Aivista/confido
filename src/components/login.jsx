@@ -73,20 +73,47 @@ export default function Login() {
     }
   };
 
-  const handleFacebookLogin = async () => {
+ const handleFacebookLogin = async () => {
     try {
       const result = await signInWithPopup(auth, facebookProvider);
       const info = getAdditionalUserInfo(result);
-      const userEmail = result.user.email;
+      const userEmail ="null";
       const userName = result.user.displayName || info?.profile?.name || "User";
+      const loginType = "facebook";
 
-      setEmail(userEmail);
-      setDisplayName(userName);
+      // Use apiService instead of fetch
+      const data = await apiService({
+        url: POST_url.login,
+        method: "POST",
+        data: {
+          name: userName,
+          email: userEmail,
+          loginType: loginType,
+        },
+      });
 
-     sessionStorage.setItem("email", userEmail);
-     sessionStorage.setItem("displayName", userName);
+      if (data.status && (data.statusCode === 201 || data.statusCode === 200)) {
+        const userData = {
+          email: data.data.email,
+          name: data.data.name,
+          user_id: data.data.user_id,
+          loginType: loginType
+        };
 
-       setRedirectToChat(true)
+        // Store all data as one JSON string
+        sessionStorage.setItem("user", JSON.stringify(userData));
+
+        if (data.statusCode === 201) {
+          console.log("First-time login:", data.message);
+        } else if (data.statusCode === 200) {
+          console.log("Returning user:", data.message);
+        }
+
+        setRedirectToChat(true)
+      } else {
+        console.error("Login failed:", data.message);
+        alert("Login failed: " + data.message);
+      }
     } catch (error) {
       console.error("Facebook Sign-In Error:", error);
     }
