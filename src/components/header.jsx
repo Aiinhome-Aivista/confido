@@ -25,8 +25,6 @@ export default function Header() {
   const { setIsLogin } = useContext(AuthContext);
   const [selectedLanguage, setSelectedLanguage] = useState(sessionStorage.getItem("selectedLanguage") || "");
 
-
-  // Fetch languages on mount
   useEffect(() => {
     const fetchLanguages = async () => {
       const res = await apiService({
@@ -35,16 +33,24 @@ export default function Header() {
       });
 
       if (!res.error && res.status && Array.isArray(res.data)) {
-        setLanguages(res.data.map((lang) => ({
+        const langs = res.data.map((lang) => ({
           id: lang.language_id,
           name: lang.language_name,
-        })));
+        }));
 
+        setLanguages(langs);
+
+        // 🔹 if nothing stored, default to first (English)
+        if (!sessionStorage.getItem("selectedLanguage") && langs.length > 0) {
+          setSelectedLanguage(langs[0]);
+          sessionStorage.setItem("selectedLanguage", JSON.stringify(langs[0]));
+        }
       }
     };
 
     fetchLanguages();
   }, []);
+
 
   // 🔹 Restore saved language on mount
   useEffect(() => {
@@ -149,6 +155,7 @@ export default function Header() {
                       Logout
                     </div>
                   )}
+
                   {item.options.length > 0 && (
                     <div className="icon-options">
                       {item.options.map((opt, i) => (
@@ -167,6 +174,7 @@ export default function Header() {
                       ))}
                     </div>
                   )}
+
 
                 </div>
               </div>

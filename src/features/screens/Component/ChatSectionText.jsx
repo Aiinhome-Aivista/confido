@@ -11,6 +11,7 @@ import { greeting } from "../../../Service/greeting";
 import { aiResponse } from "../../../Service/aiResponse";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
+import TypingDots from "./TypingDots.jsx";
 
 const ChatSectionText = ({
   isTerminated,
@@ -96,134 +97,6 @@ const ChatSectionText = ({
       //setIsRecorderActive(false);
     }
   }, [sessionController]);
-
-  // const handleUserMessage = async (text) => {
-  //   if (!text) return;
-  //   setIsMicActive(false);
-
-  //   // RESET timeout state on user input
-  //   clearTimeout(inactivityTimer.current);
-  //   sessionControllerRef.current = 0;
-  //   setSessionController(0);
-  //   const userMsg = {
-  //     role: "user",
-  //     message: text,
-  //     time: new Date().toLocaleTimeString(),
-  //   };
-
-  //   setSession((prev) => [...prev, userMsg]);
-  //   console.log("session", session);
-  //   setUserInput("");
-
-  //   // Stage 1: Language selection
-  //   if (stageRef.current === "language") {
-  //     let message = "";
-  //     let validLang = false;
-
-  //     if (text.toLowerCase().includes("english")) {
-  //       message =
-  //         "Great! Let's continue in English. Thank you for your response. Please share your name & email to continue.";
-  //       validLang = true;
-  //     } else if (text.toLowerCase().includes("বাংলা")) {
-  //       message =
-  //         "চমৎকার! চলুন বাংলায় চালিয়ে যাই। অনুগ্রহ করে আপনার নাম এবং ইমেল দিন।";
-  //       validLang = true;
-  //     } else if (
-  //       text.toLowerCase().includes("hindi") ||
-  //       text.toLowerCase().includes("हिंदी")
-  //     ) {
-  //       message = "बहुत बढ़िया! कृपया अपना नाम और ईमेल साझा करें।";
-  //       validLang = true;
-  //     } else {
-  //       message =
-  //         "Language not recognized. Please respond with English, বাংলা (Bangla), or हिंदी (Hindi).";
-  //     }
-
-  //     await speakAndAdd(message);
-
-  //     if (validLang) {
-  //       setLanguage(text.toLowerCase());
-  //       setConversationStage("awaitingDetails");
-  //       stageRef.current = "awaitingDetails";
-  //     }
-  //   }
-
-  //   // Stage 2: Awaiting name and email
-  //   else if (stageRef.current === "awaitingDetails") {
-  //     const nameMatch = text.match(/(?:my name is|i am)\s+([a-z\s]+)/i);
-  //     const emailMatch = text.match(
-  //       /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
-  //     );
-
-  //     if (nameMatch && emailMatch) {
-  //       const extractedName = nameMatch[1].trim();
-  //       const extractedEmail = emailMatch[0].trim();
-
-  //       setUserName(extractedName);
-  //       setUserEmail(extractedEmail);
-
-  //       const response = await greeting({ text: text });
-  //       setGreetingText(response);
-  //       console.log("greeting API response", response);
-
-  //       await speakAndAdd(
-  //         `Thank you, ${extractedName}. You're all set to proceed!`
-  //       );
-
-  //       if (response.summary === "User not found in Users table") {
-  //         await speakAndAdd(
-  //           "Please include both your name and a valid email correctly to continue."
-  //         );
-  //       } else {
-  //         setIsAILoading(true);
-  //         await new Promise((res) => setTimeout(res, 1500));
-  //         console.log("greetingText", greetingText);
-  //         await speakAndAdd(response.summary);
-
-  //         const jsonObject = {
-  //           companies: response.companies,
-  //           email: response.email,
-  //           first_name: response.first_name,
-  //           id: random4DigitID,
-  //           question: response.summary,
-  //         };
-
-  //         const aiResponseText = await aiResponse(jsonObject);
-
-  //         greetingTextRef.current = jsonObject;
-  //         setIsAILoading(false);
-  //         await speakAndAdd(aiResponseText.summary);
-
-  //         setConversationStage("chat");
-  //         stageRef.current = "chat";
-  //       }
-
-  //       // ✅ Set chat stage
-  //     } else {
-  //       await speakAndAdd(
-  //         "Please include both your name and a valid email to continue."
-  //       );
-  //     }
-  //   }
-
-  //   // Stage 3: Chat continues in loop
-  //   else if (stageRef.current === "chat") {
-  //     setIsAILoading(true);
-  //     await new Promise((res) => setTimeout(res, 1500));
-  //     console.log("greetingTextRef", greetingTextRef.current);
-  //     const jsonObject = {
-  //       companies: greetingTextRef.current.companies,
-  //       email: greetingTextRef.current.email,
-  //       first_name: greetingTextRef.current.first_name,
-  //       id: greetingTextRef.current.id,
-  //       chat_history: session,
-  //       question: text,
-  //     };
-  //     const aiRes = await aiResponse(jsonObject);
-  //     setIsAILoading(false);
-  //     await speakAndAdd(aiRes.summary);
-  //   }
-  // };
 
   const sessionId = sessionStorage.getItem("sessionId");
 
@@ -355,7 +228,9 @@ const ChatSectionText = ({
                     alt="AI"
                     className="w-7 h-7 ai-img rounded-full z-10 opacity-70"
                   /> */}
-                  <div className="text-[#ccc] italic">Typing...</div>
+                  {/* <div className="text-[#ccc] italic">Typing...</div> */}
+                  <TypingDots />
+
                 </div>
               </div>
             )}
