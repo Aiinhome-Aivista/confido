@@ -16,7 +16,7 @@ const ChatSectionText = ({
   setIsRecorderActive,
 }) => {
 
-  const [session, setSession] = useState([chatSession[0]]);
+  // const [session, setSession] = useState([chatSession[0]]);
   const [sessionController, setSessionController] = useState(0);
   const [showNewSessionBtn, setShowNewSessionBtn] = useState(false);
   const [isAILoading, setIsAILoading] = useState(false);
@@ -32,6 +32,7 @@ const ChatSectionText = ({
   const [isMicHovered, setIsMicHovered] = useState(false);
   const [isCameraHovered, setIsCameraHovered] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
+  const [session, setSession] = useState(chatSession);
 
 
 
@@ -43,6 +44,11 @@ const ChatSectionText = ({
     setSessionController(0);
     setCurrentIndex(0);
   };
+
+  // When ChatScreen mounts, refresh from latest chatSession
+  useEffect(() => {
+    setSession(chatSession);
+  }, []);
 
   useEffect(() => {
     if (isTerminated) {

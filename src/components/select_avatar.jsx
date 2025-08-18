@@ -12,16 +12,21 @@ import { RaviExperience } from "../features/characters/ravi/raviExperience";
 import { SitaExperience } from "../features/characters/sita/sitaExperience";
 import { SubhoExperience } from "../features/characters/subho/subhoExperience";
 import { Experience } from "../features/characters/hema/experience";
+import { chatSession, setChatSession } from "../data/data.jsx";
 
 const avatars = [
   { name: "Ravi", img: ravi, avatar: <RaviExperience /> },
   { name: "Hema", img: hema, avatar: <Experience /> },
   { name: "Subho", img: subho, avatar: <SubhoExperience /> },
   { name: "Sita", img: sita, avatar: <SitaExperience /> },
-
-
-
 ];
+
+const avatarId = [
+  { id: "1", name: "Ravi" },
+  { id: "2", name: "Hema" },
+  { id: "3", name: "Subho" },
+  { id: "4", name: "Sita" },
+]
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
@@ -42,8 +47,13 @@ export default function ChooseAvatar() {
     }
   };
 
+
   const createSession = async (user, avatar) => {
     try {
+      const language = JSON.parse(sessionStorage.getItem("selectedLanguage"));
+      const sessionId = Math.floor(Math.random() * 1000000);
+      const matchedAvatar = avatarId.find((a) => a.name === avatar.name);
+
       const data = await apiService({
         url: POST_url.session,
         method: "POST",
@@ -51,20 +61,31 @@ export default function ChooseAvatar() {
           avatarName: avatar.name,
           userName: user.name,
           userId: user.user_id,
-          avatarId: avatar.id,
-          languageId: "2",
-          sessionId: "1",
+          avatarId: matchedAvatar?.id,
+          languageId: language?.id,
+          sessionId: sessionId,
         },
       });
 
       if (data) {
         console.log("Session Created:", data);
         sessionStorage.setItem("session", JSON.stringify(data));
+
+        // Store dynamic first AI message globally
+        setChatSession([
+          {
+            role: "ai",
+            message: data.data.message,
+            time: new Date().toLocaleTimeString(),
+          },
+        ]);
       }
     } catch (error) {
       console.error("Session API Failed:", error);
     }
   };
+
+
 
   if (isLogin) {
     return <Login />;
@@ -89,7 +110,7 @@ export default function ChooseAvatar() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
         {avatars.map((avatar, index) => (
           <div
-            key={avatar.id}
+            key={index}
             onClick={() => handleSelect(avatar)}
             className="flex flex-col items-center cursor-pointer group"
           >
