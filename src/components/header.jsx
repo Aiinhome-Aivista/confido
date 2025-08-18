@@ -23,8 +23,26 @@ export default function Header() {
   const storedName = storedUser.name || "";
   const storedEmail = storedUser.email || "";
   const { setIsLogin } = useContext(AuthContext);
+  const [selectedLanguage, setSelectedLanguage] = useState(sessionStorage.getItem("selectedLanguage") || "");
+
+
   // Fetch languages on mount
 
+  // useEffect(() => {
+  //   const fetchLanguages = async () => {
+  //     const res = await apiService({
+  //       url: GET_url.languages,
+  //       method: "GET",
+  //     });
+
+  //     if (!res.error && res.status && Array.isArray(res.data)) {
+  //       setLanguages(res.data.map(lang => lang.language_name));
+  //     }
+  //   };
+
+  //   fetchLanguages();
+  // }, []);
+  // 🔹 Fetch languages on mount
   useEffect(() => {
     const fetchLanguages = async () => {
       const res = await apiService({
@@ -33,12 +51,22 @@ export default function Header() {
       });
 
       if (!res.error && res.status && Array.isArray(res.data)) {
-        setLanguages(res.data.map(lang => lang.language_name));
+        setLanguages(res.data.map((lang) => lang.language_name));
       }
     };
 
     fetchLanguages();
   }, []);
+
+  // 🔹 Restore saved language on mount
+  useEffect(() => {
+    const savedLang = sessionStorage.getItem("selectedLanguage");
+    if (savedLang) {
+      console.log("Stored language:", savedLang);
+      setSelectedLanguage(savedLang);
+    }
+  }, []);
+
 
   // Logout handler
   const handleLogout = async () => {
@@ -133,7 +161,7 @@ export default function Header() {
                       Logout
                     </div>
                   )}
-
+                  {/* 
                   {item.options.length > 0 && (
                     <div className="icon-options">
                       {item.options.map((opt, i) => (
@@ -142,7 +170,27 @@ export default function Header() {
                         </div>
                       ))}
                     </div>
+                  )} */}
+                  {item.options.length > 0 && (
+                    <div className="icon-options">
+                      {item.options.map((opt, i) => (
+                        <div
+                          key={i}
+                          className="icon-option"
+                          onClick={() => {
+                            if (item.id === "language") {
+                              setSelectedLanguage(opt);
+                              sessionStorage.setItem("selectedLanguage", opt);
+                            }
+                          }}
+                        >
+                          {opt}
+                        </div>
+                      ))}
+                    </div>
                   )}
+
+
                 </div>
               </div>
             );
