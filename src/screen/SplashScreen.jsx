@@ -230,7 +230,7 @@ function SplashScreen({ setLoadAvatars }) {
 
 
           <button
-            className=" start-button px-8 py-3 rounded-full font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-75"
+            className=" start-button px-8 py-3 rounded-full font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-80"
             onClick={() => {
               requestMicrophonePermission();
               setLoadAvatars(true);
