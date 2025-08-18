@@ -1,113 +1,156 @@
-import React from "react";
+
+import { useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import "./header.css";
 import logoSrc from "../assets/icons/confido_logo.svg";
 import languageIcon from "../assets/icons/language_icon.svg";
 import settingsIcon from "../assets/icons/settings_icon.svg";
 import signinIcon from "../assets/icons/signin_icon.svg";
+import { POST_url } from "../connection/connection ";
+import { apiService } from "../Service/apiService";
+import { GET_url } from "../connection/connection .jsx";
+import { useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
 
-export default function Header({
-  logoSrc: logoOverride,
-  icons: iconsOverride,
-  className = "",
-}) {
-  const logo = logoOverride || logoSrc;
 
-  const defaultIcons = [
+export default function Header() {
+  const [hovered, setHovered] = useState(null);
+  const [languages, setLanguages] = useState([]);
+  const leaveTimer = useRef(null);
+  const navigate = useNavigate();
+
+  const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const storedName = storedUser.name || "";
+  const storedEmail = storedUser.email || "";
+  const { setIsLogin } = useContext(AuthContext);
+  // Fetch languages on mount
+
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      const res = await apiService({
+        url: GET_url.languages,
+        method: "GET",
+      });
+
+      if (!res.error && res.status && Array.isArray(res.data)) {
+        setLanguages(res.data.map(lang => lang.language_name));
+      }
+    };
+
+    fetchLanguages();
+  }, []);
+
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      const res = await apiService({
+        url: POST_url.logout,
+        method: "POST",
+        data: {
+          email: storedEmail,
+          is_logged_in: "false",
+        },
+      });
+
+      if (res?.error) {
+        throw new Error(res.message || "Logout failed");
+      }
+
+      // Clear session and refresh
+      sessionStorage.clear();
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Error logging out. Please try again.");
+    }
+  };
+
+  // Login handler
+  const handleLoginClick = () => {
+    if (!storedEmail || !storedName) {
+      setIsLogin(true);
+    }
+  };
+
+
+  const icons = [
     {
-      src: languageIcon,
-      alt: "Language",
+      id: "language",
       title: "Language",
-      dropdown: ["English", "Bengali", "Hindi"],
+      icon: languageIcon,
+      options: languages,
     },
     {
-      src: settingsIcon,
-      alt: "Settings",
-      // title: "Settings",
-      // dropdown: ["Profile", "Preferences", "Logout"],
+      id: "settings",
+      title: "Settings",
+      icon: settingsIcon,
+      options: ["Audio Off", "Audio On"],
     },
-    { src: signinIcon, alt: "Sign in", onClick: () => console.log("Sign in clicked") },
+    {
+      id: "login",
+      title: storedName ? storedName : "Login",
+      icon: signinIcon,
+      options: [],
+    },
   ];
 
-  const icons = iconsOverride || defaultIcons;
+  const handleEnter = (id) => {
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
+    setHovered(id);
+  };
+
+  const handleLeave = () => {
+    leaveTimer.current = setTimeout(() => setHovered(null), 120);
+  };
+
 
   return (
-    <header
-      className={`w-full fixed top-0 left-0 right-0 z-50 ${className}`}
-      role="banner"
-    >
-      <div className="flex items-center justify-between w-full px-4 py-4">
-        {/* Left: Logo */}
-        <img
-          src={logo}
-          alt="Confido"
-          className="h-8 object-contain"
-          draggable="false"
-        />
-
-        {/* Right: Icons */}
-        <div className="flex items-center gap-3">
-          {icons.map((ic, idx) => (
-            <div key={idx} className="relative group">
-              <button
-                type="button"
-                onClick={ic.onClick}
-                aria-label={ic.alt || `icon-${idx}`}
-                className="flex items-center justify-center w-10 h-10 rounded-full shadow focus:outline-none transition"
-                style={{ backgroundColor: "rgba(30,30,30,0.07)" }}
-              >
-                <img
-                  src={ic.src}
-                  alt={ic.alt}
-                  className="w-5 h-5 object-contain"
-                  draggable="false"
-                />
-              </button>
-
-              {/* Dropdown menu with header */}
-              {ic.dropdown && (
-                <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-
-                  {/* Dropdown title */}
-                  <div
-                    className="px-4 py-2 border-b border-gray-200"
-                    style={{
-                      fontFamily: "Nunito, sans-serif",
-                      fontWeight: 500,       
-                      fontSize: "18px",
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                      verticalAlign: "middle",
-                      color: "rgba(30, 30, 30, 1)", 
-                    }}
-                  >
-                    {ic.title}
-                  </div>
-
-
-                  {/* Dropdown options with Nunito styling */}
-                  {ic.dropdown.map((item, i) => (
-                    <div
-                      key={i}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      style={{
-                        fontFamily: "Nunito, sans-serif",
-                        fontWeight: 400,
-                        fontSize: "16px",
-                        lineHeight: "100%",
-                        letterSpacing: "0%",
-                        verticalAlign: "middle",
-                        color: "rgba(30, 30, 30, 1)",
-                      }}
-                    >
-                      {item}
-                    </div>
-                  ))}
-
-                </div>
-              )}
-            </div>
-          ))}
+    <>
+      <header className="header">
+        <div className="logo-container">
+          <img src={logoSrc} alt="Logo" className="logo" />
         </div>
-      </div>
-    </header>
+
+        <div className="icon-wrapper">
+          {icons.map((item) => {
+            const expanded = hovered === item.id;
+            return (
+              <div
+                key={item.id}
+                className={`icon-box ${expanded ? "expanded" : ""}`}
+                onMouseEnter={() => handleEnter(item.id)}
+                onMouseLeave={handleLeave}
+                onClick={item.id === "login" ? handleLoginClick : undefined}
+              >
+                <img src={item.icon} alt={item.title} className="icon-badge" />
+                <div className="icon-body">
+                  <div className="icon-title">{item.title}</div>
+                  {item.id === "login" && storedName && (
+                    <div
+                      className="icon-option text-red-600 cursor-pointer"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </div>
+                  )}
+
+                  {item.options.length > 0 && (
+                    <div className="icon-options">
+                      {item.options.map((opt, i) => (
+                        <div key={i} className="icon-option">
+                          {opt}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </header>
+
+      <div className="header-spacer" />
+    </>
   );
 }
