@@ -235,13 +235,8 @@ const ChatSectionText = ({
             {/* Typing loader for last AI message */}
             {isAILoading && index === session.length - 1 && (
               <div className="mb-4 flex items-start">
-                <div className="max-w-[60%] flex items-start gap-3 px-4 py-3 rounded-t-3xl rounded-b-3xl text-xs ai-bg username animate-pulse">
-                  {/* <img
-                    src={aiAvatar}
-                    alt="AI"
-                    className="w-7 h-7 ai-img rounded-full z-10 opacity-70"
-                  /> */}
-                  {/* <div className="text-[#ccc] italic">Typing...</div> */}
+                <div className="max-w-[60%] px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg">
+                 
                   <TypingDots />
 
                 </div>
