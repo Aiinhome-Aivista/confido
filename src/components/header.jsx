@@ -35,7 +35,11 @@ export default function Header() {
       });
 
       if (!res.error && res.status && Array.isArray(res.data)) {
-        setLanguages(res.data.map((lang) => lang.language_name));
+        setLanguages(res.data.map((lang) => ({
+          id: lang.language_id,
+          name: lang.language_name,
+        })));
+
       }
     };
 
@@ -46,10 +50,10 @@ export default function Header() {
   useEffect(() => {
     const savedLang = sessionStorage.getItem("selectedLanguage");
     if (savedLang) {
-      console.log("Stored language:", savedLang);
-      setSelectedLanguage(savedLang);
+      setSelectedLanguage(JSON.parse(savedLang));
     }
   }, []);
+
 
 
   // Logout handler
@@ -153,18 +157,16 @@ export default function Header() {
                           className="icon-option"
                           onClick={() => {
                             if (item.id === "language") {
-                              setSelectedLanguage(opt);
-                              sessionStorage.setItem("selectedLanguage", opt);
+                              setSelectedLanguage(opt); 
+                              sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
                             }
                           }}
                         >
-                          {opt}
+                          {opt.name}
                         </div>
                       ))}
                     </div>
                   )}
-
-
                 </div>
               </div>
             );
