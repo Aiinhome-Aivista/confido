@@ -1,19 +1,13 @@
+// TypingDots.js
 import React from "react";
+import "./TypingDots.css";
 
-const TypingDots = () => {
+export default function TypingDots() {
   return (
-    <div className="flex space-x-2">
-      <span className="w-2 h-2 bg-black rounded-full animate-bounce"></span>
-      <span
-        className="w-2 h-2 bg-black rounded-full animate-bounce"
-        style={{ animationDelay: "0.2s" }}
-      ></span>
-      <span
-        className="w-2 h-2 bg-black rounded-full animate-bounce"
-        style={{ animationDelay: "0.4s" }}
-      ></span>
+    <div className="typing-box">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
   );
-};
-
-export default TypingDots;
+}

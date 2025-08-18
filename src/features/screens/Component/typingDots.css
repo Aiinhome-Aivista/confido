@@ -1,36 +1,49 @@
-.typing-dots {
+.typing-box {
   display: flex;
-  align-items: center;
+  align-items: left;
+  justify-content: start;
   gap: 4px;
-  height: 16px;
+  background: rgba(30, 30, 30, 0.07);
+  padding: 4px 10px;
+  border-radius: 10px;
+  position: relative;
+  left: 40px;
 }
 
-.typing-dots span {
-  width: 6px;
-  height: 6px;
-  background: #999;
+.typing-box span {
+  width: 8px;
+  height: 8px;
+  background-color: #000205;
   border-radius: 50%;
   display: inline-block;
-  animation: bounce 1.4s infinite;
+  animation: bounce 1.4s infinite ease-in-out;
 }
 
-.typing-dots span:nth-child(1) {
+.typing-box span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.typing-box span:nth-child(2) {
+  animation-delay: -0.16s;
+  animation-name: bounceUp;
+}
+.typing-box span:nth-child(3) {
   animation-delay: 0s;
-}
-.typing-dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.typing-dots span:nth-child(3) {
-  animation-delay: 0.4s;
 }
 
 @keyframes bounce {
   0%, 80%, 100% {
-    transform: scale(0.7);
-    opacity: 0.5;
+    transform: translateY(0) scale(0.8);
   }
   40% {
-    transform: scale(1);
-    opacity: 1;
+    transform: translateY(-4px) scale(1.2);
+  }
+}
+
+@keyframes bounceUp {
+  0%, 80%, 100% {
+    transform: translateY(-2px) scale(0.8);
+  }
+  40% {
+    transform: translateY(-6px) scale(1.2); 
   }
 }
