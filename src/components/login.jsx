@@ -3,10 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
 import { auth, googleProvider, facebookProvider } from "../firebaseConfig";
 import { signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
-import Header from "./header";
 import { POST_url } from "../connection/connection ";
 import { apiService } from "../Service/apiService";
-import ChatScreen from "../features/screens/ChatScreen.jsx";
+import ChooseAvatar from "../components/select_avatar.jsx";
 import { SubhoExperience } from "../features/characters/subho/subhoExperience.jsx";
 import { Experience } from "../features/characters/hema/experience.jsx";
 import { SitaExperience } from "../features/characters/sita/sitaExperience.jsx";
@@ -73,11 +72,11 @@ export default function Login() {
     }
   };
 
- const handleFacebookLogin = async () => {
+  const handleFacebookLogin = async () => {
     try {
       const result = await signInWithPopup(auth, facebookProvider);
       const info = getAdditionalUserInfo(result);
-      const userEmail ="null";
+      const userEmail = "null";
       const userName = result.user.displayName || info?.profile?.name || "User";
       const loginType = "facebook";
 
@@ -121,14 +120,12 @@ export default function Login() {
 
 
 
-
-
   useEffect(() => {
     const storedEmail = sessionStorage.getItem("email");
-     const storedName = sessionStorage.getItem("displayName");
+    const storedName = sessionStorage.getItem("displayName");
     if (storedEmail) {
       setEmail(storedEmail);
-      if(storedName) setDisplayName(storedName);
+      if (storedName) setDisplayName(storedName);
 
     }
   }, []);
@@ -183,7 +180,7 @@ export default function Login() {
   };
 
   if (redirectToChat) {
-    return <ChatScreen />;
+    return <ChooseAvatar />;
   }
 
   const renderAvatar = () => {
@@ -233,7 +230,7 @@ export default function Login() {
           />
         </button>
         <button
-              onClick={handleFacebookLogin}
+          onClick={handleFacebookLogin}
           style={socialButtonStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}

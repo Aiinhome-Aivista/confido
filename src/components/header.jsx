@@ -17,14 +17,13 @@ export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [languages, setLanguages] = useState([]);
   const leaveTimer = useRef(null);
-  const navigate = useNavigate();
 
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
   const storedEmail = storedUser.email || "";
-  const { setIsLogin } = useContext(AuthContext);
-  // Fetch languages on mount
+  const { setOpenLoginModal } = useContext(AuthContext);
 
+  // Fetch languages on mount
   useEffect(() => {
     const fetchLanguages = async () => {
       const res = await apiService({
@@ -67,9 +66,7 @@ export default function Header() {
 
   // Login handler
   const handleLoginClick = () => {
-    if (!storedEmail || !storedName) {
-      setIsLogin(true);
-    }
+    setOpenLoginModal(true);
   };
 
 
