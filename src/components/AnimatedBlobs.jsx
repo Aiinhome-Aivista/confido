@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 
 const blobs = [
-  { size: 400, color: "radial-gradient(circle, #76DE48 0%, #B2EF61 100%)" },
-  { size: 350, color: "radial-gradient(circle, #76DE48 0%, #B2EF61 100%)"},
-  { size: 450, color: "radial-gradient(circle, #76DE48 0%, #B2EF61 100%)"},
+  { size: 300, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
+  { size: 350, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)"},
+  { size: 450, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)"},
 ];
 
 function AnimatedBlobs() {
