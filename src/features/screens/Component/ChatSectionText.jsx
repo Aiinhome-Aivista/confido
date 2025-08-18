@@ -277,6 +277,7 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
+         setAvatarSpeech(res.data.message);
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -295,6 +296,8 @@ const ChatSectionText = ({
 
 
   const speakAndAdd = async (message) => {
+
+    
     setAvatarReading(true);
 
     return new Promise((resolve) => {
