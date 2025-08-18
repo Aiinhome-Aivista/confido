@@ -27,22 +27,6 @@ export default function Header() {
 
 
   // Fetch languages on mount
-
-  // useEffect(() => {
-  //   const fetchLanguages = async () => {
-  //     const res = await apiService({
-  //       url: GET_url.languages,
-  //       method: "GET",
-  //     });
-
-  //     if (!res.error && res.status && Array.isArray(res.data)) {
-  //       setLanguages(res.data.map(lang => lang.language_name));
-  //     }
-  //   };
-
-  //   fetchLanguages();
-  // }, []);
-  // 🔹 Fetch languages on mount
   useEffect(() => {
     const fetchLanguages = async () => {
       const res = await apiService({
@@ -161,16 +145,6 @@ export default function Header() {
                       Logout
                     </div>
                   )}
-                  {/* 
-                  {item.options.length > 0 && (
-                    <div className="icon-options">
-                      {item.options.map((opt, i) => (
-                        <div key={i} className="icon-option">
-                          {opt}
-                        </div>
-                      ))}
-                    </div>
-                  )} */}
                   {item.options.length > 0 && (
                     <div className="icon-options">
                       {item.options.map((opt, i) => (
