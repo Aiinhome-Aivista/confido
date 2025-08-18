@@ -86,7 +86,7 @@ function BeeScene({ mousePosition }) {
 }
 
 
- 
+
 function SplashScreen({ setLoadAvatars }) {
   const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
   const colors = ["#797979"];
@@ -135,7 +135,7 @@ function SplashScreen({ setLoadAvatars }) {
       // You can now start conversation logic here
     } catch (err) {
       console.error("Microphone access denied:", err);
-      alert("Please allow microphone access to start the conversation.");
+      // alert("Please allow microphone access to start the conversation.");
     }
   };
 
@@ -197,18 +197,37 @@ function SplashScreen({ setLoadAvatars }) {
             Conversation.
           </motion.h1>
 
-          <p className="font-normal text-lg text-center mb-6">
+          <motion.p
+            className="font-normal text-lg text-center mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay:1.5, duration: 0.8, ease: "easeOut" }}
+          >
             Overcome shyness with a simple hello.
-          </p>
-          <div className="font-semibold text-lg text-center mb-2">
+          </motion.p>
+
+          <motion.div
+            className="font-semibold text-lg text-center mb-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2, duration: 0.8, ease: "easeOut" }}
+          >
             Why you’ll love it:
-          </div>
-          <p className="font-normal text-base text-center max-w-xl mb-8">
+          </motion.div>
+
+          <motion.p
+            className="font-normal text-base text-center max-w-xl mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 3, duration: 0.8, ease: "easeOut" }}
+          >
             This is your space to talk about anything - no judgment, no pressure,
             just real conversations with people who get it. Whether you’re feeling
             shy, lonely, or just need someone to chat with, we’re here to make it
             easy and comfortable.
-          </p>
+          </motion.p>
+
+
 
           <button
             className=" start-button px-8 py-3 rounded-full font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-75"
