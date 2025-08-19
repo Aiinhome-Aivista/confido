@@ -12,7 +12,7 @@ import { GET_url } from "../connection/connection .jsx";
 import { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 import TerminateModal from "../features/terminateModal.jsx";
-import recorder from "../assets/icons/recorder.svg";
+
 
 
 export default function Header() {
@@ -190,7 +190,7 @@ export default function Header() {
         {showModal && (
           <TerminateModal
             onClose={() => setShowModal(false)}
-            onConfirm={handleTerminate}
+            // onConfirm={handleTerminate}
           />
         )}
       </header >
