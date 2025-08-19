@@ -1,17 +1,18 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
 
 const TerminateModal = ({ onClose }) => {
-
-    const navigate = useNavigate();
+    const { setSessionTerminated } = useContext(AuthContext);
 
     const handleConfirm = () => {
         // Clear sessionId
         sessionStorage.removeItem("sessionId");
-
-        //Redirect to Select-avatar.jsx
-        // navigate("/select-avatar"); 
+        console.log("Session cleared");
+        setSessionTerminated(true);
+        onClose();
     };
+
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center terminate-bg">
