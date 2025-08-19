@@ -12,6 +12,7 @@ import { GET_url } from "../connection/connection .jsx";
 import { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 import SubscriptionModal from "../common/modal/SubscriptionModal";
+import SessionExpiredModal from "../common/modal/SessionExpiredModal";
 
 
 export default function Header() {
@@ -189,6 +190,7 @@ export default function Header() {
       {/* Modal */}
       {showSubscriptionModal && (
         <SubscriptionModal onClose={() => setShowSubscriptionModal(false)} />
+        // <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
       )}
     </>
   );
