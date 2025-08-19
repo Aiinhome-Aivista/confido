@@ -202,7 +202,7 @@ export default function LoginModal() {
                     <button onClick={() => setOpenLoginModal(false)} className="modalCloseIcon rounded-full w-4 h-4 cursor-pointer"></button>
                 </div>
                 <div className="flex flex-col items-center justify-center h-9/10 pb-[10%]">
-                    <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
+                    <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-500 overflow-hidden shadow-md">
                         {renderAvatar()}
                     </div>
                     <p className="text-base font-extrabold py-4">Login here</p>

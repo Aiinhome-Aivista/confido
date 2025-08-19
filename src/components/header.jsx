@@ -141,11 +141,10 @@ export default function Header() {
                 className={`icon-box ${expanded ? "expanded" : ""}`}
                 onMouseEnter={() => handleEnter(item.id)}
                 onMouseLeave={handleLeave}
-                onClick={item.id === "login" ? handleLoginClick : undefined}
               >
                 <img src={item.icon} alt={item.title} className="icon-badge" />
                 <div className="icon-body">
-                  <div className="icon-title">{item.title}</div>
+                  <div className="icon-title cursor-pointer" onClick={handleLoginClick}>{item.title}</div>
                   {item.id === "login" && storedName && (
                     <div
                       className="icon-option text-red-600 cursor-pointer"
