@@ -17,11 +17,12 @@ export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [languages, setLanguages] = useState([]);
   const leaveTimer = useRef(null);
-  const navigate = useNavigate();
 
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
   const storedEmail = storedUser.email || "";
+  const { setOpenLoginModal } = useContext(AuthContext);
+
   const { setIsLogin } = useContext(AuthContext);
   const [selectedLanguage, setSelectedLanguage] = useState(sessionStorage.getItem("selectedLanguage") || "");
 
@@ -89,9 +90,7 @@ export default function Header() {
 
   // Login handler
   const handleLoginClick = () => {
-    if (!storedEmail || !storedName) {
-      setIsLogin(true);
-    }
+    setOpenLoginModal(true);
   };
 
 

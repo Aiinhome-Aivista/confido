@@ -206,7 +206,7 @@ export const Sita = React.memo((props) => {
       setScript("welcome");
 
       // trigger fake lipSync with text
-      startlipSyncFromText("Welcome, nice to meet you!");
+      // startlipSyncFromText("Welcome, nice to meet you!");
     }
   };
 

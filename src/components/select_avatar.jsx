@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 import ravi from "../assets/2D/ravi.svg";
 import hema from "../assets/2D/hema.svg";
 import subho from "../assets/2D/subho.svg";
 import sita from "../assets/2D/sita.svg";
-import Login from "./login";
 import ChatScreen from "../features/screens/ChatScreen.jsx";
 import { apiService } from "../Service/apiService";
 import { POST_url } from "../connection/connection ";
@@ -12,6 +11,10 @@ import { RaviExperience } from "../features/characters/ravi/raviExperience";
 import { SitaExperience } from "../features/characters/sita/sitaExperience";
 import { SubhoExperience } from "../features/characters/subho/subhoExperience";
 import { Experience } from "../features/characters/hema/experience";
+import {
+  playWelcomeWithDelay,
+  cancelWelcomeMessage
+} from "../utils/voiceUtils.js";
 import { chatSession, setChatSession } from "../data/data.jsx";
 
 const avatars = [
@@ -30,9 +33,14 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { isLogin, setSelectedAvatar } = useContext(AuthContext);
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, 
+ } = useContext(AuthContext);
+  const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
+    // Cancel any pending hover voice
+   
+
     setSelectedAvatar(avatar.name);
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
@@ -43,10 +51,23 @@ export default function ChooseAvatar() {
       setLoadChatscreen("chatscreen");
     } else {
       // Not logged in → go to login
-      setLoadChatscreen("login");
+      setOpenLoginModal(true);
     }
   };
 
+  const handleAvatarHover = (avatarName) => {
+    // Cancel any existing timeout
+    
+    setAvatarSpeech(`Hi I am ${avatarName}. Your personal conversation buddy`)
+    // Start new timeout for 3 second delay
+  
+  };
+
+  const handleAvatarLeave = () => {
+    // Cancel the pending voice when mouse leaves
+   
+    hoverTimeoutRef.current = null;
+  };
 
   const createSession = async (user, avatar) => {
     try {
@@ -93,18 +114,8 @@ export default function ChooseAvatar() {
     }
   };
 
-
-
-  if (isLogin) {
-    return <Login />;
-  }
-
-  if (loadChatscreen === "login") {
-    return <Login onLoginSuccess={createSession} />;
-  }
-
   if (loadChatscreen === "chatscreen") {
-    return <ChatScreen />;
+    return <ChatScreen onLoginSuccess={createSession} />;
   }
 
 
@@ -120,6 +131,8 @@ export default function ChooseAvatar() {
           <div
             key={index}
             onClick={() => handleSelect(avatar)}
+            onMouseEnter={() => handleAvatarHover(avatar.name)}
+            onMouseLeave={handleAvatarLeave}
             className="flex flex-col items-center cursor-pointer group"
           >
             <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">

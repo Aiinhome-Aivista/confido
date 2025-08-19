@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { AuthContext } from '../../../common/helper/AuthContext';
 import { SubhoExperience } from '../../characters/subho/subhoExperience';
 import { Experience } from '../../characters/hema/experience';
@@ -6,7 +6,12 @@ import { SitaExperience } from '../../characters/sita/sitaExperience';
 import { RaviExperience } from '../../characters/ravi/raviExperience';
 
 function ChatSectionAvatar() {
-  const { selectedAvatar } = useContext(AuthContext)
+  const { selectedAvatar, setGreeting } = useContext(AuthContext)
+
+  useEffect(() => {
+     setGreeting(false)
+  }, [selectedAvatar])
+  
 
   const renderAvatar = () => {
     switch (selectedAvatar) {
@@ -26,7 +31,7 @@ function ChatSectionAvatar() {
   };
 
   return (
-    <div className='flex items-end h-[100%]'>
+    <div className='flex items-end h-[100%] z-1 -mr-[calc(50%)]'>
       {renderAvatar()}
     </div>
   )

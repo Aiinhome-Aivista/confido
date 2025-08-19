@@ -8,7 +8,7 @@ function ChatScreen() {
       <div className='w-2/8'>
         <ChatSectionAvatar />
       </div>
-      <div className="w-6/8 px-3">
+      <div className="w-6/8 px-3 z-2">
         <div className="flex justify-center">
           <hr className='text-lg opacity-20 w-[100%]' />
         </div>
