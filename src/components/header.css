@@ -218,3 +218,11 @@
 }
 
 .header-spacer { height: 60px; }
+
+.terminateIconBg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  max-height: 40px;
+}
