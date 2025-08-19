@@ -11,12 +11,15 @@ import { apiService } from "../Service/apiService";
 import { GET_url } from "../connection/connection .jsx";
 import { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
+import TerminateModal from "../features/terminateModal.jsx";
+import recorder from "../assets/icons/recorder.svg";
 
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [languages, setLanguages] = useState([]);
   const leaveTimer = useRef(null);
+  const [showModal, setShowModal] = useState(false);
 
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
@@ -132,7 +135,24 @@ export default function Header() {
           <img src={logoSrc} alt="Logo" className="logo" />
         </div>
 
-        <div className="icon-wrapper">
+        <div className="icon-wrapper items-center">
+
+          <div
+            className="text-sm font-medium header-text cursor-pointer"
+            onClick={() => setShowModal(true)}
+          >
+            <div
+              className={`p-2 rounded-full flex items-center justify-center relative transition duration-300 recording-off'
+                }`}
+            >
+              <img src={recorder} alt="recording" className="w-0 h-0 z-10 " />
+
+              <span className="absolute w-full h-full rounded-full bg-green-500 opacity-50 animate-ping z-0" />
+
+            </div>
+
+          </div>
+
           {icons.map((item) => {
             const expanded = hovered === item.id;
             return (
@@ -180,7 +200,13 @@ export default function Header() {
             );
           })}
         </div>
-      </header>
+        {showModal && (
+          <TerminateModal
+            onClose={() => setShowModal(false)}
+            onConfirm={handleTerminate}
+          />
+        )}
+      </header >
 
       <div className="header-spacer" />
     </>
