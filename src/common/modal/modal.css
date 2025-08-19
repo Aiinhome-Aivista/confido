@@ -83,6 +83,7 @@
 .animate-fadeInLeft {
   animation: fadeInLeft 0.5s ease-out forwards;
   opacity: 0;
+  color: #dadada32;
 }
 
 .animate-fadeInScale {
