@@ -534,7 +534,7 @@ import "./modal.css";
 import { SubhoExperience } from "../../features/characters/subho/subhoExperience.jsx";
 import { Experience } from "../../features/characters/hema/experience.jsx";
 import { SitaExperience } from "../../features/characters/sita/sitaExperience.jsx";
-import { RaviExperience } from "../../features/characters/ravi/raviExperience.jsx"
+import { RaviExperience } from "../../features/characters/ravi/raviExperience.jsx";
 
 export default function SubscriptionModal({ onClose }) {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -544,8 +544,7 @@ export default function SubscriptionModal({ onClose }) {
     "Hindi",
     "Bengali",
   ]);
-  const { selectedAvatar} =
-    useContext(AuthContext);
+  const { selectedAvatar } = useContext(AuthContext);
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
@@ -553,21 +552,19 @@ export default function SubscriptionModal({ onClose }) {
     setTimeout(() => setShowCustomization(true), 150);
   };
   const renderAvatar = () => {
-        switch (selectedAvatar) {
-            case "Subho":
-                return <SubhoExperience />;
-            case "Sita":
-                return <SitaExperience />
-            case "Ravi":
-                return <RaviExperience />
-            case "Hema":
-                return <Experience />
-            default:
-                return (
-                    <RaviExperience />
-                );
-        }
-    };
+    switch (selectedAvatar) {
+      case "Subho":
+        return <SubhoExperience />;
+      case "Sita":
+        return <SitaExperience />;
+      case "Ravi":
+        return <RaviExperience />;
+      case "Hema":
+        return <Experience />;
+      default:
+        return <RaviExperience />;
+    }
+  };
 
   const handleBackToPlans = () => {
     setShowCustomization(false);
@@ -619,7 +616,7 @@ export default function SubscriptionModal({ onClose }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 animate-fadeIn">
       {/* Main Modal Container */}
-      <div className="bg-[#C4C3C4] rounded-3xl p-6 max-w-[85%] relative transform animate-slideUp">
+      <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[85%] relative transform animate-slideUp">
         {/* Close Button */}
         <div className="flex justify-end mb-2">
           <button
@@ -630,8 +627,8 @@ export default function SubscriptionModal({ onClose }) {
 
         {/* Avatar and Title */}
         <div className="flex flex-col items-center justify-center mb-6">
-          <div className="transform transition-all duration-300  avatar-container w-24 h-24  rounded-full border-2 border-[#7E4A5712] overflow-hidden shadow-md" >
-           { renderAvatar()}
+          <div className="transform transition-all duration-300  avatar-container w-24 h-24  rounded-full border-2 border-[#7E4A5712] overflow-hidden shadow-md">
+            {renderAvatar()}
           </div>
           <h2 className="text-lg font-bold text-black animate-fadeInUp">
             {showCustomization ? "Customize Your Plan" : "Choose your plan"}
@@ -658,12 +655,12 @@ export default function SubscriptionModal({ onClose }) {
                 onClick={() => handlePlanSelect(plan)}
               >
                 {/* Plan Header */}
-                <div className="text-center mb-4">
-                  <h3 className="text-base font-bold text-black mb-1">
+                <div className="text-center mb-4 flex items-end justify-center gap-2">
+                  <h3 className="text-base font-bold text-black ">
                     {plan.name}
                   </h3>
                   {plan.price && (
-                    <p className="text-xs text-gray-600">{plan.price}</p>
+                    <p className="text-xs text-gray-700 mb-0.5">{plan.price}</p>
                   )}
                 </div>
 
@@ -711,12 +708,12 @@ export default function SubscriptionModal({ onClose }) {
               rounded-2xl p-6 w-full max-w-md mx-auto shadow-lg"
             >
               {/* Price Section */}
-              <div className="text-center mb-4 flex items-end gap-2 justify-center animate-fadeInUp">
+              <div className="text-center mb-4 flex items-end gap-2 animate-fadeInUp">
                 <h3 className="text-xl font-bold text-black">
                   {selectedPlan.name}
                 </h3>
                 {selectedPlan.price && (
-                  <p className="text-sm text-gray-600">{selectedPlan.price}</p>
+                  <p className="text-sm text-gray-700 mb-0.5">{selectedPlan.price}</p>
                 )}
               </div>
 
@@ -738,7 +735,7 @@ export default function SubscriptionModal({ onClose }) {
                         transition-all duration-300 hover:scale-110 animate-fadeInScale ${
                           selectedAvatars.includes(avatar.name)
                             ? "border-[#8B5A6B] shadow-lg scale-105"
-                            : "border-transparent hover:border-indigo-500"
+                            : "border-transparent "
                         }`}
                       style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() => toggleAvatar(avatar.name)}
@@ -769,8 +766,7 @@ export default function SubscriptionModal({ onClose }) {
                         checked={selectedLanguages.includes(language)}
                         onChange={() => toggleLanguage(language)}
                       />
-                      <span className="text-gray-800">{language}
-                        </span>
+                      <span className="text-gray-800">{language}</span>
                     </label>
                   ))}
                 </div>
