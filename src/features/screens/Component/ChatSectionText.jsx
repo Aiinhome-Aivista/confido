@@ -14,6 +14,8 @@ import { createVoiceUtterance } from "../../../utils/voiceUtils";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
+import LoginModal from '../../../common/modal/LoginModal.jsx';
+
 
 const ChatSectionText = ({
   isTerminated,
@@ -40,6 +42,8 @@ const ChatSectionText = ({
   const [isCameraHovered, setIsCameraHovered] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
+  const [showChoosePlan, setShowChoosePlan] = useState(false);
+  const expiryTimer = useRef(null);
 
 
 
@@ -62,6 +66,10 @@ const ChatSectionText = ({
       setShowNewSessionBtn(true);
     }
   }, [isTerminated]);
+ 
+    useEffect(() => {
+    return () => clearTimeout(expiryTimer.current);
+  }, []);
 
   useEffect(() => {
     if (chatRef.current) {
@@ -104,9 +112,24 @@ const ChatSectionText = ({
 
   const sessionId = sessionStorage.getItem("sessionId");
 
+    // start expiry timer when chat starts
+  const startExpiryTimer = () => {
+    clearTimeout(expiryTimer.current);
+    expiryTimer.current = setTimeout(() => {
+      setShowChoosePlan(true); // 👈 open modal after 5 mins
+    }, 2 * 60 * 1000); // 5 minutes
+  };
+
+  // reset timer on new session
+  const resetExpiryTimer = () => {
+    clearTimeout(expiryTimer.current);
+    startExpiryTimer();
+  };
+
   const handleUserMessage = async (text) => {
     if (!text) return;
     setIsMicActive(false);
+    resetExpiryTimer();
 
     // Reset inactivity timers (if any)
     clearTimeout(inactivityTimer.current);
@@ -313,6 +336,10 @@ const ChatSectionText = ({
           <SendRoundedIcon fontSize='large' />
         </button>
       </div>
+         {/* ✅ ChoosePlan Modal */}
+    {showChoosePlan && (
+      <LoginModal onClose={() => setShowChoosePlan(false)} />
+    )}
     </div>
   );
 };
