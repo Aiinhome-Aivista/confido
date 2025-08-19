@@ -4,7 +4,7 @@ export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [isLogin, setIsLogin] = useState(false);
-    const [selectedAvatar, setSelectedAvatar] = useState("hema");
+    const [selectedAvatar, setSelectedAvatar] = useState("Ravi");
      const [currentVoiceType, setCurrentVoiceType] = useState("adultWoman");
     const [greeting, setGreeting] = useState(true);
     const [avatarSpeech, setAvatarSpeech] = useState("");
