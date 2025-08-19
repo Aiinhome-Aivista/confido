@@ -11,6 +11,7 @@ import { Experience } from "../../features/characters/hema/experience.jsx";
 import { SitaExperience } from "../../features/characters/sita/sitaExperience.jsx";
 import { RaviExperience } from "../../features/characters/ravi/raviExperience.jsx";
 import { AuthContext } from "../../common/helper/AuthContext.jsx";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoginModal() {
 
@@ -195,53 +196,69 @@ export default function LoginModal() {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-50">
-            <div className="loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center">
-                <div className="flex flex-row items-start justify-between h-1/10 w-[100%]">
-                    <div></div>
-                    <button onClick={() => setOpenLoginModal(false)} className="modalCloseIcon rounded-full w-4 h-4 cursor-pointer"></button>
-                </div>
-                <div className="flex flex-col items-center justify-center h-9/10 pb-[10%]">
-                    <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
-                        {renderAvatar()}
-                    </div>
-                    <p className="text-base font-extrabold py-4">Login here</p>
-                    <div className="flex space-x-8">
-                        <button
-                            style={socialButtonStyle}
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={handleGoogleLogin}
-                        >
-                            <FaGoogle
-                                style={{
-                                    color: "rgb(107, 114, 128)",
-                                    fontSize: "20px",
-                                    pointerEvents: "none",
-                                    transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                                    opacity: "0.5",
-                                }}
-                            />
-                        </button>
-                        <button
-                            onClick={handleFacebookLogin}
-                            style={socialButtonStyle}
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                        >
-                            <FaFacebookF
-                                style={{
-                                    color: "rgb(107, 114, 128)",
-                                    fontSize: "20px",
-                                    pointerEvents: "none",
-                                    transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                                    opacity: "0.5",
-                                }}
-                            />
-                        </button>
-                    </div>
-                </div>
-            </div>
+       <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-50">
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.5, opacity: 0 }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 20,
+          duration: 0.3,
+        }}
+        className="loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center"
+      >
+        <div className="flex flex-row items-start justify-between h-1/10 w-[100%]">
+          <div></div>
+          <button
+            onClick={() => setOpenLoginModal(false)}
+            className="modalCloseIcon rounded-full w-4 h-4 cursor-pointer"
+          ></button>
         </div>
-    );
+        <div className="flex flex-col items-center justify-center h-9/10 pb-[10%]">
+          <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-300 overflow-hidden shadow-md">
+            {renderAvatar()}
+          </div>
+          <p className="text-base font-extrabold py-4">Login here</p>
+          <div className="flex space-x-8">
+            <button
+              style={socialButtonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={handleGoogleLogin}
+            >
+              <FaGoogle
+                style={{
+                  color: "rgb(107, 114, 128)",
+                  fontSize: "20px",
+                  pointerEvents: "none",
+                  transition:
+                    "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                  opacity: "0.5",
+                }}
+              />
+            </button>
+            <button
+              onClick={handleFacebookLogin}
+              style={socialButtonStyle}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <FaFacebookF
+                style={{
+                  color: "rgb(107, 114, 128)",
+                  fontSize: "20px",
+                  pointerEvents: "none",
+                  transition:
+                    "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                  opacity: "0.5",
+                }}
+              />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
 }
