@@ -193,6 +193,7 @@ import oldMan from "../../assets/2D/old man.svg";
 import oldWoman from "../../assets/2D/old woman.svg";
 import youngMan from "../../assets/2D/young man.svg";
 import youngWoman from "../../assets/2D/young woman.svg";
+import "./modal.css";
 
 export default function SubscriptionModal({ onClose }) {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -419,7 +420,7 @@ export default function SubscriptionModal({ onClose }) {
         </div>
       </div>
 
-      <style jsx>{`
+      {/* <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -507,7 +508,7 @@ export default function SubscriptionModal({ onClose }) {
         .animate-bounce-subtle {
           animation: bounce-subtle 2s infinite;
         }
-      `}</style>
+      `}</style> */}
     </div>
   );
 }
