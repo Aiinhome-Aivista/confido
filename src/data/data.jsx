@@ -35,7 +35,7 @@ export const plansData = [
     {
       id: "premium",
       name: "Rs. 299/-",
-      price: "Monthly",
+      price: "Yearly",
       features: [
         "Avatars: 2 of 4 unlocked",
         "Languages: 2 of 3",
@@ -54,7 +54,7 @@ export const plansData = [
     {
       id: "pro",
       name: "Rs. 599/-",
-      price: "Monthly",
+      price: "Yearly",
       features: [
         "Avatars: All 4 unlocked",
         "Languages: All 3",

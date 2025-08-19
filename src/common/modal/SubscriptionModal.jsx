@@ -48,7 +48,6 @@
 //           <h2 className="text-lg font-bold text-black">Choose your plan</h2>
 //         </div>
 
-     
 //         {!showCustomization && (
 //           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 //             {plansData.map((plan) => (
@@ -187,7 +186,7 @@
 // }
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { plansData } from "../../data/data.jsx";
 import oldMan from "../../assets/2D/old man.svg";
 import oldWoman from "../../assets/2D/old woman.svg";
@@ -199,7 +198,18 @@ export default function SubscriptionModal({ onClose }) {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showCustomization, setShowCustomization] = useState(false);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
-  const [selectedLanguages, setSelectedLanguages] = useState(['Hindi', 'Bengali']);
+  const [selectedLanguages, setSelectedLanguages] = useState([
+    "Hindi",
+    "Bengali",
+  ]);
+
+  // Auto-select all avatars and languages when Pro plan is selected
+  useEffect(() => {
+    if (selectedPlan?.id === "pro") {
+      setSelectedAvatars(["oldMan", "oldWoman", "youngMan", "youngWoman"]);
+      setSelectedLanguages(["English", "Hindi", "Bengali"]);
+    }
+  }, [selectedPlan]);
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
@@ -210,13 +220,20 @@ export default function SubscriptionModal({ onClose }) {
   const handleBackToPlans = () => {
     setShowCustomization(false);
     // Reset selections when going back
-    setTimeout(() => setSelectedPlan(null), 300);
+    setTimeout(() => {
+      setSelectedPlan(null);
+      setSelectedAvatars([]);
+      setSelectedLanguages(["Hindi", "Bengali"]);
+    }, 300);
   };
 
   const toggleAvatar = (avatar) => {
-    setSelectedAvatars(prev => {
+    // Disable selection for Pro plan (all avatars are included)
+    if (selectedPlan?.id === "pro") return;
+
+    setSelectedAvatars((prev) => {
       if (prev.includes(avatar)) {
-        return prev.filter(a => a !== avatar);
+        return prev.filter((a) => a !== avatar);
       } else if (prev.length < 2) {
         return [...prev, avatar];
       }
@@ -225,9 +242,12 @@ export default function SubscriptionModal({ onClose }) {
   };
 
   const toggleLanguage = (language) => {
-    setSelectedLanguages(prev => {
+    // Disable selection for Pro plan (all languages are included)
+    if (selectedPlan?.id === "pro") return;
+
+    setSelectedLanguages((prev) => {
       if (prev.includes(language)) {
-        return prev.filter(l => l !== language);
+        return prev.filter((l) => l !== language);
       } else if (prev.length < 2) {
         return [...prev, language];
       }
@@ -249,15 +269,25 @@ export default function SubscriptionModal({ onClose }) {
     { src: oldMan, alt: "Old Man", name: "oldMan" },
     { src: oldWoman, alt: "Old Woman", name: "oldWoman" },
     { src: youngMan, alt: "Young Man", name: "youngMan" },
-    { src: youngWoman, alt: "Young Woman", name: "youngWoman" }
+    { src: youngWoman, alt: "Young Woman", name: "youngWoman" },
   ];
 
   const languages = ["English", "Hindi", "Bengali"];
 
+  // Get limits based on plan
+  const getSelectionLimits = () => {
+    if (selectedPlan?.id === "pro") {
+      return { avatars: 4, languages: 3 };
+    }
+    return { avatars: 2, languages: 2 };
+  };
+
+  const limits = getSelectionLimits();
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 animate-fadeIn">
       {/* Main Modal Container */}
-      <div className="bg-[#C4C3C4] rounded-3xl p-6 max-w-[85%] relative transform animate-slideUp">
+      <div className="bg-[#C4C3C4] rounded-3xl p-6 max-w-[85%] relative transform animate-slideUp ">
         {/* Close Button */}
         <div className="flex justify-end mb-2">
           <button
@@ -281,25 +311,40 @@ export default function SubscriptionModal({ onClose }) {
         </div>
 
         {/* Plans Grid - with exit animation */}
-        <div className={`transition-all duration-500 ease-in-out ${
-          showCustomization 
-            ? 'opacity-0 transform -translate-x-full scale-95 pointer-events-none absolute' 
-            : 'opacity-100 transform translate-x-0 scale-100'
-        }`}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div
+          className={`transition-all duration-500 ease-in-out ${
+            showCustomization
+              ? "opacity-0 transform -translate-x-full scale-95 pointer-events-none absolute"
+              : "opacity-100 transform translate-x-0 scale-100"
+          }`}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-[60vh] sm:max-h-none overflow-y-auto sm:overflow-visible">
             {plansData.map((plan, index) => (
               <div
                 key={plan.id}
                 className={`bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border border-[#7E4A5712] 
                   hover:outline-[#8B5A6B] hover:outline-2 rounded-2xl p-4 cursor-pointer relative 
                   min-h-[420px] flex flex-col transition-all duration-300 hover:scale-105 
-                  hover:shadow-lg animate-fadeInUp`}
+                  hover:shadow-lg animate-fadeInUp ${
+                    plan.id === "pro" 
+                      ? "ring-2 ring-yellow-400 shadow-yellow-200 shadow-lg" 
+                      : ""
+                  }`}
                 style={{ animationDelay: `${index * 100}ms` }}
                 onClick={() => handlePlanSelect(plan)}
               >
+                {/* Pro Badge */}
+                {plan.id === "pro" && (
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-2 py-1 rounded-full">
+                    ✨ ALL INCLUDED
+                  </div>
+                )}
+
                 {/* Plan Header */}
                 <div className="text-center mb-4">
-                  <h3 className="text-base font-bold text-black mb-1">
+                  <h3 className={`text-base font-bold mb-1 ${
+                    plan.id === "pro" ? "text-yellow-700" : "text-black"
+                  }`}>
                     {plan.name}
                   </h3>
                   {plan.price && (
@@ -313,7 +358,9 @@ export default function SubscriptionModal({ onClose }) {
                     <div
                       key={featureIndex}
                       className="text-xs text-black leading-relaxed opacity-0 animate-fadeInUp"
-                      style={{ animationDelay: `${(index * 100) + (featureIndex * 50)}ms` }}
+                      style={{
+                        animationDelay: `${index * 100 + featureIndex * 50}ms`,
+                      }}
                     >
                       {feature}
                     </div>
@@ -334,18 +381,22 @@ export default function SubscriptionModal({ onClose }) {
         </div>
 
         {/* Customization Screen - with enter animation */}
-        <div className={`transition-all duration-500 ease-in-out ${
-          showCustomization 
-            ? 'opacity-100 transform translate-x-0 scale-100' 
-            : 'opacity-0 transform translate-x-full scale-95 pointer-events-none absolute'
-        }`}>
+        <div
+          className={`transition-all duration-500 ease-in-out ${
+            showCustomization
+              ? "opacity-100 transform translate-x-0 scale-100"
+              : "opacity-0 transform translate-x-full scale-95 pointer-events-none absolute"
+          }`}
+        >
           {selectedPlan && (
-            <div className="bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border border-[#7E4A5712] 
-              rounded-2xl p-6 w-full max-w-md mx-auto shadow-lg">
+            <div className="bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border border-[#7E4A5712] rounded-2xl p-6 w-full max-w-md mx-auto shadow-lg lg:min-w-[22rem] max-h-[60vh] sm:max-h-none overflow-y-auto sm:overflow-visible">
               {/* Price Section */}
               <div className="text-center mb-4 flex items-end gap-2 justify-center animate-fadeInUp">
-                <h3 className="text-xl font-bold text-black">
+                <h3 className={`text-xl font-bold ${
+                  selectedPlan.id === "pro" ? "text-yellow-700" : "text-black"
+                }`}>
                   {selectedPlan.name}
+                  {selectedPlan.id === "pro" && <span className="ml-2">✨</span>}
                 </h3>
                 {selectedPlan.price && (
                   <p className="text-sm text-gray-600">{selectedPlan.price}</p>
@@ -353,9 +404,16 @@ export default function SubscriptionModal({ onClose }) {
               </div>
 
               {/* Choose Avatar */}
-              <div className="mb-6 animate-fadeInUp" style={{ animationDelay: '100ms' }}>
+              <div
+                className="mb-6 animate-fadeInUp"
+                style={{ animationDelay: "100ms" }}
+              >
                 <h4 className="text-sm font-bold text-gray-700 mb-2">
-                  Choose Avatar any two ({selectedAvatars.length}/2)
+                  {selectedPlan.id === "pro" ? (
+                    <>Choose Avatar - All Included ({selectedAvatars.length}/{limits.avatars})</>
+                  ) : (
+                    <>Choose Avatar any two ({selectedAvatars.length}/{limits.avatars})</>
+                  )}
                 </h4>
                 <div className="flex gap-3 justify-center">
                   {avatars.map((avatar, index) => (
@@ -363,46 +421,83 @@ export default function SubscriptionModal({ onClose }) {
                       key={avatar.name}
                       src={avatar.src}
                       alt={avatar.alt}
-                      className={`w-14 h-14 rounded-full border-2 cursor-pointer 
-                        transition-all duration-300 hover:scale-110 animate-fadeInScale ${
+                      className={`w-14 h-14 rounded-full border-2 transition-all duration-300 animate-fadeInScale ${
+                        selectedPlan.id === "pro" 
+                          ? "cursor-default border-yellow-400 shadow-lg scale-105 opacity-100" 
+                          : "cursor-pointer hover:scale-110"
+                      } ${
                         selectedAvatars.includes(avatar.name)
-                          ? 'border-[#8B5A6B] shadow-lg scale-105'
-                          : 'border-transparent hover:border-indigo-500'
+                          ? selectedPlan.id === "pro" 
+                            ? "border-yellow-400 shadow-yellow-200"
+                            : "border-[#8B5A6B] shadow-lg scale-105"
+                          : selectedPlan.id === "pro"
+                            ? "border-yellow-400"
+                            : "border-transparent hover:border-indigo-500"
                       }`}
                       style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() => toggleAvatar(avatar.name)}
                     />
                   ))}
                 </div>
+                {selectedPlan.id === "pro" && (
+                  <p className="text-xs text-yellow-700 text-center mt-2 font-semibold">
+                    All avatars included in Pro plan
+                  </p>
+                )}
               </div>
 
               {/* Choose Language */}
-              <div className="mb-6 animate-fadeInUp" style={{ animationDelay: '200ms' }}>
+              <div
+                className="mb-6 animate-fadeInUp"
+                style={{ animationDelay: "200ms" }}
+              >
                 <h4 className="text-sm font-bold text-gray-700 mb-2">
-                  Choose Language any two ({selectedLanguages.length}/2)
+                  {selectedPlan.id === "pro" ? (
+                    <>Choose Language - All Included ({selectedLanguages.length}/{limits.languages})</>
+                  ) : (
+                    <>Choose Language any two ({selectedLanguages.length}/{limits.languages})</>
+                  )}
                 </h4>
                 <div className="space-y-2">
                   {languages.map((language, index) => (
-                    <label 
+                    <label
                       key={language}
-                      className={`flex items-center gap-2 text-sm text-gray-800 cursor-pointer 
-                        transition-all duration-200 hover:translate-x-1 animate-fadeInLeft`}
+                      className={`flex items-center gap-2 text-sm text-gray-800 transition-all duration-200 animate-fadeInLeft ${
+                        selectedPlan.id === "pro" 
+                          ? "cursor-default" 
+                          : "cursor-pointer hover:translate-x-1"
+                      }`}
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
-                      <input 
-                        type="checkbox" 
-                        className="w-4 h-4 accent-[#8B5A6B] transition-transform duration-200 hover:scale-110"
+                      <input
+                        type="checkbox"
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          selectedPlan.id === "pro" 
+                            ? "accent-yellow-500 cursor-default" 
+                            : "accent-[#8B5A6B] hover:scale-110 cursor-pointer"
+                        }`}
                         checked={selectedLanguages.includes(language)}
                         onChange={() => toggleLanguage(language)}
+                        disabled={selectedPlan.id === "pro"}
                       />
-                      {language}
+                      <span className={selectedPlan.id === "pro" ? "text-yellow-700 font-semibold" : ""}>
+                        {language}
+                      </span>
                     </label>
                   ))}
                 </div>
+                {selectedPlan.id === "pro" && (
+                  <p className="text-xs text-yellow-700 text-center mt-2 font-semibold">
+                    All languages included in Pro plan
+                  </p>
+                )}
               </div>
 
               {/* Buttons */}
-              <div className="flex justify-between mt-6 animate-fadeInUp" style={{ animationDelay: '300ms' }}>
+              <div
+                className="flex justify-between mt-6 animate-fadeInUp"
+                style={{ animationDelay: "300ms" }}
+              >
                 <button
                   onClick={handleBackToPlans}
                   className="bg-gray-400 text-white px-6 py-2 rounded-lg font-medium 
@@ -410,105 +505,285 @@ export default function SubscriptionModal({ onClose }) {
                 >
                   Back
                 </button>
-                <button className="bg-[#8B5A6B] text-white px-6 py-2 rounded-lg font-medium 
-                  transition-all duration-300 hover:bg-[#7A4D5E] hover:scale-105 hover:shadow-md">
-                  Pay
+                <button
+                  className={`px-6 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-md ${
+                    selectedPlan.id === "pro"
+                      ? "bg-gradient-to-r from-yellow-500 to-yellow-600 text-black hover:from-yellow-400 hover:to-yellow-500"
+                      : "bg-[#8B5A6B] text-white hover:bg-[#7A4D5E]"
+                  }`}
+                >
+                  {selectedPlan.id === "pro" ? "Pay for Pro" : "Pay"}
                 </button>
               </div>
             </div>
           )}
         </div>
-      </div>
 
-      {/* <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-          from { 
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-        
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes fadeInScale {
-          from {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes bounce-subtle {
-          0%, 20%, 50%, 80%, 100% {
-            transform: translateY(0);
-          }
-          40% {
-            transform: translateY(-5px);
-          }
-          60% {
-            transform: translateY(-2px);
-          }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out forwards;
-        }
-        
-        .animate-slideUp {
-          animation: slideUp 0.4s ease-out forwards;
-        }
-        
-        .animate-fadeInUp {
-          animation: fadeInUp 0.5s ease-out forwards;
-          opacity: 0;
-        }
-        
-        .animate-fadeInLeft {
-          animation: fadeInLeft 0.5s ease-out forwards;
-          opacity: 0;
-        }
-        
-        .animate-fadeInScale {
-          animation: fadeInScale 0.4s ease-out forwards;
-          opacity: 0;
-        }
-        
-        .animate-bounce-subtle {
-          animation: bounce-subtle 2s infinite;
-        }
-      `}</style> */}
+
+
+      </div>
     </div>
   );
 }
+
+
+
+// import React, { useState } from "react";
+// import { plansData } from "../../data/data.jsx";
+// import oldMan from "../../assets/2D/old man.svg";
+// import oldWoman from "../../assets/2D/old woman.svg";
+// import youngMan from "../../assets/2D/young man.svg";
+// import youngWoman from "../../assets/2D/young woman.svg";
+// import "./modal.css";
+
+// export default function SubscriptionModal({ onClose }) {
+//   const [selectedPlan, setSelectedPlan] = useState(null);
+//   const [showCustomization, setShowCustomization] = useState(false);
+//   const [selectedAvatars, setSelectedAvatars] = useState([]);
+//   const [selectedLanguages, setSelectedLanguages] = useState([
+//     "Hindi",
+//     "Bengali",
+//   ]);
+
+//   const handlePlanSelect = (plan) => {
+//     setSelectedPlan(plan);
+//     // Add a small delay for better UX
+//     setTimeout(() => setShowCustomization(true), 150);
+//   };
+
+//   const handleBackToPlans = () => {
+//     setShowCustomization(false);
+//     // Reset selections when going back
+//     setTimeout(() => setSelectedPlan(null), 300);
+//   };
+
+//   const toggleAvatar = (avatar) => {
+//     setSelectedAvatars((prev) => {
+//       if (prev.includes(avatar)) {
+//         return prev.filter((a) => a !== avatar);
+//       } else if (prev.length < 2) {
+//         return [...prev, avatar];
+//       }
+//       return prev;
+//     });
+//   };
+
+//   const toggleLanguage = (language) => {
+//     setSelectedLanguages((prev) => {
+//       if (prev.includes(language)) {
+//         return prev.filter((l) => l !== language);
+//       } else if (prev.length < 2) {
+//         return [...prev, language];
+//       }
+//       return prev;
+//     });
+//   };
+
+//   const getButtonStyle = (plan) => {
+//     if (plan.id === "free") {
+//       return "bg-[#2D3748] text-white";
+//     }
+//     if (plan.id === "premium" || plan.id === "pro") {
+//       return "bg-[#8B5A6B] text-white hover:bg-[#7A4D5E]";
+//     }
+//     return "bg-gray-600 text-white hover:bg-gray-700";
+//   };
+
+//   const avatars = [
+//     { src: oldMan, alt: "Old Man", name: "oldMan" },
+//     { src: oldWoman, alt: "Old Woman", name: "oldWoman" },
+//     { src: youngMan, alt: "Young Man", name: "youngMan" },
+//     { src: youngWoman, alt: "Young Woman", name: "youngWoman" },
+//   ];
+
+//   const languages = ["English", "Hindi", "Bengali"];
+
+//   return (
+//     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 animate-fadeIn">
+//       {/* Main Modal Container */}
+//       <div className="bg-[#C4C3C4] rounded-3xl p-6 max-w-[85%] relative transform animate-slideUp">
+//         {/* Close Button */}
+//         <div className="flex justify-end mb-2">
+//           <button
+//             onClick={onClose}
+//             className="w-4 h-4 rounded-full bg-[#FF6B6B] hover:bg-red-600 transition-all duration-200 hover:scale-110"
+//           ></button>
+//         </div>
+
+//         {/* Avatar and Title */}
+//         <div className="flex flex-col items-center justify-center mb-6">
+//           <div className="mb-3 transform transition-all duration-300">
+//             <img
+//               src={oldWoman}
+//               alt="Old Woman"
+//               className="w-16 h-16 rounded-full border-2 border-transparent animate-bounce-subtle"
+//             />
+//           </div>
+//           <h2 className="text-lg font-bold text-black animate-fadeInUp">
+//             {showCustomization ? "Customize Your Plan" : "Choose your plan"}
+//           </h2>
+//         </div>
+
+//         {/* Plans Grid - with exit animation */}
+//         <div
+//           className={`transition-all duration-500 ease-in-out ${
+//             showCustomization
+//               ? "opacity-0 transform -translate-x-full scale-95 pointer-events-none absolute"
+//               : "opacity-100 transform translate-x-0 scale-100"
+//           }`}
+//         >
+//           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//             {plansData.map((plan, index) => (
+//               <div
+//                 key={plan.id}
+//                 className={`bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border border-[#7E4A5712] 
+//                   hover:outline-[#8B5A6B] hover:outline-2 rounded-2xl p-4 cursor-pointer relative 
+//                   min-h-[420px] flex flex-col transition-all duration-300 hover:scale-105 
+//                   hover:shadow-lg animate-fadeInUp`}
+//                 style={{ animationDelay: `${index * 100}ms` }}
+//                 onClick={() => handlePlanSelect(plan)}
+//               >
+//                 {/* Plan Header */}
+//                 <div className="text-center mb-4">
+//                   <h3 className="text-base font-bold text-black mb-1">
+//                     {plan.name}
+//                   </h3>
+//                   {plan.price && (
+//                     <p className="text-xs text-gray-600">{plan.price}</p>
+//                   )}
+//                 </div>
+
+//                 {/* Features List */}
+//                 <div className="flex-1 space-y-1.5 mb-4">
+//                   {plan.features.map((feature, featureIndex) => (
+//                     <div
+//                       key={featureIndex}
+//                       className="text-xs text-black leading-relaxed opacity-0 animate-fadeInUp"
+//                       style={{
+//                         animationDelay: `${index * 100 + featureIndex * 50}ms`,
+//                       }}
+//                     >
+//                       {feature}
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 {/* Select Button */}
+//                 <button
+//                   className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
+//                     duration-300 transform hover:scale-105 ${getButtonStyle(
+//                       plan
+//                     )}`}
+//                   disabled={plan.isDefault}
+//                 >
+//                   {plan.buttonText}
+//                 </button>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+
+//         {/* Customization Screen - with enter animation */}
+//         <div
+//           className={`transition-all duration-500 ease-in-out ${
+//             showCustomization
+//               ? "opacity-100 transform translate-x-0 scale-100"
+//               : "opacity-0 transform translate-x-full scale-95 pointer-events-none absolute"
+//           }`}
+//         >
+//           {selectedPlan && (
+//             <div
+//               className="bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border border-[#7E4A5712] 
+//               rounded-2xl p-6 w-full max-w-md mx-auto shadow-lg"
+//             >
+//               {/* Price Section */}
+//               <div className="text-center mb-4 flex items-end gap-2 justify-center animate-fadeInUp">
+//                 <h3 className="text-xl font-bold text-black">
+//                   {selectedPlan.name}
+//                 </h3>
+//                 {selectedPlan.price && (
+//                   <p className="text-sm text-gray-600">{selectedPlan.price}</p>
+//                 )}
+//               </div>
+
+//               {/* Choose Avatar */}
+//               <div
+//                 className="mb-6 animate-fadeInUp"
+//                 style={{ animationDelay: "100ms" }}
+//               >
+//                 <h4 className="text-sm font-bold text-gray-700 mb-2">
+//                   Choose Avatar any two ({selectedAvatars.length}/2)
+//                 </h4>
+//                 <div className="flex gap-3 justify-center">
+//                   {avatars.map((avatar, index) => (
+//                     <img
+//                       key={avatar.name}
+//                       src={avatar.src}
+//                       alt={avatar.alt}
+//                       className={`w-14 h-14 rounded-full border-2 cursor-pointer 
+//                         transition-all duration-300 hover:scale-110 animate-fadeInScale ${
+//                           selectedAvatars.includes(avatar.name)
+//                             ? "border-[#8B5A6B] shadow-lg scale-105"
+//                             : "border-transparent hover:border-indigo-500"
+//                         }`}
+//                       style={{ animationDelay: `${index * 100}ms` }}
+//                       onClick={() => toggleAvatar(avatar.name)}
+//                     />
+//                   ))}
+//                 </div>
+//               </div>
+
+//               {/* Choose Language */}
+//               <div
+//                 className="mb-6 animate-fadeInUp"
+//                 style={{ animationDelay: "200ms" }}
+//               >
+//                 <h4 className="text-sm font-bold text-gray-700 mb-2">
+//                   Choose Language any two ({selectedLanguages.length}/2)
+//                 </h4>
+//                 <div className="space-y-2">
+//                   {languages.map((language, index) => (
+//                     <label
+//                       key={language}
+//                       className={`flex items-center gap-2 text-sm text-gray-800 cursor-pointer 
+//                         transition-all duration-200 hover:translate-x-1 animate-fadeInLeft`}
+//                       style={{ animationDelay: `${index * 100}ms` }}
+//                     >
+//                       <input
+//                         type="checkbox"
+//                         className="w-4 h-4 accent-[#8B5A6B] transition-transform duration-200 hover:scale-110"
+//                         checked={selectedLanguages.includes(language)}
+//                         onChange={() => toggleLanguage(language)}
+//                       />
+//                       {language}
+//                     </label>
+//                   ))}
+//                 </div>
+//               </div>
+
+//               {/* Buttons */}
+//               <div
+//                 className="flex justify-between mt-6 animate-fadeInUp"
+//                 style={{ animationDelay: "300ms" }}
+//               >
+//                 <button
+//                   onClick={handleBackToPlans}
+//                   className="bg-gray-400 text-white px-6 py-2 rounded-lg font-medium 
+//                     transition-all duration-300 hover:bg-gray-500 hover:scale-105 hover:shadow-md"
+//                 >
+//                   Back
+//                 </button>
+//                 <button
+//                   className="bg-[#8B5A6B] text-white px-6 py-2 rounded-lg font-medium 
+//                   transition-all duration-300 hover:bg-[#7A4D5E] hover:scale-105 hover:shadow-md"
+//                 >
+//                   Pay
+//                 </button>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
