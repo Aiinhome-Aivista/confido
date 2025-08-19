@@ -83,6 +83,7 @@
 .animate-fadeInLeft {
   animation: fadeInLeft 0.5s ease-out forwards;
   opacity: 0;
+  color: #dadada32;
 }
 
 .animate-fadeInScale {
@@ -90,6 +91,6 @@
   opacity: 0;
 }
 
-.animate-bounce-subtle {
+/* .animate-bounce-subtle {
   animation: bounce-subtle 2s infinite;
-}
+} */
