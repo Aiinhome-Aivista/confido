@@ -14,7 +14,7 @@ import { createVoiceUtterance } from "../../../utils/voiceUtils";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
-import SubscriptionModal from '../../../common/modal/SubscriptionModal.jsx';
+import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
 
 
 const ChatSectionText = ({
@@ -331,7 +331,7 @@ const ChatSectionText = ({
       </div>
       {/* ✅ sessionExpired Modal */}
       {showSubscriptionModal && (
-        <SubscriptionModal onClose={() => setShowSubscriptionModal(false)} />
+        <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
       )}
     </div>
   );
