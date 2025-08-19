@@ -50,7 +50,7 @@ export default function SubscriptionModal({ onClose }) {
             {plansData.map((plan) => (
               <div
                 key={plan.id}
-                className={`bg-[#E8F5E8] border-2 border-gray-300 hover:border-[#4A90E2] rounded-2xl p-4 cursor-pointer relative min-h-[420px] flex flex-col transition-all duration-300`}
+                className={`bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border border-[#7E4A5712] hover:outline-[#8B5A6B]  hover:outline-2 rounded-2xl p-4 cursor-pointer relative min-h-[420px] flex flex-col transition-all duration-300`}
                 onClick={() => handlePlanSelect(plan)}
               >
                 {/* Plan Header */}
@@ -91,9 +91,9 @@ export default function SubscriptionModal({ onClose }) {
 
         {/* Customization Screen */}
         {showCustomization && selectedPlan && (
-          <div className="bg-[#E8F5E8] border border-gray-300 rounded-2xl p-6 w-full max-w-md mx-auto shadow-lg">
+          <div className="bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border border-[#7E4A5712] rounded-2xl p-6 w-full max-w-md mx-auto shadow-lg">
             {/* Price Section */}
-            <div className="text-center mb-4 flex items-end gap-2 justify-center">
+            <div className="text-center mb-4 flex items-end gap-2 ">
               <h3 className="text-xl font-bold text-black">
                 {selectedPlan.name}
               </h3>
@@ -140,14 +140,14 @@ export default function SubscriptionModal({ onClose }) {
                 <label className="flex items-center gap-2 text-sm text-gray-800">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 accent-indigo-600"
+                    className="w-4 h-4 accent-[#8B5A6B]"
                   />
                   English
                 </label>
                 <label className="flex items-center gap-2 text-sm text-gray-800">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 accent-indigo-600"
+                    className="w-4 h-4 accent-[#8B5A6B]"
                     defaultChecked
                   />
                   Hindi
@@ -155,7 +155,7 @@ export default function SubscriptionModal({ onClose }) {
                 <label className="flex items-center gap-2 text-sm text-gray-800">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 accent-indigo-600"
+                    className="w-4 h-4 accent-[#8B5A6B]"
                     defaultChecked
                   />
                   Bengali
