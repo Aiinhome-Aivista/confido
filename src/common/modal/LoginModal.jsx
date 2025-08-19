@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaGoogle, FaFacebookF } from "react-icons/fa";
+import { FaGoogle, FaFacebookF, FaCheckCircle } from "react-icons/fa";
 import { auth, googleProvider, facebookProvider } from "../../firebaseConfig.js";
 import { signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
 import { POST_url } from "../../connection/connection .jsx";
@@ -27,7 +27,7 @@ export default function LoginModal() {
 
     const [email, setEmail] = useState("");
     const [displayName, setDisplayName] = useState("");
-
+    const [loginSuccess, setLoginSuccess] = useState(false);
     const handleGoogleLogin = async () => {
         try {
             const result = await signInWithPopup(auth, googleProvider);
@@ -61,7 +61,9 @@ export default function LoginModal() {
                     console.log("Returning user:", data.message);
                 }
 
-                setRedirectToChat(true)
+                // setRedirectToChat(true)
+                setLoginSuccess(true);
+                setTimeout(() => setRedirectToChat(true), 1000);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -105,7 +107,9 @@ export default function LoginModal() {
                 } else if (data.statusCode === 200) {
                     console.log("Returning user:", data.message);
                 }
-                setRedirectToChat(true)
+                // setRedirectToChat(true)
+                setLoginSuccess(true);
+                setTimeout(() => setRedirectToChat(true), 1500);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -205,41 +209,48 @@ export default function LoginModal() {
                     <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-500 overflow-hidden shadow-md">
                         {renderAvatar()}
                     </div>
-                    <p className="text-base font-extrabold py-4">Login here</p>
-                    <div className="flex space-x-8">
-                        <button
-                            style={socialButtonStyle}
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={handleGoogleLogin}
-                        >
-                            <FaGoogle
-                                style={{
-                                    color: "rgb(107, 114, 128)",
-                                    fontSize: "20px",
-                                    pointerEvents: "none",
-                                    transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                                    opacity: "0.5",
-                                }}
-                            />
-                        </button>
-                        <button
-                            onClick={handleFacebookLogin}
-                            style={socialButtonStyle}
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                        >
-                            <FaFacebookF
-                                style={{
-                                    color: "rgb(107, 114, 128)",
-                                    fontSize: "20px",
-                                    pointerEvents: "none",
-                                    transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                                    opacity: "0.5",
-                                }}
-                            />
-                        </button>
-                    </div>
+                    {loginSuccess ? (
+                        <>
+                            <FaCheckCircle className="text-4xl mt-6 mb-2" style={{ color: "#B3FF00" }} />
+                            <p className="text-base font-extrabold">Login successfully</p>
+                        </>
+                    ) : (
+                        <><p className="text-base font-extrabold py-4">Login here</p>
+                            <div className="flex space-x-8">
+                                <button
+                                    style={socialButtonStyle}
+                                    onMouseEnter={handleMouseEnter}
+                                    onMouseLeave={handleMouseLeave}
+                                    onClick={handleGoogleLogin}
+                                >
+                                    <FaGoogle
+                                        style={{
+                                            color: "rgb(107, 114, 128)",
+                                            fontSize: "20px",
+                                            pointerEvents: "none",
+                                            transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                                            opacity: "0.5",
+                                        }}
+                                    />
+                                </button>
+                                <button
+                                    onClick={handleFacebookLogin}
+                                    style={socialButtonStyle}
+                                    onMouseEnter={handleMouseEnter}
+                                    onMouseLeave={handleMouseLeave}
+                                >
+                                    <FaFacebookF
+                                        style={{
+                                            color: "rgb(107, 114, 128)",
+                                            fontSize: "20px",
+                                            pointerEvents: "none",
+                                            transition: "color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                                            opacity: "0.5",
+                                        }}
+                                    />
+                                </button>
+                            </div></>
+                    )}
                 </div>
             </div>
         </div>
