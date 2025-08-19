@@ -286,70 +286,71 @@
 
 
 import React, { useState } from "react";
+import { plansData } from "../../data/data.jsx";
 
 export default function SubscriptionModal() {
   const [selectedPlan, setSelectedPlan] = useState("premium");
   const [openPricingModal, setOpenPricingModal] = useState(true);
 
-  const plans = [
-    {
-      id: "free",
-      name: "Free",
-      price: "",
-      features: [
-        "Avatars: 1 of 4 (switch anytime within the chosen one)",
-        "Languages: 1 of 3 (default English)",
-        "Session time: 15 min / session",
-        "Daily sessions: up to 10 / day",
-        "Conversation history: last 50 chats saved",
-        "Export transcripts: TXT only",
-        "Support: Email (48-72h)",
-        "Device limit: 1 logged-in device at a time",
-      ],
-      buttonText: "Selected",
-      isDefault: true,
-      bgColor: "bg-[#E8F5E8]"
-    },
-    {
-      id: "premium",
-      name: "Rs. 299/-",
-      price: "Monthly",
-      features: [
-        "Avatars: 2 of 4 unlocked",
-        "Languages: 2 of 3",
-        "Session time: 30 min / session",
-        "Daily sessions: up to 30 / day",
-        "Conversation history: 200 chats saved",
-        "Export transcripts: TXT & PDF",
-        "Voice responses: standard",
-        "Support: Priority email (24-48h)",
-        "Device limit: 2 logged-in devices",
-      ],
-      buttonText: "Select",
-      isPopular: true,
-      bgColor: "bg-white"
-    },
-    {
-      id: "pro",
-      name: "Rs. 599/-",
-      price: "Monthly",
-      features: [
-        "Avatars: All 4 unlocked",
-        "Languages: All 3",
-        "Session time: 60 min / session",
-        "Daily sessions: Unlimited",
-        "Conversation history: Unlimited",
-        "Export transcripts: TXT, PDF & CSV",
-        "Voice responses: enhanced (clearer TTS)",
-        "Support: Priority (2-4h) with chat",
-        "Device limit: 3 logged-in devices",
-        "Beta access: new avatars & features first",
-      ],
-      buttonText: "Select",
-      isPopular: false,
-      bgColor: "bg-white"
-    },
-  ];
+//   const plans = [
+//     {
+//       id: "free",
+//       name: "Free",
+//       price: "",
+//       features: [
+//         "Avatars: 1 of 4 (switch anytime within the chosen one)",
+//         "Languages: 1 of 3 (default English)",
+//         "Session time: 15 min / session",
+//         "Daily sessions: up to 10 / day",
+//         "Conversation history: last 50 chats saved",
+//         "Export transcripts: TXT only",
+//         "Support: Email (48-72h)",
+//         "Device limit: 1 logged-in device at a time",
+//       ],
+//       buttonText: "Selected",
+//       isDefault: true,
+//       bgColor: "bg-[#E8F5E8]"
+//     },
+//     {
+//       id: "premium",
+//       name: "Rs. 299/-",
+//       price: "Monthly",
+//       features: [
+//         "Avatars: 2 of 4 unlocked",
+//         "Languages: 2 of 3",
+//         "Session time: 30 min / session",
+//         "Daily sessions: up to 30 / day",
+//         "Conversation history: 200 chats saved",
+//         "Export transcripts: TXT & PDF",
+//         "Voice responses: standard",
+//         "Support: Priority email (24-48h)",
+//         "Device limit: 2 logged-in devices",
+//       ],
+//       buttonText: "Select",
+//       isPopular: true,
+//       bgColor: "bg-white"
+//     },
+//     {
+//       id: "pro",
+//       name: "Rs. 599/-",
+//       price: "Monthly",
+//       features: [
+//         "Avatars: All 4 unlocked",
+//         "Languages: All 3",
+//         "Session time: 60 min / session",
+//         "Daily sessions: Unlimited",
+//         "Conversation history: Unlimited",
+//         "Export transcripts: TXT, PDF & CSV",
+//         "Voice responses: enhanced (clearer TTS)",
+//         "Support: Priority (2-4h) with chat",
+//         "Device limit: 3 logged-in devices",
+//         "Beta access: new avatars & features first",
+//       ],
+//       buttonText: "Select",
+//       isPopular: false,
+//       bgColor: "bg-white"
+//     },
+//   ];
 
   const handlePlanSelect = (planId) => {
     setSelectedPlan(planId);
@@ -394,7 +395,7 @@ export default function SubscriptionModal() {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
-          {plans.map((plan) => (
+          {plansData.map((plan) => (
             <div
               key={plan.id}
               className={`${plan.bgColor} border-2 border-gray-300 hover:border-[#4A90E2] rounded-2xl p-4 cursor-pointer relative min-h-[420px] flex flex-col transition-all duration-300`}
