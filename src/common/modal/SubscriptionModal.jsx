@@ -288,9 +288,9 @@
 import React, { useState } from "react";
 import { plansData } from "../../data/data.jsx";
 
-export default function SubscriptionModal() {
+export default function SubscriptionModal({ onClose }) {
   const [selectedPlan, setSelectedPlan] = useState("premium");
-  const [openPricingModal, setOpenPricingModal] = useState(true);
+//   const [openPricingModal, setOpenPricingModal] = useState(true);
 
 //   const plans = [
 //     {
@@ -369,9 +369,9 @@ export default function SubscriptionModal() {
     return "bg-gray-600 text-white hover:bg-gray-700";
   };
 
-  if (!openPricingModal) {
-    return null;
-  }
+//   if (!openPricingModal) {
+//     return null;
+//   }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
@@ -380,7 +380,7 @@ export default function SubscriptionModal() {
         {/* Close Button */}
         <div className="flex justify-end mb-2">
           <button
-            onClick={() => setOpenPricingModal(false)}
+            onClick={onClose} 
             className="w-4 h-4 rounded-full bg-[#FF6B6B] hover:bg-red-600 cursor-pointer transition-colors"
           ></button>
         </div>
