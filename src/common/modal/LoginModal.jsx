@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebookF, FaCheckCircle } from "react-icons/fa";
 import { auth, googleProvider, facebookProvider } from "../../firebaseConfig.js";
@@ -15,8 +15,8 @@ import { AuthContext } from "../../common/helper/AuthContext.jsx";
 export default function LoginModal() {
 
     const location = useLocation();
-    const [redirectToChat, setRedirectToChat] = useState(false)
-    const { selectedAvatar, openLoginModal, setOpenLoginModal } = useContext(AuthContext)
+    const { selectedAvatar, setOpenLoginModal } = useContext(AuthContext)
+    const [isClosing, setIsClosing] = useState(false);
 
     console.log(selectedAvatar)
 
@@ -63,7 +63,10 @@ export default function LoginModal() {
 
                 // setRedirectToChat(true)
                 setLoginSuccess(true);
-                setTimeout(() => setRedirectToChat(true), 1000);
+                setIsClosing(true);
+                setTimeout(() => {
+                    setOpenLoginModal(false);
+                }, 300);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -177,9 +180,12 @@ export default function LoginModal() {
         if (icon) icon.style.opacity = "0.5";
     };
 
-    if (redirectToChat) {
-        return <ChooseAvatar />;
-    }
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setOpenLoginModal(false);
+        }, 300);
+    };
 
     const renderAvatar = () => {
         switch (selectedAvatar) {
@@ -193,20 +199,20 @@ export default function LoginModal() {
                 return <Experience />
             default:
                 return (
-                    <Experience />
+                    <RaviExperience />
                 );
         }
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-50">
-            <div className="loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center">
+            <div className={`loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center ${isClosing ? 'animate-zoom-out' : 'animate-zoom-in'}`}>
                 <div className="flex flex-row items-start justify-between h-1/10 w-[100%]">
                     <div></div>
-                    <button onClick={() => setOpenLoginModal(false)} className="modalCloseIcon rounded-full w-4 h-4 cursor-pointer"></button>
+                    <button onClick={handleClose} className="modalCloseIcon rounded-full w-4 h-4 cursor-pointer"></button>
                 </div>
                 <div className="flex flex-col items-center justify-center h-9/10 pb-[10%]">
-                    <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border border-gray-500 overflow-hidden shadow-md">
+                    <div className="avatar-container w-28 h-28 md:w-32 md:h-32 rounded-full border-2 border-gray-500 overflow-hidden shadow-md">
                         {renderAvatar()}
                     </div>
                     {loginSuccess ? (
