@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -10,6 +10,14 @@ export function AuthProvider({ children }) {
     const [avatarSpeech, setAvatarSpeech] = useState("");
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [sessionTerminated, setSessionTerminated] = useState(false);
+
+    // 👇 Run once on app mount
+    useEffect(() => {
+        if (sessionStorage.getItem("sessionId")) {
+            sessionStorage.removeItem("sessionId");
+            console.log(" sessionId cleared on reload");
+        }
+    }, []);
 
 
     return (
