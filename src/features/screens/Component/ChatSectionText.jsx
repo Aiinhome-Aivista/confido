@@ -14,13 +14,15 @@ import { createVoiceUtterance } from "../../../utils/voiceUtils";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
+import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
+
 
 const ChatSectionText = ({
   isTerminated,
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const {setAvatarSpeech} = useContext(AuthContext);
+  const { setAvatarSpeech } = useContext(AuthContext);
   const { selectedAvatar } = useContext(AuthContext);
 
   // const [session, setSession] = useState([chatSession[0]]);
@@ -40,6 +42,8 @@ const ChatSectionText = ({
   const [isCameraHovered, setIsCameraHovered] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const expiryTimer = useRef(null);
 
 
 
@@ -62,6 +66,10 @@ const ChatSectionText = ({
       setShowNewSessionBtn(true);
     }
   }, [isTerminated]);
+
+  useEffect(() => {
+    return () => clearTimeout(expiryTimer.current);
+  }, []);
 
   useEffect(() => {
     if (chatRef.current) {
@@ -104,6 +112,7 @@ const ChatSectionText = ({
 
   const sessionId = sessionStorage.getItem("sessionId");
 
+
   const handleUserMessage = async (text) => {
     if (!text) return;
     setIsMicActive(false);
@@ -127,8 +136,8 @@ const ChatSectionText = ({
 
       // Call backend chat API
       const payload = {
-        session_id: sessionId,   
-        time: "50 min",
+        session_id: sessionId,
+        time: "5 min",
         user_input: text,
       };
 
@@ -140,6 +149,13 @@ const ChatSectionText = ({
 
       console.log("Chat API response:", res);
 
+      // check if session ended
+      if (res?.data?.end === true) {
+        setShowSubscriptionModal(true); 
+        return; 
+      }
+
+
       // Add AI response to session
       if (res?.data?.message) {
         setSession((prev) => [
@@ -150,7 +166,7 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
-         setAvatarSpeech(res.data.message);
+        setAvatarSpeech(res.data.message);
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -170,7 +186,7 @@ const ChatSectionText = ({
 
   const speakAndAdd = async (message) => {
 
-    
+
     setAvatarReading(true);
 
     return new Promise((resolve) => {
@@ -180,14 +196,14 @@ const ChatSectionText = ({
       const utter = new SpeechSynthesisUtterance(message);
 
       // Use avatar-specific voice configuration
-     
+
 
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
-     
+
 
       setSession((prev) => [
         ...prev,
@@ -234,9 +250,9 @@ const ChatSectionText = ({
 
             {/* Typing loader for last AI message */}
             {isAILoading && index === session.length - 1 && (
-              <div className="mb-4 flex items-start">
+              <div className="mb-4 px-2 flex items-start">
                 <div className="max-w-[60%] px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg">
-                 
+
                   <TypingDots />
 
                 </div>
@@ -313,6 +329,10 @@ const ChatSectionText = ({
           <SendRoundedIcon fontSize='large' />
         </button>
       </div>
+      {/* ✅ sessionExpired Modal */}
+      {showSubscriptionModal && (
+        <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
+      )}
     </div>
   );
 };

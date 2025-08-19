@@ -11,12 +11,15 @@ import { apiService } from "../Service/apiService";
 import { GET_url } from "../connection/connection .jsx";
 import { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
+import SubscriptionModal from "../common/modal/SubscriptionModal";
+import SessionExpiredModal from "../common/modal/SessionExpiredModal";
 
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [languages, setLanguages] = useState([]);
   const leaveTimer = useRef(null);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
@@ -128,7 +131,7 @@ export default function Header() {
   return (
     <>
       <header className="header">
-        <div className="logo-container">
+        <div className="logo-container cursor-pointer" onClick={() => setShowSubscriptionModal(true)} >
           <img src={logoSrc} alt="Logo" className="logo" />
         </div>
 
@@ -182,6 +185,12 @@ export default function Header() {
       </header>
 
       <div className="header-spacer" />
+
+      {/* Modal */}
+      {showSubscriptionModal && (
+        <SubscriptionModal onClose={() => setShowSubscriptionModal(false)} />
+        // <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
+      )}
     </>
   );
 }
