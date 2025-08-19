@@ -10,8 +10,9 @@ function App() {
     <>
       <MouseClickSounds />
       <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
-        <AnimatedBlobs />
+       
         <AuthProvider>
+          <AnimatedBlobs /> 
           < div style={{ position: "relative", zIndex: 10 }}>
             <BrowserRouter>
               <Index />
@@ -24,3 +25,6 @@ function App() {
 }
 
 export default App
+
+
+

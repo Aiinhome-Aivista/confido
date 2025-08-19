@@ -18,10 +18,10 @@ import {
 import { chatSession, setChatSession } from "../data/data.jsx";
 
 const avatars = [
-  { name: "Ravi", img: ravi, avatar: <RaviExperience /> },
-  { name: "Hema", img: hema, avatar: <Experience /> },
-  { name: "Subho", img: subho, avatar: <SubhoExperience /> },
-  { name: "Sita", img: sita, avatar: <SitaExperience /> },
+  { name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
+  { name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
+  { name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
+  { name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
 ];
 
 const avatarId = [
@@ -33,15 +33,20 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, 
- } = useContext(AuthContext);
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal,
+  } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
     // Cancel any pending hover voice
-   
 
-    setSelectedAvatar(avatar.name);
+
+    setSelectedAvatar({
+      name: avatar.name,
+      color: avatar.color
+    });
+
+    
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
@@ -57,15 +62,15 @@ export default function ChooseAvatar() {
 
   const handleAvatarHover = (avatarName) => {
     // Cancel any existing timeout
-    
+
     setAvatarSpeech(`Hi I am ${avatarName}. Your personal conversation buddy`)
     // Start new timeout for 3 second delay
-  
+
   };
 
   const handleAvatarLeave = () => {
     // Cancel the pending voice when mouse leaves
-   
+
     hoverTimeoutRef.current = null;
   };
 
