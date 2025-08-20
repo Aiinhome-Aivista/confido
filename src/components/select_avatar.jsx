@@ -33,18 +33,17 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setHoverAvatar
- } = useContext(AuthContext);
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated
+  } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
-    // Cancel any pending hover voice
-   
-
     setSelectedAvatar(avatar.name);
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
+
+    setSessionTerminated(false);
 
     if (storedEmail && storedName) {
       await createSession(storedUser, avatar);
@@ -56,14 +55,16 @@ export default function ChooseAvatar() {
   };
 
   const handleAvatarHover = (avatarName) => {
-    setAvatarSpeech(`Hi I am ${avatarName}. Your personal conversation buddy`);
-    setHoverAvatar(avatarName);
-    setSelectedAvatar(avatarName)
+    // Cancel any existing timeout
+
+    setAvatarSpeech(`Hi I am ${avatarName}. Your personal conversation buddy`)
+    // Start new timeout for 3 second delay
+
   };
 
   const handleAvatarLeave = () => {
     // Cancel the pending voice when mouse leaves
-   
+
     hoverTimeoutRef.current = null;
   };
 

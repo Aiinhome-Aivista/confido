@@ -1,8 +1,17 @@
 import React from 'react';
 import ChatSectionAvatar from './Component/ChatSectionAvatar';
 import ChatSectionText from './Component/ChatSectionText';
+import { useContext } from 'react';
+import { AuthContext } from '../../common/helper/AuthContext.jsx';
+import ChooseAvatar from '../../components/select_avatar.jsx';
 
 function ChatScreen() {
+  const { sessionTerminated } = useContext(AuthContext);
+
+  if (sessionTerminated) {
+    return <ChooseAvatar />;
+  }
+
   return (
     <div className="flex h-[100%]">
       <div className='w-2/8'>

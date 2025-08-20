@@ -11,20 +11,24 @@ import { apiService } from "../Service/apiService";
 import { GET_url } from "../connection/connection .jsx";
 import { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
+import TerminateModal from "../features/terminateModal.jsx";
+
 
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [languages, setLanguages] = useState([]);
   const leaveTimer = useRef(null);
+  const [showModal, setShowModal] = useState(false);
 
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
   const storedEmail = storedUser.email || "";
   const { setOpenLoginModal } = useContext(AuthContext);
-
   const { setIsLogin } = useContext(AuthContext);
   const [selectedLanguage, setSelectedLanguage] = useState(sessionStorage.getItem("selectedLanguage") || "");
+
+  const sessionId = sessionStorage.getItem("sessionId");
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -60,8 +64,6 @@ export default function Header() {
       setSelectedLanguage(JSON.parse(savedLang));
     }
   }, []);
-
-
 
   // Logout handler
   const handleLogout = async () => {
@@ -131,56 +133,67 @@ export default function Header() {
         <div className="logo-container">
           <img src={logoSrc} alt="Logo" className="logo" />
         </div>
+        <div className="flex">
+          <div className="terminateIconBg px-3">
+            {sessionId && <div onClick={() => setShowModal(true)} className="relative bg-[#76DE48] px-[0.5rem] py-[0.5rem] rounded-full cursor-pointer">
+              <span className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-pulse-ring z-0" />
+            </div>}
+          </div>
+          <div className="icon-wrapper items-center">
+            {icons.map((item) => {
+              const expanded = hovered === item.id;
+              return (
+                <div
+                  key={item.id}
+                  className={`icon-box ${expanded ? "expanded" : ""}`}
+                  onMouseEnter={() => handleEnter(item.id)}
+                  onMouseLeave={handleLeave}
+                  onClick={item.id === "login" ? handleLoginClick : undefined}
+                >
+                  <img src={item.icon} alt={item.title} className="icon-badge" />
+                  <div className="icon-body">
+                    <div className="icon-title">{item.title}</div>
+                    {item.id === "login" && storedName && (
+                      <div
+                        className="icon-option text-red-600 cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </div>
+                    )}
 
-        <div className="icon-wrapper">
-          {icons.map((item) => {
-            const expanded = hovered === item.id;
-            return (
-              <div
-                key={item.id}
-                className={`icon-box ${expanded ? "expanded" : ""}`}
-                onMouseEnter={() => handleEnter(item.id)}
-                onMouseLeave={handleLeave}
-                onClick={item.id === "login" ? handleLoginClick : undefined}
-              >
-                <img src={item.icon} alt={item.title} className="icon-badge" />
-                <div className="icon-body">
-                  <div className="icon-title">{item.title}</div>
-                  {item.id === "login" && storedName && (
-                    <div
-                      className="icon-option text-red-600 cursor-pointer"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </div>
-                  )}
-
-                  {item.options.length > 0 && (
-                    <div className="icon-options">
-                      {item.options.map((opt, i) => (
-                        <div
-                          key={i}
-                          className="icon-option"
-                          onClick={() => {
-                            if (item.id === "language") {
-                              setSelectedLanguage(opt);
-                              sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
-                            }
-                          }}
-                        >
-                          {typeof opt === "string" ? opt : opt.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-
+                    {item.options.length > 0 && (
+                      <div className="icon-options">
+                        {item.options.map((opt, i) => (
+                          <div
+                            key={i}
+                            className="icon-option"
+                            onClick={() => {
+                              if (item.id === "language") {
+                                setSelectedLanguage(opt);
+                                sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
+                              }
+                            }}
+                          >
+                            {typeof opt === "string" ? opt : opt.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </header>
+
+        {showModal && (
+          <TerminateModal
+            onClose={() => setShowModal(false)}
+            // onConfirm={handleTerminate}
+          />
+        )}
+      </header >
 
       <div className="header-spacer" />
     </>

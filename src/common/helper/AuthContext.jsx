@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -10,8 +10,16 @@ export function AuthProvider({ children }) {
     const [greeting, setGreeting] = useState(true);
     const [avatarSpeech, setAvatarSpeech] = useState("");
     const [openLoginModal, setOpenLoginModal] = useState(false);
+    const [sessionTerminated, setSessionTerminated] = useState(false);
 
- 
+    // 👇 Run once on app mount
+    useEffect(() => {
+        if (sessionStorage.getItem("sessionId")) {
+            sessionStorage.removeItem("sessionId");
+            console.log(" sessionId cleared on reload");
+        }
+    }, []);
+
 
     return (
         <AuthContext.Provider value={{
@@ -24,11 +32,12 @@ export function AuthProvider({ children }) {
             greeting, setGreeting,
             avatarSpeech, setAvatarSpeech,
              openLoginModal, setOpenLoginModal,
-             hoverAvatar, setHoverAvatar
+             hoverAvatar, setHoverAvatar,
+            sessionTerminated, setSessionTerminated
         }}>
 
             {children}
-  
+
         </AuthContext.Provider>
     );
 }
