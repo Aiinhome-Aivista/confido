@@ -33,7 +33,7 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
@@ -57,9 +57,8 @@ export default function ChooseAvatar() {
 
   const handleAvatarHover = (avatarName) => {
     // Cancel any existing timeout
-
-    setAvatarSpeech(`Hi I am ${avatarName}. Your personal conversation buddy`)
-    // Start new timeout for 3 second delay
+   
+ setHoverAvatar(avatarName);
 
   };
 

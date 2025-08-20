@@ -7,10 +7,11 @@ export function AuthProvider({ children }) {
     const [hoverAvatar, setHoverAvatar] = useState("");
     const [selectedAvatar, setSelectedAvatar] = useState("Ravi");
      const [currentVoiceType, setCurrentVoiceType] = useState("adultWoman");
-    const [greeting, setGreeting] = useState(true);
+    const [greeting, setGreeting] = useState(false);
     const [avatarSpeech, setAvatarSpeech] = useState("");
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [sessionTerminated, setSessionTerminated] = useState(false);
+  
 
     // 👇 Run once on app mount
     useEffect(() => {

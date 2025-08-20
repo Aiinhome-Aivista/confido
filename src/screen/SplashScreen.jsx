@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 import confidoSvg from "../assets/icons/confido_logo.svg";
-import { Experience } from "../features/characters/hema/experience";
+import { Experience } from "../features/characters/nisa/experience";
 import { createNoise2D } from "simplex-noise";
 import Header from "../components/header";
 import { useNavigate } from "react-router-dom";

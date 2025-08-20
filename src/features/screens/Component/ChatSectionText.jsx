@@ -137,7 +137,7 @@ const ChatSectionText = ({
       // Call backend chat API
       const payload = {
         session_id: sessionId,
-        time: "5 min",
+        time: "50 min",
         user_input: text,
         avatar_id: 2
       };
@@ -167,7 +167,7 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
-        setAvatarSpeech(res.data.message);
+        setAvatarSpeech(res.data);
       }
     } catch (err) {
       console.error("Chat API Error:", err);
