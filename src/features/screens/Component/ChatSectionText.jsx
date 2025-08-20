@@ -14,13 +14,14 @@ import { createVoiceUtterance } from "../../../utils/voiceUtils";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
+import { sanitizeTextForSpeech } from "../../../common/helper/helper.jsx";
 
 const ChatSectionText = ({
   isTerminated,
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const {setAvatarSpeech} = useContext(AuthContext);
+  const { setAvatarSpeech } = useContext(AuthContext);
   const { selectedAvatar } = useContext(AuthContext);
 
   // const [session, setSession] = useState([chatSession[0]]);
@@ -51,6 +52,11 @@ const ChatSectionText = ({
     setSessionController(0);
     setCurrentIndex(0);
   };
+  useEffect(() => {
+    if (session.length > 0 && session[0].role === "ai") {
+      setAvatarSpeech(sanitizeTextForSpeech(session[0].message))
+    }
+  }, [session]);
 
   // When ChatScreen mounts, refresh from latest chatSession
   useEffect(() => {
@@ -127,7 +133,7 @@ const ChatSectionText = ({
 
       // Call backend chat API
       const payload = {
-        session_id: sessionId,   
+        session_id: sessionId,
         time: "50 min",
         user_input: text,
       };
@@ -146,11 +152,11 @@ const ChatSectionText = ({
           ...prev,
           {
             role: "ai",
-            message: res.data.message,
+            message: cleanMessage,
             time: new Date().toLocaleTimeString(),
           },
         ]);
-         setAvatarSpeech(res.data.message);
+        setAvatarSpeech(sanitizeTextForSpeech(res.data.message));
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -170,24 +176,21 @@ const ChatSectionText = ({
 
   const speakAndAdd = async (message) => {
 
-    
+
     setAvatarReading(true);
 
     return new Promise((resolve) => {
       setSpeakingText(message);
-
-      setAvatarSpeech(message);
-      const utter = new SpeechSynthesisUtterance(message);
-
-      // Use avatar-specific voice configuration
-     
-
+      // ✅ Voice gets emoji-free version
+      const cleanMessage = sanitizeTextForSpeech(message);
+      setAvatarSpeech(cleanMessage);
+      const utter = new SpeechSynthesisUtterance(cleanMessage);
+      speechSynthesis.speak(utter);
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
-     
 
       setSession((prev) => [
         ...prev,
@@ -236,7 +239,7 @@ const ChatSectionText = ({
             {isAILoading && index === session.length - 1 && (
               <div className="mb-4 flex items-start">
                 <div className="max-w-[60%] px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg">
-                 
+
                   <TypingDots />
 
                 </div>

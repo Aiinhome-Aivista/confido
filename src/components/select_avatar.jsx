@@ -16,6 +16,7 @@ import {
   cancelWelcomeMessage
 } from "../utils/voiceUtils.js";
 import { chatSession, setChatSession } from "../data/data.jsx";
+import {sanitizeTextForSpeech} from "../common/helper/helper.jsx";
 
 const avatars = [
   { name: "Ravi", img: ravi, avatar: <RaviExperience /> },
@@ -108,6 +109,7 @@ export default function ChooseAvatar() {
             time: new Date().toLocaleTimeString(),
           },
         ]);
+         setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
       }
     } catch (error) {
       console.error("Session API Failed:", error);
