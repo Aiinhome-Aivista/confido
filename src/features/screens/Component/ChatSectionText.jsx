@@ -15,6 +15,7 @@ import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
 import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
+import { startListening } from "./speechRecognization.jsx";
 
 
 const ChatSectionText = ({
@@ -40,10 +41,13 @@ const ChatSectionText = ({
   // const [avatarReading, setAvatarReading] = useState(false);
   const [isMicHovered, setIsMicHovered] = useState(false);
   const [isCameraHovered, setIsCameraHovered] = useState(false);
-  const [isMicActive, setIsMicActive] = useState(false);
+  // const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const expiryTimer = useRef(null);
+
+  const [isMicActive, setIsMicActive] = useState(false);
+  const recognitionRef = useRef(null);
 
 
 
@@ -137,7 +141,7 @@ const ChatSectionText = ({
       // Call backend chat API
       const payload = {
         session_id: sessionId,
-        time: "5 min",
+        time: "50 min",
         user_input: text,
         avatar_id: 2
       };
@@ -152,8 +156,8 @@ const ChatSectionText = ({
 
       // check if session ended
       if (res?.data?.end === true) {
-        setShowSubscriptionModal(true); 
-        return; 
+        setShowSubscriptionModal(true);
+        return;
       }
 
 
@@ -213,6 +217,25 @@ const ChatSectionText = ({
     });
   };
 
+  const handleMicClick = () => {
+    if (!isMicActive) {
+      // Start listening
+      recognitionRef.current = startListening(
+        (transcript) => {
+          console.log("Voice Input:", transcript);
+          handleUserMessage(transcript); // send as input
+        },
+        () => setIsMicActive(false) // reset when recognition ends
+      );
+    } else {
+      // Stop listening
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    }
+    setIsMicActive((prev) => !prev);
+  };
+
   return (
     <div className='flex flex-col justify-between p-3 h-[100%]'>
       {/* Chat messages */}
@@ -229,10 +252,10 @@ const ChatSectionText = ({
             >
               {item.role === "ai" ? (
                 <div
-                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg ${(formatMessage(item.message))
+                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg  ${(formatMessage(item.message))
                     ? "items-center"
                     : "items-start"
-                    }`}
+                    }  backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md`}
                 >
                   <div
                     className="flex"
@@ -247,8 +270,9 @@ const ChatSectionText = ({
                 //   {item.message}
                 // </div>
                 <div
-                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg opacity-70"
-                  style={{ backgroundColor: selectedAvatar?.color
+                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md"
+                  style={{
+                    backgroundColor: selectedAvatar?.color
                   }}
                 >
                   {item.message}
@@ -288,7 +312,7 @@ const ChatSectionText = ({
         </div>
       )}
       <div className="text-input-section flex justify-between items-center mt-4 gap-4 w-full">
-        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
+        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md">
           <input
             type="text"
             value={userInput}
@@ -307,10 +331,19 @@ const ChatSectionText = ({
             className="flex-1 rounded-2xl h-[2.6rem] outline-none placeholder:font-medium"
             placeholder="Type here" />
           <div className='buttons flex gap-2'>
-            <button
+            {/* <button
               className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onClick={() => setIsMicActive(prev => !prev)}
+              onMouseEnter={() => setIsMicHovered(true)}
+              onMouseLeave={() => setIsMicHovered(false)}
+            >
+              <SettingsVoiceRoundedIcon />
+            </button> */}
+            <button
+              className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
+                } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
+              onClick={handleMicClick}
               onMouseEnter={() => setIsMicHovered(true)}
               onMouseLeave={() => setIsMicHovered(false)}
             >
@@ -332,7 +365,7 @@ const ChatSectionText = ({
             setUserInput("");
             userInputRef.current = "";
           }}
-          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
+          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1 backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md">
 
           <SendRoundedIcon fontSize='large' />
         </button>
