@@ -142,70 +142,84 @@ export default function Header() {
               <span className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-pulse-ring z-0" />
             </div>}
           </div>
-       
-        
-        <div className="icon-wrapper">
-          {icons.map((item) => {
-            const expanded = hovered === item.id;
-            return (
-              <div
-                key={item.id}
-                className={`icon-box ${expanded ? "expanded" : ""}`}
-                onMouseEnter={() => handleEnter(item.id)}
-                onMouseLeave={handleLeave}
-              >
-                <img src={item.icon} alt={item.title} className="icon-badge" />
-                <div className="icon-body">
-                  <div className="icon-title cursor-pointer" onClick={handleLoginClick}>{item.title}</div>
-                  {item.id === "login" && storedName && (
-                    <div
-                      className="icon-option text-red-600 cursor-pointer"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </div>
-                  )}
 
-                  {item.options.length > 0 && (
-                    <div className="icon-options">
-                      {item.options.map((opt, i) => (
-                        <div
-                          key={i}
-                          className="icon-option"
-                          onClick={() => {
-                            if (item.id === "language") {
-                              setSelectedLanguage(opt);
-                              sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
-                            }
-                          }}
-                        >
-                          {typeof opt === "string" ? opt : opt.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
 
-                 </div>
+          <div className="icon-wrapper">
+            {icons.map((item) => {
+              const expanded = hovered === item.id;
+              return (
+                <div
+                  key={item.id}
+                  className={`icon-box ${expanded ? "expanded" : ""}`}
+                  onMouseEnter={() => handleEnter(item.id)}
+                  onMouseLeave={handleLeave}
+                >
+                  <img src={item.icon} alt={item.title} className="icon-badge" />
+                  <div className="icon-body">
+                    <div className="icon-title cursor-pointer" onClick={handleLoginClick}>{item.title}</div>
+                    {item.id === "login" && storedName && (
+                      <div
+                        className="icon-option text-red-600 cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </div>
+                    )}
+
+                    {item.options.length > 0 && (
+                      <div className="icon-options">
+                        {item.options.map((opt, i) => {
+                          const isSelected =
+                            item.id === "language" &&
+                            selectedLanguage &&
+                            (selectedLanguage.id === opt.id || selectedLanguage.name === opt.name);
+
+                          return (
+                            <div
+                              key={i}
+                              className="icon-option flex justify-between items-center cursor-pointer"
+                              onClick={() => {
+                                if (item.id === "language") {
+                                  setSelectedLanguage(opt);
+                                  sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
+                                }
+                              }}
+                            >
+                              {/* Language Name */}
+                              <span>{typeof opt === "string" ? opt : opt.name}</span>
+
+                              {/* Show Tick if selected */}
+                              {isSelected && (
+                                <span className="text-black-600 ml-auto">✔</span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+
+                  </div>
                 </div>
 
-                );
-              })}
-            
+              );
+            })}
+
           </div>
         </div>
-    
-         
+
+
         {showModal && (
           <TerminateModal
             onClose={() => setShowModal(false)}
-            // onConfirm={handleTerminate}
+          // onConfirm={handleTerminate}
           />
         )}
       </header >
 
       <div className="header-spacer" />
 
-     
+
     </>
   );
 }
