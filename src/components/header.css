@@ -225,6 +225,7 @@
   align-items: center;
   min-height: 100%;
   max-height: 40px;
+}
 /*
  * =========================================
  * Modal Animation
@@ -264,5 +265,4 @@
 .avatar-container canvas {
   min-width: 100%;
   min-height: 100%;
-}
 }
