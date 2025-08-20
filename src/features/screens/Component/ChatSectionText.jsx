@@ -22,7 +22,7 @@ const ChatSectionText = ({
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const { setAvatarSpeech, selectedColor, selectedAvatarId } = useContext(AuthContext);
+  const { setAvatarSpeech, selectedColor, selectedAvatarId, showSessionExpiredModal, setShowSessionExpiredModal } = useContext(AuthContext);
 
 
 
@@ -43,10 +43,7 @@ const ChatSectionText = ({
   const [isCameraHovered, setIsCameraHovered] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const expiryTimer = useRef(null);
-
-
 
 
   const generateRandomID = () => {
@@ -153,7 +150,7 @@ const ChatSectionText = ({
 
       // check if session ended
       if (res?.data?.end === true) {
-        setShowSubscriptionModal(true);
+        setShowSessionExpiredModal(true);
         return;
       }
 
@@ -350,8 +347,8 @@ const ChatSectionText = ({
       </div>
       {/* ✅ sessionExpired Modal */}
       {
-        showSubscriptionModal && (
-          <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
+        showSessionExpiredModal && (
+          <SessionExpiredModal />
         )
       }
     </div >

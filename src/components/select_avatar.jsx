@@ -150,6 +150,7 @@ export default function ChooseAvatar() {
           </div>
         ))}
       </div>
+
     </div>
   );
 }

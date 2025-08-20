@@ -8,9 +8,8 @@ import { SitaExperience } from "../../features/characters/sita/sitaExperience.js
 import { RaviExperience } from "../../features/characters/ravi/raviExperience.jsx";
 import { AuthContext } from "../../common/helper/AuthContext.jsx";
 import SubscriptionModal from '../../common/modal/SubscriptionModal.jsx';
-export default function SessionExpiredModal({ onClose }) {
-  const { selectedAvatar } = useContext(AuthContext);
-  const [showSubscription, setShowSubscription] = useState(false);
+export default function SessionExpiredModal() {
+  const { selectedAvatar, selectedColor, showSubscriptionModal, setShowSubscriptionModal, setShowSessionExpiredModal } = useContext(AuthContext);
 
   const renderAvatar = () => {
     switch (selectedAvatar) {
@@ -27,18 +26,12 @@ export default function SessionExpiredModal({ onClose }) {
     }
   };
 
- return (
+  return (
     <>
       <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 animate-fadeIn">
         {/* Main Modal Container */}
         <div className="bg-[#C4C3C4] rounded-3xl p-6 max-w-[85%] relative transform animate-slideUp">
           {/* Close Button */}
-          <div className="flex justify-end mb-2">
-            <button
-              onClick={onClose}
-              className="w-4 h-4 rounded-full bg-[#FF6B6B] hover:bg-red-600 transition-all duration-200 hover:scale-110"
-            ></button>
-          </div>
           <div className="flex flex-col gap-6">
             {/* Avatar and Title */}
             <div className="flex flex-col items-center justify-center">
@@ -63,13 +56,14 @@ export default function SessionExpiredModal({ onClose }) {
               <button
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
                     duration-300 transform hover:scale-102 cursor-pointer bg-[#7E4A5780] text-white hover:bg-[#7e4a5761] mb-2"
+                onClick={() => setShowSessionExpiredModal(false)}
               >
                 Leave this room
               </button>
               <button
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
                     duration-300 transform hover:scale-102 cursor-pointer bg-[#8B5A6B] text-white hover:bg-[#7A4D5E]"
-                onClick={() => setShowSubscription(true)}
+                onClick={() => setShowSubscriptionModal(true)}
               >
                 Choose Your Plan
               </button>
@@ -78,8 +72,8 @@ export default function SessionExpiredModal({ onClose }) {
         </div>
       </div>
 
-      {showSubscription && (
-        <SubscriptionModal onClose={() => setShowSubscription(false)} />
+      {showSubscriptionModal && (
+        <SubscriptionModal />
       )}
     </>
   );
