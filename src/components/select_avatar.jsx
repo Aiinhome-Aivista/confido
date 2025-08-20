@@ -33,12 +33,13 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated,setSelectedColor
+
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setSelectedColor, setSelectedAvatarId
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
+    setSelectedAvatarId(avatar.id)
     setSelectedAvatar(avatar.name);
     setSelectedColor(avatar.color);
 

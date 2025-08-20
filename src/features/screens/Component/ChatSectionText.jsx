@@ -22,7 +22,7 @@ const ChatSectionText = ({
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const { setAvatarSpeech, selectedColor } = useContext(AuthContext);
+  const { setAvatarSpeech, selectedColor, selectedAvatarId } = useContext(AuthContext);
 
 
 
@@ -140,7 +140,7 @@ const ChatSectionText = ({
         session_id: sessionId,
         time: "5 min",
         user_input: text,
-        avatar_id: 2
+        avatar_id: selectedAvatarId
       };
 
       const res = await apiService({
@@ -234,6 +234,7 @@ const ChatSectionText = ({
                     ? "items-center"
                     : "items-start"
                     } backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md`}
+                  style={{ paddingBottom: 0 }}
                 >
                   <div
                     className="flex"
