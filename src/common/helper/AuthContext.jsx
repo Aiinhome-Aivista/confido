@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
     const [avatarSpeech, setAvatarSpeech] = useState("");
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [sessionTerminated, setSessionTerminated] = useState(false);
+    const[selectedColor,setSelectedColor]=useState("rgba(178, 239, 97, 1)");
 
     // 👇 Run once on app mount
     useEffect(() => {
@@ -33,7 +34,8 @@ export function AuthProvider({ children }) {
             avatarSpeech, setAvatarSpeech,
              openLoginModal, setOpenLoginModal,
              hoverAvatar, setHoverAvatar,
-            sessionTerminated, setSessionTerminated
+            sessionTerminated, setSessionTerminated,
+            selectedColor,setSelectedColor
         }}>
 
             {children}

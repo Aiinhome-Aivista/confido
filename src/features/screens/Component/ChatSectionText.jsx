@@ -22,8 +22,9 @@ const ChatSectionText = ({
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const { setAvatarSpeech } = useContext(AuthContext);
-  const { selectedAvatar } = useContext(AuthContext);
+  const { setAvatarSpeech ,selectedColor} = useContext(AuthContext);
+ 
+  
 
   // const [session, setSession] = useState([chatSession[0]]);
   const [sessionController, setSessionController] = useState(0);
@@ -232,7 +233,7 @@ const ChatSectionText = ({
                   className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg ${(formatMessage(item.message))
                     ? "items-center"
                     : "items-start"
-                    }`}
+                    } backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md`}
                 >
                   <div
                     className="flex"
@@ -247,9 +248,8 @@ const ChatSectionText = ({
                 //   {item.message}
                 // </div>
                 <div
-                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg opacity-70"
-                  style={{ backgroundColor: selectedAvatar?.color
-                  }}
+                  className="user-msg max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm "
+                  style={{ backgroundColor: selectedColor,opacity:0.8}}
                 >
                   {item.message}
                 </div>
@@ -288,7 +288,7 @@ const ChatSectionText = ({
         </div>
       )}
       <div className="text-input-section flex justify-between items-center mt-4 gap-4 w-full">
-        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
+        <div className=" backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
           <input
             type="text"
             value={userInput}
@@ -332,7 +332,7 @@ const ChatSectionText = ({
             setUserInput("");
             userInputRef.current = "";
           }}
-          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
+          className=" backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
 
           <SendRoundedIcon fontSize='large' />
         </button>

@@ -33,12 +33,14 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated
+  
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated,setSelectedColor
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
     setSelectedAvatar(avatar.name);
+    setSelectedColor(avatar.color);
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
@@ -126,6 +128,9 @@ export default function ChooseAvatar() {
       <h1 className="text-2xl md:text-3xl font-bold mb-8 ">
         Choose your avatar
       </h1>
+      <p className="font-nunito text-gray-600 text-center max-w-2xl mb-8 leading-relaxed">
+        Select an avatar that best represents your style. Each avatar adds a unique <br />personality to your sessions — choose one now and start chatting with confidence.
+      </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
         {avatars.map((avatar, index) => (
           <div
