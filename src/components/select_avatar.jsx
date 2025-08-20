@@ -38,7 +38,6 @@ export default function ChooseAvatar() {
   const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
-    // Cancel any pending hover voice
     setSelectedAvatar(avatar.name);
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
