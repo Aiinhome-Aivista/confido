@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
     const [isLogin, setIsLogin] = useState(false);
     const [selectedAvatar, setSelectedAvatar] = useState("hema");
+    const [hoverAvatar, setHoverAvatar] = useState("");
      const [currentVoiceType, setCurrentVoiceType] = useState("adultWoman");
     const [greeting, setGreeting] = useState(true);
     const [avatarSpeech, setAvatarSpeech] = useState("");
@@ -22,7 +23,8 @@ export function AuthProvider({ children }) {
             setCurrentVoiceType,
             greeting, setGreeting,
             avatarSpeech, setAvatarSpeech,
-             openLoginModal, setOpenLoginModal
+             openLoginModal, setOpenLoginModal,
+             hoverAvatar, setHoverAvatar
         }}>
 
             {children}

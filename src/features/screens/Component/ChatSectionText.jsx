@@ -130,6 +130,7 @@ const ChatSectionText = ({
         session_id: sessionId,   
         time: "50 min",
         user_input: text,
+        avatar_id: 2
       };
 
       const res = await apiService({
