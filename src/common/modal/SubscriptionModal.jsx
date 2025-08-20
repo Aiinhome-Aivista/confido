@@ -14,12 +14,10 @@ import { RaviExperience } from "../../features/characters/ravi/raviExperience.js
 export default function SubscriptionModal() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showCustomization, setShowCustomization] = useState(false);
-  const [selectedAvatars, setSelectedAvatars] = useState([]);
-  const [selectedLanguages, setSelectedLanguages] = useState([
-    "Hindi",
-    "Bengali",
-  ]);
-  const { selectedAvatar, setShowSubscriptionModal, selectedColor } = useContext(AuthContext);
+  const [selectedAvatars, setSelectedAvatars] = useState(["youngMan"]);
+  const [selectedLanguages, setSelectedLanguages] = useState(["English"]);
+  const { selectedAvatar, setShowSubscriptionModal, selectedColor } =
+    useContext(AuthContext);
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
@@ -80,10 +78,10 @@ export default function SubscriptionModal() {
   };
 
   const avatars = [
-    { src: oldMan, alt: "Old Man", name: "oldMan" },
-    { src: oldWoman, alt: "Old Woman", name: "oldWoman" },
-    { src: youngMan, alt: "Young Man", name: "youngMan" },
-    { src: youngWoman, alt: "Young Woman", name: "youngWoman" },
+    { src: oldMan, alt: "Old Man", name: "oldMan", id: "Subho" },
+    { src: oldWoman, alt: "Old Woman", name: "oldWoman", id: "Sita" },
+    { src: youngMan, alt: "Young Man", name: "youngMan", id: "Ravi" },
+    { src: youngWoman, alt: "Young Woman", name: "youngWoman", id: "Hema" },
   ];
 
   const languages = ["English", "Hindi", "Bengali"];
@@ -91,17 +89,19 @@ export default function SubscriptionModal() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 animate-fadeIn">
       {/* Main Modal Container */}
-      <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[85%] relative transform animate-slideUp">
+      <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[85%] relative transform animate-slideUp mt-[1.8rem] lg:mt-0 ">
         {/* Close Button */}
-        <div className="flex justify-end mb-2">
+        <div className="flex justify-end mb-1">
           <button
-            onClick={() => { setShowSubscriptionModal(false), setShowSessionExpiredModal(true) }}
+            onClick={() => {
+              setShowSubscriptionModal(false), setShowSessionExpiredModal(true);
+            }}
             className="w-4 h-4 rounded-full bg-[#CA4C4C] hover:bg-red-600 transition-all duration-200 hover:scale-110"
           ></button>
         </div>
 
         {/* Avatar and Title */}
-        <div className="flex flex-col items-center justify-center mb-6">
+        <div className="flex flex-col items-center justify-center mb-3">
           <div className="transform transition-all duration-300  avatar-container w-24 h-24  rounded-full border-2 border-[#7E4A5712] overflow-hidden shadow-md">
             {renderAvatar()}
           </div>
@@ -112,12 +112,14 @@ export default function SubscriptionModal() {
 
         {/* Plans Grid - with exit animation */}
         <div
-          className={`transition-all duration-500 ease-in-out ${showCustomization
-            ? "opacity-0 transform -translate-x-full scale-95 pointer-events-none absolute"
-            : "opacity-100 transform translate-x-0 scale-100"
-            }`}
+          className={`transition-all duration-500 ease-in-out max-h-[65vh]
+  overflow-y-auto p-2 ${
+    showCustomization
+      ? "opacity-0 transform -translate-x-full scale-95 pointer-events-none absolute"
+      : "opacity-100 transform translate-x-0 scale-100"
+  }`}
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
             {plansData.map((plan, index) => (
               <div
                 key={plan.id}
@@ -126,7 +128,9 @@ export default function SubscriptionModal() {
                   min-h-[420px] flex flex-col transition-all duration-300 hover:scale-102 
                   hover:shadow-lg animate-fadeInUp`}
                 style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => { handlePlanSelect(plan) }}
+                onClick={() => {
+                  handlePlanSelect(plan);
+                }}
               >
                 {/* Plan Header */}
                 <div className="text-center mb-4 flex items-end justify-center gap-2">
@@ -137,6 +141,12 @@ export default function SubscriptionModal() {
                     <p className="text-xs text-gray-700 mb-0.5">{plan.price}</p>
                   )}
                 </div>
+
+                {plan.id === "free" && (
+                  <div className="absolute top-2 right-2 ">
+                    <div className="w-4 h-4 rounded-full bg-[#7E4A5780] hover:bg-[#5d374080] transition-all duration-200 hover:scale-110"></div>
+                  </div>
+                )}
 
                 {/* Features List */}
                 <div className="flex-1 space-y-1.5 mb-4">
@@ -157,8 +167,8 @@ export default function SubscriptionModal() {
                 <button
                   className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
                     duration-300 transform hover:scale-102 ${getButtonStyle(
-                    plan
-                  )}`}
+                      plan
+                    )}`}
                   disabled={plan.isDefault}
                 >
                   {plan.buttonText}
@@ -170,10 +180,11 @@ export default function SubscriptionModal() {
 
         {/* Customization Screen - with enter animation */}
         <div
-          className={`transition-all duration-500 ease-in-out ${showCustomization
-            ? "opacity-100 transform translate-x-0 scale-100"
-            : "opacity-0 transform translate-x-full scale-95 pointer-events-none absolute"
-            }`}
+          className={`transition-all duration-500 ease-in-out ${
+            showCustomization
+              ? "opacity-100 transform translate-x-0 scale-100"
+              : "opacity-0 transform translate-x-full scale-95 pointer-events-none absolute"
+          }`}
         >
           {selectedPlan && (
             <div
@@ -186,7 +197,9 @@ export default function SubscriptionModal() {
                   {selectedPlan.name}
                 </h3>
                 {selectedPlan.price && (
-                  <p className="text-sm text-gray-700 mb-0.5">{selectedPlan.price}</p>
+                  <p className="text-sm text-gray-700 mb-0.5">
+                    {selectedPlan.price}
+                  </p>
                 )}
               </div>
 
@@ -205,9 +218,10 @@ export default function SubscriptionModal() {
                       src={avatar.src}
                       alt={avatar.alt}
                       className={`w-14 h-14 rounded-full border-2 cursor-pointer 
-                        transition-all duration-300 hover:scale-110 animate-fadeInScale ${selectedAvatars.includes(avatar.name)
-                          ? "border-[#8B5A6B] shadow-lg scale-105"
-                          : "border-transparent "
+                        transition-all duration-300 hover:scale-110 animate-fadeInScale ${
+                          selectedAvatars.includes(avatar.name)
+                            ? "border-[#8B5A6B] shadow-lg scale-105"
+                            : "border-transparent "
                         }`}
                       style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() => toggleAvatar(avatar.name)}
