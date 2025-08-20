@@ -36,7 +36,8 @@ export function AuthProvider({ children }) {
             openLoginModal, setOpenLoginModal,
             hoverAvatar, setHoverAvatar,
             sessionTerminated, setSessionTerminated,
-            selectedColor, setSelectedColor
+            selectedColor, setSelectedColor,
+            selectedAvatarId, setSelectedAvatarId
         }}>
 
             {children}
