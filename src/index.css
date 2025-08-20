@@ -13,7 +13,9 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
+
 }
+
 
 :root {
   line-height: 1.5;
@@ -40,6 +42,7 @@ body,
   --recording-off-color: rgb(77, 136, 11);
 }
 
+
 .chat-avatar {
   height: 30rem;
   width: 15rem;
@@ -49,8 +52,8 @@ body,
   background-color: var(--ai-msg-color);
 }
 
-.user-msg {
-  background-color: var(--user-msg-color);
+.user-msg{
+background-color: var(--user-msg-color);
 }
 
 .input-text-box {
