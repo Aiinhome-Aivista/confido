@@ -11,15 +11,24 @@ import { apiService } from "../Service/apiService";
 import { GET_url } from "../connection/connection .jsx";
 import { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
+<<<<<<< HEAD
 import TerminateModal from "../features/terminateModal.jsx";
 
+=======
+import SubscriptionModal from "../common/modal/SubscriptionModal";
+import SessionExpiredModal from "../common/modal/SessionExpiredModal";
+>>>>>>> e150dd1a630f422325d49414f8cbc431ace729a2
 
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [languages, setLanguages] = useState([]);
   const leaveTimer = useRef(null);
+<<<<<<< HEAD
   const [showModal, setShowModal] = useState(false);
+=======
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+>>>>>>> e150dd1a630f422325d49414f8cbc431ace729a2
 
   const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
   const storedName = storedUser.name || "";
@@ -130,7 +139,7 @@ export default function Header() {
   return (
     <>
       <header className="header">
-        <div className="logo-container">
+        <div className="logo-container cursor-pointer" onClick={() => setShowSubscriptionModal(true)} >
           <img src={logoSrc} alt="Logo" className="logo" />
         </div>
         <div className="flex">
@@ -162,6 +171,7 @@ export default function Header() {
                       </div>
                     )}
 
+<<<<<<< HEAD
                     {item.options.length > 0 && (
                       <div className="icon-options">
                         {item.options.map((opt, i) => (
@@ -181,6 +191,50 @@ export default function Header() {
                       </div>
                     )}
                   </div>
+=======
+        <div className="icon-wrapper">
+          {icons.map((item) => {
+            const expanded = hovered === item.id;
+            return (
+              <div
+                key={item.id}
+                className={`icon-box ${expanded ? "expanded" : ""}`}
+                onMouseEnter={() => handleEnter(item.id)}
+                onMouseLeave={handleLeave}
+              >
+                <img src={item.icon} alt={item.title} className="icon-badge" />
+                <div className="icon-body">
+                  <div className="icon-title cursor-pointer" onClick={handleLoginClick}>{item.title}</div>
+                  {item.id === "login" && storedName && (
+                    <div
+                      className="icon-option text-red-600 cursor-pointer"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </div>
+                  )}
+
+                  {item.options.length > 0 && (
+                    <div className="icon-options">
+                      {item.options.map((opt, i) => (
+                        <div
+                          key={i}
+                          className="icon-option"
+                          onClick={() => {
+                            if (item.id === "language") {
+                              setSelectedLanguage(opt);
+                              sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
+                            }
+                          }}
+                        >
+                          {typeof opt === "string" ? opt : opt.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+
+>>>>>>> e150dd1a630f422325d49414f8cbc431ace729a2
                 </div>
               );
             })}
@@ -196,6 +250,12 @@ export default function Header() {
       </header >
 
       <div className="header-spacer" />
+
+      {/* Modal */}
+      {showSubscriptionModal && (
+        <SubscriptionModal onClose={() => setShowSubscriptionModal(false)} />
+        // <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
+      )}
     </>
   );
 }

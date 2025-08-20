@@ -10,7 +10,7 @@ function Confido() {
     const { openLoginModal } = useContext(AuthContext);
 
     return (
-        <div className='h-[calc(100vh)] w-[calc(100vw)]'>
+        <div className='flex flex-col h-[calc(100vh)] w-[calc(100vw)]'>
             {openLoginModal && <LoginModal />}
             <div className='h-1/10'>
                 <Header />
