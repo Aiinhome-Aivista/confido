@@ -1,20 +1,37 @@
-import React, { useEffect, useRef } from "react";
 
-const blobs = [
-  { size: 300, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
-  { size: 350, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)"},
-  { size: 450, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)"},
-];
 
-function AnimatedBlobs() {
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
+
+export default function AnimatedBlobs() {
+  const { selectedAvatar } = useContext(AuthContext);
+
+  const [blobs, setBlobs] = useState([
+    { size: 300, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
+    { size: 350, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
+    { size: 450, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
+  ]);
+
   const blobRefs = useRef([]);
   const velocities = useRef([]);
 
+  // update colors when avatar changes
+  useEffect(() => {
+    if (selectedAvatar?.color) {
+      setBlobs((prev) =>
+        prev.map((b) => ({
+          ...b,
+          color: `radial-gradient(circle, ${selectedAvatar.color} 0%, ${selectedAvatar.color} 50%)`,
+        }))
+      );
+    }
+  }, [selectedAvatar]);
+
+  // bouncing animation
   useEffect(() => {
     const screenW = window.innerWidth;
     const screenH = window.innerHeight;
 
-    // Initialize random positions and velocities
     blobRefs.current.forEach((blob, i) => {
       if (blob) {
         const size = blobs[i].size;
@@ -22,7 +39,7 @@ function AnimatedBlobs() {
         blob.y = Math.random() * (screenH - size);
 
         velocities.current[i] = {
-          vx: (Math.random() - 0.5) * 2, // speed in px/frame
+          vx: (Math.random() - 0.5) * 2,
           vy: (Math.random() - 0.5) * 2,
         };
 
@@ -40,7 +57,6 @@ function AnimatedBlobs() {
         blob.x += vx;
         blob.y += vy;
 
-        // Bounce on edges
         if (blob.x <= 0 || blob.x + size >= screenW) {
           velocities.current[i].vx *= -1;
           blob.x = Math.max(0, Math.min(blob.x, screenW - size));
@@ -57,7 +73,7 @@ function AnimatedBlobs() {
     }
 
     animate();
-  }, []);
+  }, [blobs]); 
 
   return (
     <>
@@ -80,5 +96,3 @@ function AnimatedBlobs() {
     </>
   );
 }
-
-export default AnimatedBlobs;

@@ -20,7 +20,7 @@ const ChatSectionText = ({
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const {setAvatarSpeech} = useContext(AuthContext);
+  const { setAvatarSpeech } = useContext(AuthContext);
   const { selectedAvatar } = useContext(AuthContext);
 
   // const [session, setSession] = useState([chatSession[0]]);
@@ -127,7 +127,7 @@ const ChatSectionText = ({
 
       // Call backend chat API
       const payload = {
-        session_id: sessionId,   
+        session_id: sessionId,
         time: "50 min",
         user_input: text,
         avatar_id: 2
@@ -151,7 +151,7 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
-         setAvatarSpeech(res.data.message);
+        setAvatarSpeech(res.data.message);
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -171,7 +171,7 @@ const ChatSectionText = ({
 
   const speakAndAdd = async (message) => {
 
-    
+
     setAvatarReading(true);
 
     return new Promise((resolve) => {
@@ -181,14 +181,14 @@ const ChatSectionText = ({
       const utter = new SpeechSynthesisUtterance(message);
 
       // Use avatar-specific voice configuration
-     
+
 
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
-     
+
 
       setSession((prev) => [
         ...prev,
@@ -227,7 +227,14 @@ const ChatSectionText = ({
                   ></div>
                 </div>
               ) : (
-                <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
+                // <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
+                //   {item.message}
+                // </div>
+                <div
+                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg opacity-70"
+                  style={{ backgroundColor: selectedAvatar?.color
+                  }}
+                >
                   {item.message}
                 </div>
               )}
@@ -237,7 +244,7 @@ const ChatSectionText = ({
             {isAILoading && index === session.length - 1 && (
               <div className="mb-4 flex items-start">
                 <div className="max-w-[60%] px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg">
-                 
+
                   <TypingDots />
 
                 </div>
