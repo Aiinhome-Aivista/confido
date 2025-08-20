@@ -16,7 +16,7 @@ const TerminateModal = ({ onClose }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center terminate-bg">
-            <div className="loginModal rounded-2xl p-6 w-[90%] max-w-sm relative text-center">
+            <div className="loginModal rounded-2xl p-6 w-[90%] max-w-sm relative text-center backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md">
                 {/* Top bar with red dot as close trigger */}
                 <div className="absolute top-0 left-0 w-full h-9 ai-bg rounded-t-3xl flex items-center justify-end px-3 gap-2">
                     {/* Clickable Red Dot (acts as close) */}
