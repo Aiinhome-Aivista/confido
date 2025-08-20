@@ -123,7 +123,7 @@ export default function SubscriptionModal({ onClose }) {
                 key={plan.id}
                 className={`bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border-4 border-[#7E4A5712] 
                   hover:border-[#8B5A6B] rounded-2xl p-4 cursor-pointer relative 
-                  min-h-[420px] flex flex-col transition-all duration-300 hover:scale-105 
+                  min-h-[420px] flex flex-col transition-all duration-300 hover:scale-102 
                   hover:shadow-lg animate-fadeInUp`}
                 style={{ animationDelay: `${index * 100}ms` }}
                 onClick={() => handlePlanSelect(plan)}
@@ -156,7 +156,7 @@ export default function SubscriptionModal({ onClose }) {
                 {/* Select Button */}
                 <button
                   className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
-                    duration-300 transform hover:scale-105 ${getButtonStyle(
+                    duration-300 transform hover:scale-102 ${getButtonStyle(
                     plan
                   )}`}
                   disabled={plan.isDefault}
@@ -252,13 +252,13 @@ export default function SubscriptionModal({ onClose }) {
                 <button
                   onClick={handleBackToPlans}
                   className="bg-gray-400 text-white px-6 py-2 rounded-lg font-medium 
-                    transition-all duration-300 hover:bg-gray-500 hover:scale-105 hover:shadow-md"
+                    transition-all duration-300 hover:bg-gray-500 hover:scale-102 hover:shadow-md"
                 >
                   Back
                 </button>
                 <button
                   className="bg-[#8B5A6B] text-white px-6 py-2 rounded-lg font-medium 
-                  transition-all duration-300 hover:bg-[#7A4D5E] hover:scale-105 hover:shadow-md"
+                  transition-all duration-300 hover:bg-[#7A4D5E] hover:scale-102 hover:shadow-md"
                 >
                   Pay
                 </button>

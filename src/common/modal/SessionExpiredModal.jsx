@@ -62,13 +62,13 @@ export default function SessionExpiredModal({ onClose }) {
             <div>
               <button
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
-                    duration-300 transform hover:scale-105 bg-[#7E4A5780] text-white hover:bg-[#7A4D5E] mb-2"
+                    duration-300 transform hover:scale-102 cursor-pointer bg-[#7E4A5780] text-white hover:bg-[#7e4a5761] mb-2"
               >
                 Leave this room
               </button>
               <button
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
-                    duration-300 transform hover:scale-105 bg-[#8B5A6B] text-white hover:bg-[#7A4D5E]"
+                    duration-300 transform hover:scale-102 cursor-pointer bg-[#8B5A6B] text-white hover:bg-[#7A4D5E]"
                 onClick={() => setShowSubscription(true)}
               >
                 Choose Your Plan
