@@ -13,7 +13,9 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
+
 }
+
 
 :root {
   line-height: 1.5;
@@ -39,6 +41,7 @@ body,
   --button-bg-color: rgba(30, 30, 30, 0.07);
   --recording-off-color: rgb(77, 136, 11);
 }
+
 
 .chat-avatar {
   height: 30rem;

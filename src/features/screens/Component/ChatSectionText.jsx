@@ -248,11 +248,11 @@ const ChatSectionText = ({
                 //   {item.message}
                 // </div>
                 <div
-                  className="user-msg max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm "
+                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm"
                   style={{
-                    backgroundColor: selectedColor,
-                    opacity: 0.8,
+                    backgroundColor: selectedColor.replace("1)", "0.07)"), // make it semi-transparent
                     backdropFilter: "blur(16px)",
+                    WebkitBackdropFilter: "blur(16px)", // ✅ Safari support
                     backgroundBlendMode: "overlay",
                     border: "1px solid rgba(255, 255, 255, 0.17)",
                     boxShadow:
