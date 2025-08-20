@@ -14,7 +14,8 @@ import { createVoiceUtterance } from "../../../utils/voiceUtils";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
-import { sanitizeTextForSpeech } from "../../../common/helper/helper.jsx";
+import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
+
 
 const ChatSectionText = ({
   isTerminated,
@@ -41,6 +42,8 @@ const ChatSectionText = ({
   const [isCameraHovered, setIsCameraHovered] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const expiryTimer = useRef(null);
 
 
 
@@ -68,6 +71,10 @@ const ChatSectionText = ({
       setShowNewSessionBtn(true);
     }
   }, [isTerminated]);
+
+  useEffect(() => {
+    return () => clearTimeout(expiryTimer.current);
+  }, []);
 
   useEffect(() => {
     if (chatRef.current) {
@@ -110,6 +117,7 @@ const ChatSectionText = ({
 
   const sessionId = sessionStorage.getItem("sessionId");
 
+
   const handleUserMessage = async (text) => {
     if (!text) return;
     setIsMicActive(false);
@@ -134,8 +142,9 @@ const ChatSectionText = ({
       // Call backend chat API
       const payload = {
         session_id: sessionId,
-        time: "50 min",
+        time: "5 min",
         user_input: text,
+        avatar_id: 2
       };
 
       const res = await apiService({
@@ -145,6 +154,13 @@ const ChatSectionText = ({
       });
 
       console.log("Chat API response:", res);
+
+      // check if session ended
+      if (res?.data?.end === true) {
+        setShowSubscriptionModal(true); 
+        return; 
+      }
+
 
       // Add AI response to session
       if (res?.data?.message) {
@@ -156,7 +172,7 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
-        setAvatarSpeech(sanitizeTextForSpeech(res.data.message));
+        setAvatarSpeech(res.data.message);
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -181,16 +197,19 @@ const ChatSectionText = ({
 
     return new Promise((resolve) => {
       setSpeakingText(message);
-      // ✅ Voice gets emoji-free version
-      const cleanMessage = sanitizeTextForSpeech(message);
-      setAvatarSpeech(cleanMessage);
-      const utter = new SpeechSynthesisUtterance(cleanMessage);
-      speechSynthesis.speak(utter);
+
+      setAvatarSpeech(message);
+      const utter = new SpeechSynthesisUtterance(message);
+
+      // Use avatar-specific voice configuration
+
+
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
+
 
       setSession((prev) => [
         ...prev,
@@ -229,7 +248,14 @@ const ChatSectionText = ({
                   ></div>
                 </div>
               ) : (
-                <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
+                // <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
+                //   {item.message}
+                // </div>
+                <div
+                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg opacity-70"
+                  style={{ backgroundColor: selectedAvatar?.color
+                  }}
+                >
                   {item.message}
                 </div>
               )}
@@ -237,7 +263,7 @@ const ChatSectionText = ({
 
             {/* Typing loader for last AI message */}
             {isAILoading && index === session.length - 1 && (
-              <div className="mb-4 flex items-start">
+              <div className="mb-4 px-2 flex items-start">
                 <div className="max-w-[60%] px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg">
 
                   <TypingDots />
@@ -316,6 +342,10 @@ const ChatSectionText = ({
           <SendRoundedIcon fontSize='large' />
         </button>
       </div>
+      {/* ✅ sessionExpired Modal */}
+      {showSubscriptionModal && (
+        <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
+      )}
     </div>
   );
 };

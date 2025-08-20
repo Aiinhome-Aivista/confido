@@ -9,12 +9,12 @@ function ChatSectionAvatar() {
   const { selectedAvatar, setGreeting } = useContext(AuthContext)
 
   useEffect(() => {
-     setGreeting(false)
+    setGreeting(false)
   }, [selectedAvatar])
-  
+
 
   const renderAvatar = () => {
-    switch (selectedAvatar) {
+    switch (selectedAvatar?.name) {
       case "Subho":
         return <SubhoExperience />;
       case "Sita":
@@ -31,7 +31,7 @@ function ChatSectionAvatar() {
   };
 
   return (
-    <div className='flex items-end h-[100%] z-1 -mr-[calc(50%)]'>
+    <div className='flex items-end h-[100%] z-1 -mr-[calc(50%)] opacity-60'>
       {renderAvatar()}
     </div>
   )
