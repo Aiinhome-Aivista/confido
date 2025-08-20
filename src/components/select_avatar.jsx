@@ -19,10 +19,10 @@ import { chatSession, setChatSession } from "../data/data.jsx";
 import { sanitizeTextForSpeech } from "../common/helper/helper.jsx";
 
 const avatars = [
-  { name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
-  { name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
-  { name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
-  { name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
+  {id: 1, name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
+  {id: 2, name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
+  {id: 3, name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
+  {id: 4, name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
 ];
 
 const avatarId = [
@@ -34,12 +34,15 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar,
+setSelectedColor, setSelectedAvatarId
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
+    setSelectedAvatarId(avatar.id)
     setSelectedAvatar(avatar.name);
+    setSelectedColor(avatar.color);
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
@@ -58,9 +61,8 @@ export default function ChooseAvatar() {
 
   const handleAvatarHover = (avatarName) => {
     // Cancel any existing timeout
-
-    setAvatarSpeech(`Hi I am ${avatarName}. Your personal conversation buddy`)
-    // Start new timeout for 3 second delay
+   
+ setHoverAvatar(avatarName);
 
   };
 
@@ -149,6 +151,7 @@ export default function ChooseAvatar() {
           </div>
         ))}
       </div>
+
     </div>
   );
 }
