@@ -15,6 +15,7 @@ import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
 import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
+import { startListening } from "./speechRecognization.jsx";
 
 
 const ChatSectionText = ({
@@ -41,9 +42,12 @@ const ChatSectionText = ({
   // const [avatarReading, setAvatarReading] = useState(false);
   const [isMicHovered, setIsMicHovered] = useState(false);
   const [isCameraHovered, setIsCameraHovered] = useState(false);
-  const [isMicActive, setIsMicActive] = useState(false);
+  // const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
   const expiryTimer = useRef(null);
+
+  const [isMicActive, setIsMicActive] = useState(false);
+  const recognitionRef = useRef(null);
 
 
   const generateRandomID = () => {
@@ -153,6 +157,7 @@ const ChatSectionText = ({
       // check if session ended
       if (res?.data?.end === true) {
         setShowSessionExpiredModal(true);
+        setShowSubscriptionModal(true);
         return;
       }
 
@@ -213,6 +218,25 @@ const ChatSectionText = ({
     });
   };
 
+  const handleMicClick = () => {
+    if (!isMicActive) {
+      // Start listening
+      recognitionRef.current = startListening(
+        (transcript) => {
+          console.log("Voice Input:", transcript);
+          handleUserMessage(transcript); // send as input
+        },
+        () => setIsMicActive(false) // reset when recognition ends
+      );
+    } else {
+      // Stop listening
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    }
+    setIsMicActive((prev) => !prev);
+  };
+
   return (
     <div className='flex flex-col justify-between p-3 h-[100%]'>
       {/* Chat messages */}
@@ -229,7 +253,7 @@ const ChatSectionText = ({
             >
               {item.role === "ai" ? (
                 <div
-                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg ${(formatMessage(item.message))
+                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg  ${(formatMessage(item.message))
                     ? "items-center"
                     : "items-start"
                     } backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md`}
@@ -317,7 +341,7 @@ const ChatSectionText = ({
             className="flex-1 rounded-2xl h-[2.6rem] outline-none placeholder:font-medium"
             placeholder="Type here" />
           <div className='buttons flex gap-2'>
-            <button
+            {/* <button
               className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onClick={() => setIsMicActive(prev => !prev)}
@@ -325,15 +349,24 @@ const ChatSectionText = ({
               onMouseLeave={() => setIsMicHovered(false)}
             >
               <SettingsVoiceRoundedIcon />
-            </button>
+            </button> */}
             <button
+              className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
+                } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
+              onClick={handleMicClick}
+              onMouseEnter={() => setIsMicHovered(true)}
+              onMouseLeave={() => setIsMicHovered(false)}
+            >
+              <SettingsVoiceRoundedIcon />
+            </button>
+            {/* <button
               className={`${isCameraHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onMouseEnter={() => setIsCameraHovered(true)}
               onMouseLeave={() => setIsCameraHovered(false)}
             >
               <CameraAltRoundedIcon />
-            </button>
+            </button> */}
           </div>
         </div>
         <button disabled={isTerminated}
