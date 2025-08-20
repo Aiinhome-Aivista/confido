@@ -116,7 +116,7 @@ export default function ChooseAvatar() {
             time: new Date().toLocaleTimeString(),
           },
         ]);
-         setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
+         //setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
       }
     } catch (error) {
       console.error("Session API Failed:", error);

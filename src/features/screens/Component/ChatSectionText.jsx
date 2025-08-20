@@ -14,7 +14,7 @@ import { createVoiceUtterance } from "../../../utils/voiceUtils";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
-import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
+import SubscriptionModal from '../../../common/modal/SubscriptionModal.jsx';
 
 
 const ChatSectionText = ({
@@ -55,11 +55,6 @@ const ChatSectionText = ({
     setSessionController(0);
     setCurrentIndex(0);
   };
-  useEffect(() => {
-    if (session.length > 0 && session[0].role === "ai") {
-      setAvatarSpeech(sanitizeTextForSpeech(session[0].message))
-    }
-  }, [session]);
 
   // When ChatScreen mounts, refresh from latest chatSession
   useEffect(() => {
@@ -144,7 +139,6 @@ const ChatSectionText = ({
         session_id: sessionId,
         time: "5 min",
         user_input: text,
-        avatar_id: 2
       };
 
       const res = await apiService({
@@ -168,7 +162,7 @@ const ChatSectionText = ({
           ...prev,
           {
             role: "ai",
-            message: cleanMessage,
+            message: res.data.message,
             time: new Date().toLocaleTimeString(),
           },
         ]);
@@ -248,14 +242,7 @@ const ChatSectionText = ({
                   ></div>
                 </div>
               ) : (
-                // <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
-                //   {item.message}
-                // </div>
-                <div
-                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg opacity-70"
-                  style={{ backgroundColor: selectedAvatar?.color
-                  }}
-                >
+                <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
                   {item.message}
                 </div>
               )}
@@ -344,7 +331,7 @@ const ChatSectionText = ({
       </div>
       {/* ✅ sessionExpired Modal */}
       {showSubscriptionModal && (
-        <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
+        <SubscriptionModal onClose={() => setShowSubscriptionModal(false)} />
       )}
     </div>
   );
