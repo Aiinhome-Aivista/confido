@@ -349,14 +349,14 @@ const ChatSectionText = ({
             >
               <SettingsVoiceRoundedIcon />
             </button>
-            <button
+            {/* <button
               className={`${isCameraHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onMouseEnter={() => setIsCameraHovered(true)}
               onMouseLeave={() => setIsCameraHovered(false)}
             >
               <CameraAltRoundedIcon />
-            </button>
+            </button> */}
           </div>
         </div>
         <button disabled={isTerminated}
