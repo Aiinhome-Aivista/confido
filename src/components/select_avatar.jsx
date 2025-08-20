@@ -16,7 +16,7 @@ import {
   cancelWelcomeMessage
 } from "../utils/voiceUtils.js";
 import { chatSession, setChatSession } from "../data/data.jsx";
-import {sanitizeTextForSpeech} from "../common/helper/helper.jsx";
+import { sanitizeTextForSpeech } from "../common/helper/helper.jsx";
 
 const avatars = [
   { name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
@@ -47,7 +47,7 @@ export default function ChooseAvatar() {
       color: avatar.color
     });
 
-    
+
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
@@ -116,7 +116,7 @@ export default function ChooseAvatar() {
             time: new Date().toLocaleTimeString(),
           },
         ]);
-         //setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
+        //setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
       }
     } catch (error) {
       console.error("Session API Failed:", error);
@@ -135,6 +135,9 @@ export default function ChooseAvatar() {
       <h1 className="text-2xl md:text-3xl font-bold mb-8 ">
         Choose your avatar
       </h1>
+      <p className="font-nunito text-gray-600 text-center max-w-2xl mb-8 leading-relaxed">
+        Select an avatar that best represents your style. Each avatar adds a unique <br />personality to your sessions — choose one now and start chatting with confidence.
+      </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
         {avatars.map((avatar, index) => (
           <div
