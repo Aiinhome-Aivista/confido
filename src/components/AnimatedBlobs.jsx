@@ -14,6 +14,7 @@ export default function AnimatedBlobs() {
 
   const blobRefs = useRef([]);
   const velocities = useRef([]);
+  const speed=0.2;
   
 
   // update colors when avatar changes
@@ -40,8 +41,8 @@ export default function AnimatedBlobs() {
         blob.y = Math.random() * (screenH - size);
 
         velocities.current[i] = {
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
+          vx: (Math.random() - 0.5) * speed,
+          vy: (Math.random() - 0.5) * speed,
         };
 
         blob.style.transform = `translate(${blob.x}px, ${blob.y}px)`;
