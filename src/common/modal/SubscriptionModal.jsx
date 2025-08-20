@@ -112,11 +112,10 @@ export default function SubscriptionModal({ onClose }) {
 
         {/* Plans Grid - with exit animation */}
         <div
-          className={`transition-all duration-500 ease-in-out ${
-            showCustomization
+          className={`transition-all duration-500 ease-in-out ${showCustomization
               ? "opacity-0 transform -translate-x-full scale-95 pointer-events-none absolute"
               : "opacity-100 transform translate-x-0 scale-100"
-          }`}
+            }`}
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {plansData.map((plan, index) => (
@@ -158,8 +157,8 @@ export default function SubscriptionModal({ onClose }) {
                 <button
                   className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
                     duration-300 transform hover:scale-105 ${getButtonStyle(
-                      plan
-                    )}`}
+                    plan
+                  )}`}
                   disabled={plan.isDefault}
                 >
                   {plan.buttonText}
@@ -171,11 +170,10 @@ export default function SubscriptionModal({ onClose }) {
 
         {/* Customization Screen - with enter animation */}
         <div
-          className={`transition-all duration-500 ease-in-out ${
-            showCustomization
+          className={`transition-all duration-500 ease-in-out ${showCustomization
               ? "opacity-100 transform translate-x-0 scale-100"
               : "opacity-0 transform translate-x-full scale-95 pointer-events-none absolute"
-          }`}
+            }`}
         >
           {selectedPlan && (
             <div
@@ -207,10 +205,9 @@ export default function SubscriptionModal({ onClose }) {
                       src={avatar.src}
                       alt={avatar.alt}
                       className={`w-14 h-14 rounded-full border-2 cursor-pointer 
-                        transition-all duration-300 hover:scale-110 animate-fadeInScale ${
-                          selectedAvatars.includes(avatar.name)
-                            ? "border-[#8B5A6B] shadow-lg scale-105"
-                            : "border-transparent "
+                        transition-all duration-300 hover:scale-110 animate-fadeInScale ${selectedAvatars.includes(avatar.name)
+                          ? "border-[#8B5A6B] shadow-lg scale-105"
+                          : "border-transparent "
                         }`}
                       style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() => toggleAvatar(avatar.name)}

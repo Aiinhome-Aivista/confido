@@ -14,7 +14,7 @@ function ChatSectionAvatar() {
 
 
   const renderAvatar = () => {
-    switch (selectedAvatar?.name) {
+    switch (selectedAvatar) {
       case "Subho":
         return <SubhoExperience />;
       case "Sita":
