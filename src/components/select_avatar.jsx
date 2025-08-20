@@ -18,10 +18,10 @@ import {
 import { chatSession, setChatSession } from "../data/data.jsx";
 
 const avatars = [
-  { name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
-  { name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
-  { name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
-  { name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
+  {id: 1, name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
+  {id: 2, name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
+  {id: 3, name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
+  {id: 4, name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
 ];
 
 const avatarId = [
@@ -33,12 +33,15 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar,
+setSelectedColor, setSelectedAvatarId
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
   const handleSelect = async (avatar) => {
+    setSelectedAvatarId(avatar.id)
     setSelectedAvatar(avatar.name);
+    setSelectedColor(avatar.color);
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
@@ -125,6 +128,9 @@ export default function ChooseAvatar() {
       <h1 className="text-2xl md:text-3xl font-bold mb-8 ">
         Choose your avatar
       </h1>
+      <p className="font-nunito text-gray-600 text-center max-w-2xl mb-8 leading-relaxed">
+        Select an avatar that best represents your style. Each avatar adds a unique <br />personality to your sessions — choose one now and start chatting with confidence.
+      </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
         {avatars.map((avatar, index) => (
           <div
@@ -143,6 +149,7 @@ export default function ChooseAvatar() {
           </div>
         ))}
       </div>
+
     </div>
   );
 }

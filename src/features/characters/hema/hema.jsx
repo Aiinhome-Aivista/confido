@@ -24,6 +24,31 @@ const corresponding = {
 };
 
 export const Hema = React.memo((props) => {
+
+
+    const { scene } = useGLTF(
+    "/characters/hema/model/6895bab8ce2240ac4ff74492.glb"
+  );
+  const { animations: IdleAnimation } = useFBX(
+    "/characters/hema/animations/Standing Idle.fbx"
+  );
+  const { animations: Waving } = useFBX(
+    "/characters/hema/animations/Waving.fbx"
+  );
+
+  const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
+  const { nodes, materials } = useGraph(clone);
+
+  IdleAnimation[0].name = "Idle";
+  Waving[0].name = "Waving";
+
+  const group = useRef();
+  const { actions } = useAnimations([IdleAnimation[0], Waving[0]], group);
+
+  const eyeLeftRef = useRef();
+  const eyeRightRef = useRef();
+
+  
   const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
     useContext(AuthContext);
 
@@ -109,27 +134,7 @@ export const Hema = React.memo((props) => {
   //   }
   // }, [playAudio, script]);
 
-  const { scene } = useGLTF(
-    "/characters/hema/model/6895bab8ce2240ac4ff74492.glb"
-  );
-  const { animations: IdleAnimation } = useFBX(
-    "/characters/hema/animations/Standing Idle.fbx"
-  );
-  const { animations: Waving } = useFBX(
-    "/characters/hema/animations/Waving.fbx"
-  );
 
-  const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
-  const { nodes, materials } = useGraph(clone);
-
-  IdleAnimation[0].name = "Idle";
-  Waving[0].name = "Waving";
-
-  const group = useRef();
-  const { actions } = useAnimations([IdleAnimation[0], Waving[0]], group);
-
-  const eyeLeftRef = useRef();
-  const eyeRightRef = useRef();
 
 
 

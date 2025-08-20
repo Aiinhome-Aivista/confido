@@ -32,29 +32,28 @@ export const Nisa = React.memo((props) => {
   // const [playAudio, setPlayAudio] = useState(false);
   // const [script, setScript] = useState("welcome");
 
-  const { playAudio, script } = useControls({
-    playAudio: false,
-    script: {
-      value: "welcome",
-      options: ["welcome", "greeting"],
-    },
-  });
+  // const { playAudio, script } = useControls({
+  //   playAudio: false,
+  //   script: {
+  //     value: "welcome",
+  //     options: ["welcome", "greeting"],
+  //   },
+  // });
 
-  const audio = useMemo(
-    () => new Audio(`/characters/hema/audio/${script}.mp3`),
-    [script]
-  );
+  const audio = new Audio(`/characters/nisa/audio/greetingFirst.mp3`)
+
+
   const jsonFile = useLoader(
     THREE.FileLoader,
-    `/characters/hema/audio/${script}.json`
+    `/characters/nisa/audio/greetingFirst.json`
   );
   const lipSync = JSON.parse(jsonFile);
 
-  //   useEffect(() => {
-  //   if (audio) {
-  //     audio.play().catch(() => {});
-  //   }
-  // }, [audio]);
+    useEffect(() => {
+    if (audio) {
+      audio.play().catch(() => {});
+    }
+  }, [audio]);
 
   // LipSync Animation Frame
  
@@ -97,14 +96,6 @@ export const Nisa = React.memo((props) => {
     }
   });
 
-  useEffect(() => {
-    if(playAudio){
-      audio.play();
-
-    }else{
-      audio.pause();
-    }
-  }, [playAudio, script]);
   
 
   const { scene } = useGLTF(
@@ -145,6 +136,8 @@ export const Nisa = React.memo((props) => {
   }, [actions]);
 
   const handlePointerOver = () => {
+      audio.play();
+
     if (actions["Waving"]) {
       actions["Idle"]?.fadeOut(0.2);
       actions["Waving"].reset().fadeIn(0.2).play();
@@ -152,6 +145,7 @@ export const Nisa = React.memo((props) => {
   };
 
   const handlePointerOut = () => {
+    audio.pause();
     if (actions["Waving"]) {
       actions["Waving"].fadeOut(0.2);
       actions["Idle"]?.reset().fadeIn(0.2).play();

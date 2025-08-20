@@ -150,7 +150,7 @@ function SplashScreen({ setLoadAvatars }) {
         }}
 
       >
-        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito    z-2">
+        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito z-2">
           <motion.h1
             className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
             initial={{ opacity: 0, y: -40 }}

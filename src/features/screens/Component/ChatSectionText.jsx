@@ -22,8 +22,9 @@ const ChatSectionText = ({
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const { setAvatarSpeech } = useContext(AuthContext);
-  const { selectedAvatar } = useContext(AuthContext);
+  const { setAvatarSpeech, selectedColor, selectedAvatarId, showSessionExpiredModal, setShowSessionExpiredModal } = useContext(AuthContext);
+
+
 
   // const [session, setSession] = useState([chatSession[0]]);
   const [sessionController, setSessionController] = useState(0);
@@ -42,10 +43,7 @@ const ChatSectionText = ({
   const [isCameraHovered, setIsCameraHovered] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const expiryTimer = useRef(null);
-
-
 
 
   const generateRandomID = () => {
@@ -134,12 +132,14 @@ const ChatSectionText = ({
     try {
       setIsAILoading(true);
 
+      console.log("selectedAvatarId",selectedAvatarId)
+
       // Call backend chat API
       const payload = {
         session_id: sessionId,
         time: "50 min",
         user_input: text,
-        avatar_id: 2
+        avatar_id: selectedAvatarId
       };
 
       const res = await apiService({
@@ -152,8 +152,8 @@ const ChatSectionText = ({
 
       // check if session ended
       if (res?.data?.end === true) {
-        setShowSubscriptionModal(true); 
-        return; 
+        setShowSessionExpiredModal(true);
+        return;
       }
 
 
@@ -232,7 +232,8 @@ const ChatSectionText = ({
                   className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg ${(formatMessage(item.message))
                     ? "items-center"
                     : "items-start"
-                    }`}
+                    } backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md`}
+                  style={{ paddingBottom: 0 }}
                 >
                   <div
                     className="flex"
@@ -247,8 +248,15 @@ const ChatSectionText = ({
                 //   {item.message}
                 // </div>
                 <div
-                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg opacity-70"
-                  style={{ backgroundColor: selectedAvatar?.color
+                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm"
+                  style={{
+                    backgroundColor: selectedColor.replace("1)", "0.07)"), // make it semi-transparent
+                    backdropFilter: "blur(16px)",
+                    WebkitBackdropFilter: "blur(16px)", // ✅ Safari support
+                    backgroundBlendMode: "overlay",
+                    border: "1px solid rgba(255, 255, 255, 0.17)",
+                    boxShadow:
+                      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)"
                   }}
                 >
                   {item.message}
@@ -271,24 +279,26 @@ const ChatSectionText = ({
       </div>
 
       {/* New session button */}
-      {showNewSessionBtn && (
-        <div className="flex justify-center" ref={endOfChatRef}>
-          <button
-            className="px-6 py-2 rounded-xl cursor-pointer transition duration-200"
-            onClick={() => {
-              setShowNewSessionBtn(false);
-              //setIsTerminated(false);
-              setSession([chatSession[0]]);
-              generateRandomID();
-              //setIsRecorderActive(true);
-            }}
-          >
-            Do you want to start new session?
-          </button>
-        </div>
-      )}
+      {
+        showNewSessionBtn && (
+          <div className="flex justify-center" ref={endOfChatRef}>
+            <button
+              className="px-6 py-2 rounded-xl cursor-pointer transition duration-200"
+              onClick={() => {
+                setShowNewSessionBtn(false);
+                //setIsTerminated(false);
+                setSession([chatSession[0]]);
+                generateRandomID();
+                //setIsRecorderActive(true);
+              }}
+            >
+              Do you want to start new session?
+            </button>
+          </div>
+        )
+      }
       <div className="text-input-section flex justify-between items-center mt-4 gap-4 w-full">
-        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
+        <div className=" backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
           <input
             type="text"
             value={userInput}
@@ -332,16 +342,18 @@ const ChatSectionText = ({
             setUserInput("");
             userInputRef.current = "";
           }}
-          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
+          className=" backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
 
           <SendRoundedIcon fontSize='large' />
         </button>
       </div>
       {/* ✅ sessionExpired Modal */}
-      {showSubscriptionModal && (
-        <SessionExpiredModal onClose={() => setShowSubscriptionModal(false)} />
-      )}
-    </div>
+      {
+        showSessionExpiredModal && (
+          <SessionExpiredModal />
+        )
+      }
+    </div >
   );
 };
 
