@@ -39,14 +39,8 @@ export default function ChooseAvatar() {
 
   const handleSelect = async (avatar) => {
     // Cancel any pending hover voice
+    setSelectedAvatar(avatar.name);
 
-
-    setSelectedAvatar({
-      name: avatar.name,
-      color: avatar.color
-    });
-
-    
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
