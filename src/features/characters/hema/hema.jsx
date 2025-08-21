@@ -49,8 +49,7 @@ export const Hema = React.memo((props) => {
   const eyeRightRef = useRef();
 
   
-  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
-    useContext(AuthContext);
+  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } = useContext(AuthContext);
 
   const [lipSync, setLipSync] = useState(null);
   const [audio, setAudio] = useState(null);
@@ -60,14 +59,26 @@ export const Hema = React.memo((props) => {
 
  
   // greetingMessage();
- const selectionMessage = () => {
-     const audio = new Audio(`/characters/hema/audio/greeting.mp3`)
-    const jsonFile = useLoader(
-      THREE.FileLoader,
-      `/characters/hema/audio/greeting.json`
-    );
-    setAudio(audio), setLipSync(JSON.parse(jsonFile));
-  };
+
+
+
+  const selectionMessage = async () => {
+  try {
+    const audio = new Audio(`/characters/hema/audio/greeting.mp3`);
+    setAudio(audio);
+
+    const response = await fetch(`/characters/hema/audio/greeting.json`);
+    const data = await response.json();
+    setLipSync(data);
+
+    // Start playing after animation frame to avoid blocking waving
+    requestAnimationFrame(() => {
+      audio.play();
+    });
+  } catch (error) {
+    console.error("Error loading audio or JSON:", error);
+  }
+};
 
   useEffect(() => {
     if (audio) {
@@ -125,17 +136,6 @@ export const Hema = React.memo((props) => {
     }
   });
 
-  // useEffect(() => {
-  //   if(playAudio){
-  //     audio.play();
-
-  //   }else{
-  //     audio.pause();
-  //   }
-  // }, [playAudio, script]);
-
-
-
 
 
   useEffect(() => {
@@ -145,12 +145,12 @@ export const Hema = React.memo((props) => {
   }, [actions]);
 
   const handlePointerOver = () => {
-    console
-  if(hoverAvatar == "Hema"){
+
     if (actions["Waving"]) {
       actions["Idle"]?.fadeOut(0.2);
       actions["Waving"].reset().fadeIn(0.2).play();
     }
+      if(hoverAvatar == "Hema"){
     selectionMessage();
   }
 

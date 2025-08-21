@@ -61,13 +61,13 @@ setSelectedColor, setSelectedAvatarId
   const handleAvatarHover = (avatarName) => {
     // Cancel any existing timeout
    
- setHoverAvatar(avatarName);
+     setHoverAvatar(avatarName);
 
   };
 
   const handleAvatarLeave = () => {
     // Cancel the pending voice when mouse leaves
-
+    setHoverAvatar(null);
     hoverTimeoutRef.current = null;
   };
 
