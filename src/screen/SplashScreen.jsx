@@ -4,7 +4,7 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 import confidoSvg from "../assets/icons/confido_logo.svg";
-import { Experience } from "../features/characters/hema/experience";
+import { Experience } from "../features/characters/nisa/experience";
 import { createNoise2D } from "simplex-noise";
 import Header from "../components/header";
 import { useNavigate } from "react-router-dom";
@@ -151,51 +151,54 @@ function SplashScreen({ setLoadAvatars }) {
 
       >
         <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito    z-2">
-          <motion.h1
-            className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
-            initial={{ opacity: 0, y: -40 }}
-            animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <span className="  align-middle leading-[3.5rem] justify-center ml-20">
-              Say Hello to{" "}
-            </span>
-            <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[8ch] h-[4.5rem] md:h-[4.75rem]">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.span
-                  key={wordIndex}
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{
-                    y: "0%",
-                    opacity: 1,
-                    color:
-                      !wordAnimationStarted
-                        ? "#000"
-                        : colors[wordIndex % colors.length],
-                    transition: {
-                      y: { duration: 0.4, ease: "easeOut" },
-                      opacity: { duration: 0.4, ease: "easeOut" },
-                      color: { duration: 0.3, ease: "easeIn" },
-                    },
-                  }}
-                  exit={{
-                    y: "-100%",
-                    opacity: 0,
-                    transition: {
-                      y: { duration: 0.4, ease: "easeIn", delay: 0.5 },
-                      opacity: { duration: 0.4, ease: "easeIn", delay: 0.5 },
-                      color: { duration: 0.3, ease: "easeIn" },
-                    },
-                  }}
-                  className="absolute left-0 top-0 w-full text-left leading-[4.5rem] font-extrabold"
-                >
-                  {words[wordIndex]}
-                </motion.span>
-              </AnimatePresence>
-            </span>
-            <br />
-            Conversation.
-          </motion.h1>
+         <motion.h1
+  className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
+  initial={{ opacity: 0, y: -40 }}
+  animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 0.8, ease: "easeOut" }}
+>
+  {/* Static "Say Hello to" */}
+  <span className="align-middle leading-[3.5rem] justify-center ml-20">
+    Say Hello to{" "}
+  </span>
+
+  {/* Animated rotating words */}
+  <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[8ch] h-[4.5rem] md:h-[4.75rem]">
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={wordIndex}
+        initial={{ y: "120%", opacity: 0 }}
+        animate={{
+          y: ["120%", "-8%", "0%"], // bounce overshoot
+          opacity: [0, 1, 1],
+          color: !wordAnimationStarted
+            ? "#000"
+            : colors[wordIndex % colors.length],
+        }}
+        transition={{
+          duration: 0.7,
+          times: [0, 0.6, 1],
+          ease: "easeOut",
+        }}
+        exit={{
+          y: "-120%",
+          opacity: [1, 1, 0],
+          transition: {
+            y: { duration: 0.6, ease: "easeIn" },
+            opacity: { duration: 0.25, delay: 0.35 },
+          },
+        }}
+        className="absolute left-0 top-0 w-full text-left leading-[4.5rem] font-extrabold"
+      >
+        {words[wordIndex]}
+      </motion.span>
+    </AnimatePresence>
+  </span>
+
+  {/* Static "Conversation." */}
+  <br />
+  Conversation.
+</motion.h1>
 
           <motion.p
             className="font-normal text-lg text-center mb-6"

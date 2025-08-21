@@ -133,7 +133,7 @@ export default function LoginModal() {
     }, []);
     const socialButtonStyle = {
         backgroundColor: "rgba(217, 217, 217, 1)",
-        opacity: "0.8",
+        opacity: "0.5",
         borderRadius: "50%",
         transform: "scale(1)",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",

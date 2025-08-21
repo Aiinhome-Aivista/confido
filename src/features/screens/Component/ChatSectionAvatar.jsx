@@ -14,7 +14,7 @@ function ChatSectionAvatar() {
 
 
   const renderAvatar = () => {
-    switch (selectedAvatar?.name) {
+    switch (selectedAvatar) {
       case "Subho":
         return <SubhoExperience />;
       case "Sita":
@@ -31,7 +31,7 @@ function ChatSectionAvatar() {
   };
 
   return (
-    <div className='flex items-end h-[100%] z-1 -mr-[calc(50%)] opacity-60'>
+    <div className='flex items-end h-[100%] z-1 -mr-[calc(50%)]'>
       {renderAvatar()}
     </div>
   )
