@@ -182,8 +182,10 @@ export const Subho = React.memo((props) => {
       {...props}
       dispose={null}
       ref={group}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
+      // onPointerOver={handlePointerOver}
+      // onPointerOut={handlePointerOut}
+      onPointerOver={!props.disableWave ? handlePointerOver : undefined}
+  onPointerOut={!props.disableWave ? handlePointerOut : undefined}
     >
       <primitive object={nodes.Hips} />
       <skinnedMesh

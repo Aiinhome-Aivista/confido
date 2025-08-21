@@ -52,10 +52,10 @@ function ChatSectionAvatar() {
 
   const renderAvatar = () => {
     switch (selectedAvatar) {
-      case "Subho": return <SubhoExperience />;
-      case "Sita": return <SitaExperience />;
-      case "Ravi": return <RaviExperience />;
-      case "Hema": return <Experience />;
+      case "Subho": return <SubhoExperience disableWave />;
+      case "Sita": return <SitaExperience disableWave/>;
+      case "Ravi": return <RaviExperience disableWave/>;
+      case "Hema": return <Experience disableWave />;
       default: return <Experience />;
     }
   };
