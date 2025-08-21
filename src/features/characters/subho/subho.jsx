@@ -44,8 +44,8 @@ export const Subho = React.memo((props) => {
   const group = useRef();
      const { actions } = useAnimations([IdleAnimation[0], Waving[0]], group);
   
-    const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
-        useContext(AuthContext);
+  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
+    useContext(AuthContext);
     
       const [lipSync, setLipSync] = useState(null);
       const [audio, setAudio] = useState(null);
@@ -74,6 +74,20 @@ export const Subho = React.memo((props) => {
         }
       }, [audio]);
 
+      // When speaker toggles off, immediately stop any audio and clear lipsync
+      useEffect(() => {
+        if (!isSpeakerOn) {
+          if (audio) {
+            try {
+              audio.pause();
+              audio.currentTime = 0;
+            } catch (e) {}
+          }
+          setAudio(null);
+          setLipSync(null);
+        }
+      }, [isSpeakerOn]);
+
       // Stop audio when avatarSpeech is cleared
       useEffect(() => {
         if (!avatarSpeech && audio) {
@@ -89,6 +103,20 @@ export const Subho = React.memo((props) => {
       // LipSync Animation Frame: only when avatarSpeech is for Subho
       useEffect(() => {
         if (!avatarSpeech || avatarSpeech.avatarName !== "Subho") {
+          if (audio) {
+            try {
+              audio.pause();
+              audio.currentTime = 0;
+            } catch (e) {}
+          }
+          setAudio(null);
+          setLipSync(null);
+          return;
+        }
+
+        // If speaker is off, don't load or play lipsync/audio; keep avatar silent
+        if (!isSpeakerOn) {
+          // ensure any existing audio is stopped and lipSync cleared
           if (audio) {
             try {
               audio.pause();

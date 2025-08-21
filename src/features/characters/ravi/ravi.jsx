@@ -41,7 +41,7 @@ export const Ravi = React.memo((props) => {
  const group = useRef();
    const { actions } = useAnimations([IdleAnimation[0], Waving[0]], group);
 
-  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
+  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
       useContext(AuthContext);
   
     const [lipSync, setLipSync] = useState(null);
@@ -71,6 +71,20 @@ export const Ravi = React.memo((props) => {
       }
     }, [audio]);
 
+      // Stop and clear when speaker toggles off
+      useEffect(() => {
+        if (!isSpeakerOn) {
+          if (audio) {
+            try {
+              audio.pause();
+              audio.currentTime = 0;
+            } catch (e) {}
+          }
+          setAudio(null);
+          setLipSync(null);
+        }
+      }, [isSpeakerOn]);
+
     // Stop audio when avatarSpeech is cleared
     useEffect(() => {
       if (!avatarSpeech && audio) {
@@ -86,6 +100,18 @@ export const Ravi = React.memo((props) => {
     // LipSync Animation Frame: only when avatarSpeech is for Ravi
     useEffect(() => {
       if (!avatarSpeech || avatarSpeech.avatarName !== "Ravi") {
+        if (audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+        }
+        setAudio(null);
+        setLipSync(null);
+        return;
+      }
+
+      if (!isSpeakerOn) {
         if (audio) {
           try {
             audio.pause();
