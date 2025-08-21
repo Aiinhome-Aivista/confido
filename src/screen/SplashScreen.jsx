@@ -219,7 +219,7 @@ function SplashScreen({ setLoadAvatars }) {
           </motion.div>
 
           <motion.p
-            className="font-normal text-base text-center max-w-xl mb-8"
+            className="font-nunito text-base text-center max-w-xl mb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 3, duration: 0.8, ease: "easeOut" }}
