@@ -6,22 +6,27 @@ import { SitaExperience } from '../../characters/sita/sitaExperience';
 import { RaviExperience } from '../../characters/ravi/raviExperience';
 import SpeakerOn from '../../../assets/icons/volume_up.svg';
 import SpeakerOff from '../../../assets/icons/volume_off.svg';
-import { Howler } from "howler";
+
 
 function ChatSectionAvatar() {
   const { selectedAvatar, setGreeting } = useContext(AuthContext)
   const [isSpeakerOn, setIsSpeakerOn] = useState(true);
   const audioObjectsRef = useRef([]);
+  const isSpeakerOnRef = useRef(true); //  keep latest value available everywhere
 
   useEffect(() => {
     setGreeting(false);
   }, [selectedAvatar]);
 
+  //  Intercept Audio constructor
   useEffect(() => {
     const OriginalAudio = window.Audio;
     window.Audio = function (...args) {
       const audio = new OriginalAudio(...args);
-      audio.muted = !isSpeakerOn;
+
+      // Always apply latest mute state
+      audio.muted = !isSpeakerOnRef.current;
+
       audioObjectsRef.current.push(audio);
       return audio;
     };
@@ -29,14 +34,14 @@ function ChatSectionAvatar() {
     return () => {
       // cleanup: restore original Audio
       window.Audio = OriginalAudio;
-      // stop all tracked sounds when component unmounts
       audioObjectsRef.current.forEach(a => a.pause());
       audioObjectsRef.current = [];
     };
   }, []);
 
-  //On toggle, update mute state of all tracked audio objects
+  //  When toggle changes, update ref + mute all existing audios
   useEffect(() => {
+    isSpeakerOnRef.current = isSpeakerOn; // keep latest state
     audioObjectsRef.current.forEach(a => {
       a.muted = !isSpeakerOn;
     });
@@ -80,3 +85,4 @@ function ChatSectionAvatar() {
 }
 
 export default ChatSectionAvatar;
+
