@@ -6,7 +6,7 @@ import { SitaExperience } from '../../characters/sita/sitaExperience';
 import { RaviExperience } from '../../characters/ravi/raviExperience';
 import SpeakerOn from '../../../assets/icons/volume_up.svg';
 import SpeakerOff from '../../../assets/icons/volume_off.svg';
-import { Howler } from "howler";
+//import { Howler } from "howler";
 
 function ChatSectionAvatar() {
   const { selectedAvatar, setGreeting } = useContext(AuthContext)
