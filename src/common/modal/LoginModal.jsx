@@ -15,7 +15,7 @@ import { AuthContext } from "../../common/helper/AuthContext.jsx";
 export default function LoginModal() {
 
     const location = useLocation();
-    const { selectedAvatar, setOpenLoginModal } = useContext(AuthContext)
+    const { selectedAvatar, setOpenLoginModal, setIsLogin } = useContext(AuthContext)
     const [isClosing, setIsClosing] = useState(false);
 
     console.log(selectedAvatar)
@@ -63,10 +63,12 @@ export default function LoginModal() {
 
                 // setRedirectToChat(true)
                 setLoginSuccess(true);
-                setIsClosing(true);
+                setIsLogin(true); // Signal login state change to update Header
+
+                // Show success message, then close the modal after a delay
                 setTimeout(() => {
-                    setOpenLoginModal(false);
-                }, 300);
+                    handleClose();
+                }, 1300);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -112,7 +114,12 @@ export default function LoginModal() {
                 }
                 // setRedirectToChat(true)
                 setLoginSuccess(true);
-                setTimeout(() => setRedirectToChat(true), 1500);
+                setIsLogin(true); // Signal login state change to update Header
+
+                // Show success message, then close the modal after a delay
+                setTimeout(() => {
+                    handleClose();
+                }, 1300);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);

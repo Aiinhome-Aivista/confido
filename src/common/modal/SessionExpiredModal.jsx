@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import oldWoman from "../../assets/2D/old woman.svg";
 import warningicon from "../../assets/icons/warning.svg";
 import "./modal.css";
 import { SubhoExperience } from "../../features/characters/subho/subhoExperience.jsx";

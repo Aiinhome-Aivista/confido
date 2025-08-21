@@ -18,10 +18,51 @@ import {
 import { chatSession, setChatSession } from "../data/data.jsx";
 
 const avatars = [
-  {id: 1, name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
-  {id: 2, name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
-  {id: 3, name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
-  {id: 4, name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
+  {
+    id: 1,
+    name: "Ravi",
+    img: ravi,
+    avatar: <RaviExperience />,
+    color: "rgba(149, 182, 137, 0.9)",
+    secondaryColor: "rgba(149, 182, 137, 0.8)",
+    hoverColor: "rgba(149, 182, 137, 1)",
+    hoverSecondaryColor: "rgba(149, 182, 137, 0.7)",
+    background: "rgba(149, 182, 137, 0.07)"
+  },
+  {
+    id: 2,
+    name: "Hema",
+    img: hema,
+    avatar: <Experience />,
+    color: "rgba(150, 169, 184, 0.9)",
+    secondaryColor: "rgba(150, 169, 184, 0.8)",
+    hoverColor: "rgba(150, 169, 184, 1)",
+    hoverSecondaryColor: "rgba(150, 169, 184, 0.7)",
+    background: "rgba(150, 169, 184, 0.07)",
+
+  },
+  {
+    id: 3,
+    name: "Subho",
+    img: subho,
+    avatar: <SubhoExperience />,
+    color: "rgba(76, 73, 82, 0.9)",
+    secondaryColor: "rgba(76, 73, 82, 0.8)",
+    hoverColor: "rgba(76, 73, 82, 1)",
+    hoverSecondaryColor: "rgba(76, 73, 82, 0.7)",
+    background: "rgba(76, 73, 82, 0.07)",
+  },
+  {
+    id: 4,
+    name: "Sita",
+    img: sita,
+    avatar: <SitaExperience />,
+    color: "rgba(149, 87, 101, 0.9)",
+    secondaryColor: "rgba(149, 87, 101, 0.8)",
+    hoverColor: "rgba(149, 87, 101, 1)",
+    hoverSecondaryColor: "rgba(149, 87, 101, 0.7)",
+    background: "rgba(149, 87, 101, 0.07)",
+  },
 ];
 
 const avatarId = [
@@ -34,7 +75,7 @@ const avatarId = [
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
   const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar,
-setSelectedColor, setSelectedAvatarId
+    setSelectedColor, setSelectedAvatarId
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
@@ -42,6 +83,8 @@ setSelectedColor, setSelectedAvatarId
     setSelectedAvatarId(avatar.id)
     setSelectedAvatar(avatar.name);
     setSelectedColor(avatar.color);
+    setHoverColor();
+    set
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
@@ -60,8 +103,8 @@ setSelectedColor, setSelectedAvatarId
 
   const handleAvatarHover = (avatarName) => {
     // Cancel any existing timeout
-   
- setHoverAvatar(avatarName);
+
+    setHoverAvatar(avatarName);
 
   };
 
