@@ -16,10 +16,10 @@ import { chatSession, setChatSession } from "../data/data.jsx";
 import { sanitizeTextForSpeech } from "../common/helper/helper.jsx";
 
 const avatars = [
-  {id: 1, name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
-  {id: 2, name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
-  {id: 3, name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
-  {id: 4, name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
+  { id: 1, name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
+  { id: 2, name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
+  { id: 3, name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
+  { id: 4, name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
 ];
 
 const avatarId = [
@@ -32,7 +32,7 @@ const avatarId = [
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
   const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar,
-setSelectedColor, setSelectedAvatarId
+    setSelectedColor, setSelectedAvatarId
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
   const currentAudioRef = useRef(null);
@@ -45,7 +45,7 @@ setSelectedColor, setSelectedAvatarId
     if (hoverTimeoutRef.current) {
       try {
         clearTimeout(hoverTimeoutRef.current);
-      } catch (e) {}
+      } catch (e) { }
       hoverTimeoutRef.current = null;
     }
 
@@ -56,7 +56,7 @@ setSelectedColor, setSelectedAvatarId
         currentAudioRef.current.currentTime = 0;
         // remove onended handler
         currentAudioRef.current.onended = null;
-      } catch (e) {}
+      } catch (e) { }
       currentAudioRef.current = null;
     }
 
@@ -74,6 +74,7 @@ setSelectedColor, setSelectedAvatarId
     const storedName = storedUser.name || "";
 
     setSessionTerminated(false);
+    setAvatarSpeech(null);
 
     if (storedEmail && storedName) {
       await createSession(storedUser, avatar);
@@ -119,7 +120,7 @@ setSelectedColor, setSelectedAvatarId
     // clear avatarSpeech so character components stop audio+lipsync
     try {
       setAvatarSpeech(null);
-    } catch (e) {}
+    } catch (e) { }
     stopHoverAudio();
     setHoverAvatar(null);
   };
