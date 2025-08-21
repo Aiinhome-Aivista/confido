@@ -6,6 +6,7 @@ export function AuthProvider({ children }) {
     const [isLogin, setIsLogin] = useState(false);
     const [hoverAvatar, setHoverAvatar] = useState("");
     const [selectedAvatar, setSelectedAvatar] = useState("Ravi");
+  
     const [selectedAvatarId, setSelectedAvatarId] = useState();
     const [currentVoiceType, setCurrentVoiceType] = useState("adultWoman");
     const [greeting, setGreeting] = useState(true);
@@ -13,6 +14,8 @@ export function AuthProvider({ children }) {
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [sessionTerminated, setSessionTerminated] = useState(false);
     const [selectedColor, setSelectedColor] = useState("rgba(178, 239, 97, 1)");
+    const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
+    const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
     // 👇 Run once on app mount
     useEffect(() => {
@@ -37,7 +40,9 @@ export function AuthProvider({ children }) {
             hoverAvatar, setHoverAvatar,
             sessionTerminated, setSessionTerminated,
             selectedColor, setSelectedColor,
-            selectedAvatarId, setSelectedAvatarId
+            selectedAvatarId, setSelectedAvatarId,
+            showSessionExpiredModal, setShowSessionExpiredModal,
+            showSubscriptionModal, setShowSubscriptionModal
         }}>
 
             {children}
