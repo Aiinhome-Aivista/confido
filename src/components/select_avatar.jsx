@@ -16,10 +16,51 @@ import { chatSession, setChatSession } from "../data/data.jsx";
 import { sanitizeTextForSpeech } from "../common/helper/helper.jsx";
 
 const avatars = [
-  { id: 1, name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
-  { id: 2, name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
-  { id: 3, name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
-  { id: 4, name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
+  {
+    id: 1,
+    name: "Ravi",
+    img: ravi,
+    avatar: <RaviExperience />,
+    color: "rgba(149, 182, 137, 0.8)",
+    secondaryColor: "rgba(149, 182, 137, 0.4)",
+    hoverColor: "rgba(149, 182, 137, 1)",
+    hoverSecondaryColor: "rgba(149, 182, 137, 0.6)",
+    background: "rgba(149, 182, 137, 0.07)"
+  },
+  {
+    id: 2,
+    name: "Hema",
+    img: hema,
+    avatar: <Experience />,
+    color: "rgba(150, 169, 184, 0.8)",
+    secondaryColor: "rgba(150, 169, 184, 0.4)",
+    hoverColor: "rgba(150, 169, 184, 1)",
+    hoverSecondaryColor: "rgba(150, 169, 184, 0.6)",
+    background: "rgba(150, 169, 184, 0.07)",
+
+  },
+  {
+    id: 3,
+    name: "Subho",
+    img: subho,
+    avatar: <SubhoExperience />,
+    color: "rgba(76, 73, 82, 0.8)",
+    secondaryColor: "rgba(76, 73, 82, 0.4)",
+    hoverColor: "rgba(76, 73, 82, 1)",
+    hoverSecondaryColor: "rgba(76, 73, 82, 0.6)",
+    background: "rgba(76, 73, 82, 0.07)",
+  },
+  {
+    id: 4,
+    name: "Sita",
+    img: sita,
+    avatar: <SitaExperience />,
+    color: "rgba(149, 87, 101, 0.8)",
+    secondaryColor: "rgba(149, 87, 101, 0.4)",
+    hoverColor: "rgba(149, 87, 101, 1)",
+    hoverSecondaryColor: "rgba(149, 87, 101, 0.6)",
+    background: "rgba(149, 87, 101, 0.07)",
+  },
 ];
 
 const avatarId = [
@@ -31,8 +72,7 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar,
-    setSelectedColor, setSelectedAvatarId
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
   const currentAudioRef = useRef(null);
@@ -68,6 +108,10 @@ export default function ChooseAvatar() {
     setSelectedAvatarId(avatar.id)
     setSelectedAvatar(avatar.name);
     setSelectedColor(avatar.color);
+    setSelectedHoverColor(avatar.hoverColor);
+    setSecondaryColor(avatar.secondaryColor);
+    setHoverSecondaryColor(avatar.hoverSecondaryColor);
+    setCharBackgroundColor(avatar.background);
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
@@ -88,6 +132,8 @@ export default function ChooseAvatar() {
   const handleAvatarHover = (avatarName) => {
     // Stop anything currently playing so we don't double-play
     stopHoverAudio();
+    // Cancel any existing timeout
+
 
     // set visual hover state
     setHoverAvatar(avatarName);
