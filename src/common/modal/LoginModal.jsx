@@ -212,7 +212,7 @@ export default function LoginModal() {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-5">
             <div className={`loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center ${isClosing ? 'animate-zoom-out' : 'animate-zoom-in'}`}>
                 <div className="flex flex-row items-start justify-between h-1/10 w-[100%]">
                     <div></div>

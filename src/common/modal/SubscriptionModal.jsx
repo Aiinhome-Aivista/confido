@@ -12,7 +12,9 @@ import PlanCustomization from "./component/PlanCustomization.jsx";
 export default function SubscriptionModal() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showCustomization, setShowCustomization] = useState(false);
-  const { selectedAvatar, setShowSubscriptionModal, selectedColor } = useContext(AuthContext);
+  const [hoveredPlanId, setHoveredPlanId] = useState(null);
+  const [hoverPlanCard, setHoverPlanCard] = useState(null);
+  const { selectedAvatar, setShowSubscriptionModal, selectedColor, selectedHoverColor, charBackgroundColor, secondaryColor, hoverSecondaryColor, setShowSessionExpiredModal } = useContext(AuthContext);
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
@@ -34,25 +36,16 @@ export default function SubscriptionModal() {
     }
   };
 
-  const getButtonStyle = (plan) => {
-    if (plan.id === "free") {
-      return "bg-[#2D3748] text-white";
-    }
-    if (plan.id === "premium" || plan.id === "pro") {
-      return "bg-[#8B5A6B] text-white hover:bg-[#7A4D5E]";
-    }
-    return "bg-gray-600 text-white hover:bg-gray-700";
-  };
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 animate-fadeIn">
       {/* Main Modal Container */}
-      <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[85%] relative transform animate-slideUp">
+      <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[85%] relative transform animate-slideUp"
+        style={{ boxShadow: "0 16px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.15)" }}>
         {/* Close Button */}
         <div className="flex justify-end mb-2">
           <button
             onClick={() => { setShowSubscriptionModal(false), setShowSessionExpiredModal(true) }}
-            className="w-4 h-4 rounded-full bg-[#CA4C4C] hover:bg-red-600 transition-all duration-200 hover:scale-110"
+            className="w-4 h-4 rounded-full bg-[#CA4C4C] cursor-pointer transition-all duration-200 hover:scale-110"
           ></button>
         </div>
 
@@ -62,7 +55,7 @@ export default function SubscriptionModal() {
             {renderAvatar()}
           </div>
           <h2 className="text-lg font-bold text-black animate-fadeInUp">
-            {showCustomization ? "Customize Your Plan" : "Choose your plan"}
+            {showCustomization ? "Benefits you will get" : "Choose your plan"}
           </h2>
         </div>
 
@@ -78,11 +71,18 @@ export default function SubscriptionModal() {
               <div
                 key={plan.id}
                 className={`bg-gradient-to-b from-[#76DE4812] to-[#7E4A5712] border-4 border-[#7E4A5712] 
-                  hover:border-[#8B5A6B] rounded-2xl p-4 cursor-pointer relative 
+                  hover:border-[#8B5A6B] rounded-2xl p-4 relative 
                   min-h-[420px] flex flex-col transition-all duration-300 hover:scale-102 
                   hover:shadow-lg animate-fadeInUp`}
-                style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => { handlePlanSelect(plan) }}
+                onMouseEnter={() => !plan.isDefault && setHoverPlanCard(plan.id)}
+                onMouseLeave={() => setHoverPlanCard(null)}
+                style={{
+                  animationDelay: `${index * 100}ms`, borderColor: plan.isDefault
+                    ? secondaryColor
+                    : hoverPlanCard === plan.id ? hoverSecondaryColor : secondaryColor, scale: plan.isDefault
+                      ? 1
+                      : hoveredPlanId === plan.id ? 1.02 : 1
+                }}
               >
                 {/* Plan Header */}
                 <div className="text-center mb-4 flex items-end justify-center gap-2">
@@ -111,11 +111,17 @@ export default function SubscriptionModal() {
 
                 {/* Select Button */}
                 <button
-                  className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
-                    duration-300 transform hover:scale-102 ${getButtonStyle(
-                    plan
-                  )}`}
+                  className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm text-white transition-all 
+                    duration-300 transform hover:scale-102 ${plan.isDefault ? 'cursor-pointer' : 'cursor-pointer'}`}
+                  style={{
+                    backgroundColor: plan.isDefault
+                      ? '#2D3748' // Specific color for the disabled button
+                      : hoveredPlanId === plan.id ? selectedHoverColor : selectedColor
+                  }}
+                  onMouseEnter={() => !plan.isDefault && setHoveredPlanId(plan.id)}
+                  onMouseLeave={() => setHoveredPlanId(null)}
                   disabled={plan.isDefault}
+                  onClick={() => !plan.isDefault && handlePlanSelect(plan)}
                 >
                   {plan.buttonText}
                 </button>

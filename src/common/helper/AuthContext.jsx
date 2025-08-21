@@ -12,15 +12,14 @@ export function AuthProvider({ children }) {
     const [avatarSpeech, setAvatarSpeech] = useState("");
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [sessionTerminated, setSessionTerminated] = useState(false);
-    const [selectedColor, setSelectedColor] = useState("rgba(178, 239, 97, 0.9)");
-    const [selectedHoverColor, setSelectedHoverColor] = useState("");
-    const [secondaryColor, setSecondaryColor] = useState("");
-    const [hoverSecondaryColor, setHoverSecondaryColor] = useState("");
-    const [charBackgroundColor, setCharBackgroundColor] = useState("");
+    const [selectedColor, setSelectedColor] = useState("rgba(149, 182, 137, 0.9)");
+    const [selectedHoverColor, setSelectedHoverColor] = useState("rgba(149, 182, 137, 1)");
+    const [secondaryColor, setSecondaryColor] = useState("rgba(149, 182, 137, 0.8)");
+    const [hoverSecondaryColor, setHoverSecondaryColor] = useState("rgba(149, 182, 137, 0.7)");
+    const [charBackgroundColor, setCharBackgroundColor] = useState("rgba(149, 182, 137, 0.07)");
     const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(true);
     const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
-    // 👇 Run once on app mount
     useEffect(() => {
         if (sessionStorage.getItem("sessionId")) {
             sessionStorage.removeItem("sessionId");
@@ -31,12 +30,9 @@ export function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={{
-            isLogin,
-            setIsLogin,
-            selectedAvatar,
-            setSelectedAvatar,
-            currentVoiceType,
-            setCurrentVoiceType,
+            isLogin, setIsLogin,
+            selectedAvatar, setSelectedAvatar,
+            currentVoiceType, setCurrentVoiceType,
             greeting, setGreeting,
             avatarSpeech, setAvatarSpeech,
             openLoginModal, setOpenLoginModal,

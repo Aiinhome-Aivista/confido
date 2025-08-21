@@ -23,10 +23,10 @@ const avatars = [
     name: "Ravi",
     img: ravi,
     avatar: <RaviExperience />,
-    color: "rgba(149, 182, 137, 0.9)",
-    secondaryColor: "rgba(149, 182, 137, 0.8)",
+    color: "rgba(149, 182, 137, 0.8)",
+    secondaryColor: "rgba(149, 182, 137, 0.4)",
     hoverColor: "rgba(149, 182, 137, 1)",
-    hoverSecondaryColor: "rgba(149, 182, 137, 0.7)",
+    hoverSecondaryColor: "rgba(149, 182, 137, 0.6)",
     background: "rgba(149, 182, 137, 0.07)"
   },
   {
@@ -34,10 +34,10 @@ const avatars = [
     name: "Hema",
     img: hema,
     avatar: <Experience />,
-    color: "rgba(150, 169, 184, 0.9)",
-    secondaryColor: "rgba(150, 169, 184, 0.8)",
+    color: "rgba(150, 169, 184, 0.8)",
+    secondaryColor: "rgba(150, 169, 184, 0.4)",
     hoverColor: "rgba(150, 169, 184, 1)",
-    hoverSecondaryColor: "rgba(150, 169, 184, 0.7)",
+    hoverSecondaryColor: "rgba(150, 169, 184, 0.6)",
     background: "rgba(150, 169, 184, 0.07)",
 
   },
@@ -46,10 +46,10 @@ const avatars = [
     name: "Subho",
     img: subho,
     avatar: <SubhoExperience />,
-    color: "rgba(76, 73, 82, 0.9)",
-    secondaryColor: "rgba(76, 73, 82, 0.8)",
+    color: "rgba(76, 73, 82, 0.8)",
+    secondaryColor: "rgba(76, 73, 82, 0.4)",
     hoverColor: "rgba(76, 73, 82, 1)",
-    hoverSecondaryColor: "rgba(76, 73, 82, 0.7)",
+    hoverSecondaryColor: "rgba(76, 73, 82, 0.6)",
     background: "rgba(76, 73, 82, 0.07)",
   },
   {
@@ -57,10 +57,10 @@ const avatars = [
     name: "Sita",
     img: sita,
     avatar: <SitaExperience />,
-    color: "rgba(149, 87, 101, 0.9)",
-    secondaryColor: "rgba(149, 87, 101, 0.8)",
+    color: "rgba(149, 87, 101, 0.8)",
+    secondaryColor: "rgba(149, 87, 101, 0.4)",
     hoverColor: "rgba(149, 87, 101, 1)",
-    hoverSecondaryColor: "rgba(149, 87, 101, 0.7)",
+    hoverSecondaryColor: "rgba(149, 87, 101, 0.6)",
     background: "rgba(149, 87, 101, 0.07)",
   },
 ];
@@ -74,8 +74,7 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar,
-    setSelectedColor, setSelectedAvatarId
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
 
@@ -83,8 +82,10 @@ export default function ChooseAvatar() {
     setSelectedAvatarId(avatar.id)
     setSelectedAvatar(avatar.name);
     setSelectedColor(avatar.color);
-    setHoverColor();
-    set
+    setSelectedHoverColor(avatar.hoverColor);
+    setSecondaryColor(avatar.secondaryColor);
+    setHoverSecondaryColor(avatar.hoverSecondaryColor);
+    setCharBackgroundColor(avatar.background);
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
