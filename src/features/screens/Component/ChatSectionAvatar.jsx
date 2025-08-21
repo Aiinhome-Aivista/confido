@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { AuthContext } from '../../../common/helper/AuthContext';
 import { SubhoExperience } from '../../characters/subho/subhoExperience';
 import { Experience } from '../../characters/hema/experience';
@@ -11,51 +11,72 @@ import { Howler } from "howler";
 function ChatSectionAvatar() {
   const { selectedAvatar, setGreeting } = useContext(AuthContext)
   const [isSpeakerOn, setIsSpeakerOn] = useState(true);
+  const audioObjectsRef = useRef([]);
 
   useEffect(() => {
-    setGreeting(false)
-  }, [selectedAvatar])
+    setGreeting(false);
+  }, [selectedAvatar]);
+
+  useEffect(() => {
+    const OriginalAudio = window.Audio;
+    window.Audio = function (...args) {
+      const audio = new OriginalAudio(...args);
+      audio.muted = !isSpeakerOn;
+      audioObjectsRef.current.push(audio);
+      return audio;
+    };
+
+    return () => {
+      // cleanup: restore original Audio
+      window.Audio = OriginalAudio;
+      // stop all tracked sounds when component unmounts
+      audioObjectsRef.current.forEach(a => a.pause());
+      audioObjectsRef.current = [];
+    };
+  }, []);
+
+  //On toggle, update mute state of all tracked audio objects
+  useEffect(() => {
+    audioObjectsRef.current.forEach(a => {
+      a.muted = !isSpeakerOn;
+    });
+  }, [isSpeakerOn]);
 
   const handleToggle = () => {
-    setIsSpeakerOn((prev) => {
-      const newState = !prev;
-      Howler.mute(!newState); // mute globally
-      return newState;
-    });
+    setIsSpeakerOn(prev => !prev);
   };
-
 
   const renderAvatar = () => {
     switch (selectedAvatar) {
-      case "Subho":
-        return <SubhoExperience />;
-      case "Sita":
-        return <SitaExperience />
-      case "Ravi":
-        return <RaviExperience />
-      case "Hema":
-        return <Experience />
-      default:
-        return (
-          <Experience />
-        );
+      case "Subho": return <SubhoExperience />;
+      case "Sita": return <SitaExperience />;
+      case "Ravi": return <RaviExperience />;
+      case "Hema": return <Experience />;
+      default: return <Experience />;
     }
   };
 
   return (
     <>
-      <div onClick={handleToggle}
-        className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition ">
-        <img
-          src={isSpeakerOn ? SpeakerOn : SpeakerOff}
-          alt={isSpeakerOn ? "Speaker On" : "Speaker Off"}
-        />
-      </div>
-      <div className='flex items-end h-[100%] z-1 -mr-[calc(50%)]'>
-        {renderAvatar()}
+      <div className='flesx items-center justify-between w-full h-[100%] relative'>
+        <div className='pl-5'>
+          <div
+            onClick={handleToggle}
+            className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition
+          "
+          >
+            <img
+              src={isSpeakerOn ? SpeakerOn : SpeakerOff}
+              alt={isSpeakerOn ? "Speaker On" : "Speaker Off"}
+            />
+          </div>
+        </div>
+        <div className="flex items-end h-[100%] z-1 -mr-[calc(50%)]">
+          {renderAvatar()}
+        </div>
       </div>
     </>
   )
 }
 
-export default ChatSectionAvatar
+export default ChatSectionAvatar;
