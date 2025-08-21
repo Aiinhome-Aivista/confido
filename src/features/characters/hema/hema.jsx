@@ -48,7 +48,7 @@ export const Hema = React.memo((props) => {
   const eyeRightRef = useRef();
 
   
-  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
+  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
     useContext(AuthContext);
 
   const [lipSync, setLipSync] = useState(null);
@@ -74,11 +74,38 @@ export const Hema = React.memo((props) => {
     }
   }, [audio]);
 
+    // Stop and clear when speaker toggles off
+    useEffect(() => {
+      if (!isSpeakerOn) {
+        if (audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+        }
+        setAudio(null);
+        setLipSync(null);
+      }
+    }, [isSpeakerOn]);
+
   // Stop audio when avatarSpeech is cleared
   // Respond only when avatarSpeech is for this avatar; otherwise stop
   useEffect(() => {
     // if there's no avatarSpeech or it's for a different avatar, stop any playing audio
     if (!avatarSpeech || avatarSpeech.avatarName !== "Hema") {
+      if (audio) {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch (e) {}
+      }
+      setAudio(null);
+      setLipSync(null);
+      return;
+    }
+
+    // If speaker off, skip loading/playing lipsync or audio
+    if (!isSpeakerOn) {
       if (audio) {
         try {
           audio.pause();

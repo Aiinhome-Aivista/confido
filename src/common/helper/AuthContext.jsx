@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
     const [currentVoiceType, setCurrentVoiceType] = useState("adultWoman");
     const [greeting, setGreeting] = useState(true);
     const [avatarSpeech, setAvatarSpeech] = useState("");
+    const [isSpeakerOn, setIsSpeakerOn] = useState(true);
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [sessionTerminated, setSessionTerminated] = useState(false);
     const [selectedColor, setSelectedColor] = useState("rgba(178, 239, 97, 1)");
@@ -36,6 +37,7 @@ export function AuthProvider({ children }) {
             setCurrentVoiceType,
             greeting, setGreeting,
             avatarSpeech, setAvatarSpeech,
+            isSpeakerOn, setIsSpeakerOn,
             openLoginModal, setOpenLoginModal,
             hoverAvatar, setHoverAvatar,
             sessionTerminated, setSessionTerminated,

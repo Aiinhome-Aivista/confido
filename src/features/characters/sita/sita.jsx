@@ -44,8 +44,8 @@ export const Sita = React.memo((props) => {
   const group = useRef();
     const { actions } = useAnimations([IdleAnimation[0], Waving[0]], group);
  
-   const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
-       useContext(AuthContext);
+   const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
+     useContext(AuthContext);
    
      const [lipSync, setLipSync] = useState(null);
      const [audio, setAudio] = useState(null);
@@ -74,6 +74,20 @@ export const Sita = React.memo((props) => {
        }
      }, [audio]);
 
+    // When speaker toggles off, stop audio and clear lipSync
+    useEffect(() => {
+      if (!isSpeakerOn) {
+        if (audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+        }
+        setAudio(null);
+        setLipSync(null);
+      }
+    }, [isSpeakerOn]);
+
      // Stop audio when avatarSpeech is cleared
      // LipSync Animation Frame: respond only when speech is for Sita
      useEffect(() => {
@@ -89,14 +103,27 @@ export const Sita = React.memo((props) => {
          return;
        }
 
-       const newAudio = new Audio(avatarSpeech.audio_url);
-       newAudio.crossOrigin = "anonymous";
-       setAudio(newAudio);
+      // If global speaker is off, don't load audio/lipsync for this avatar
+      if (!isSpeakerOn) {
+        if (audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+        }
+        setAudio(null);
+        setLipSync(null);
+        return;
+      }
 
-       fetch(avatarSpeech.lipsync_url)
-         .then((res) => res.json())
-         .then((data) => setLipSync(data))
-         .catch((err) => console.error("LipSync JSON load failed:", err));
+      const newAudio = new Audio(avatarSpeech.audio_url);
+      newAudio.crossOrigin = "anonymous";
+      setAudio(newAudio);
+
+      fetch(avatarSpeech.lipsync_url)
+        .then((res) => res.json())
+        .then((data) => setLipSync(data))
+        .catch((err) => console.error("LipSync JSON load failed:", err));
      }, [avatarSpeech]);
    
      useFrame(() => {

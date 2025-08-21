@@ -9,10 +9,9 @@ import SpeakerOff from '../../../assets/icons/volume_off.svg';
 
 
 function ChatSectionAvatar() {
-  const { selectedAvatar, setGreeting } = useContext(AuthContext)
-  const [isSpeakerOn, setIsSpeakerOn] = useState(true);
+  const { selectedAvatar, setGreeting, isSpeakerOn, setIsSpeakerOn } = useContext(AuthContext);
   const audioObjectsRef = useRef([]);
-  const isSpeakerOnRef = useRef(true); //  keep latest value available everywhere
+  const isSpeakerOnRef = useRef(isSpeakerOn); // keep latest value available everywhere
 
   useEffect(() => {
     setGreeting(false);
@@ -42,13 +41,13 @@ function ChatSectionAvatar() {
   //  When toggle changes, update ref + mute all existing audios
   useEffect(() => {
     isSpeakerOnRef.current = isSpeakerOn; // keep latest state
-    audioObjectsRef.current.forEach(a => {
+    audioObjectsRef.current.forEach((a) => {
       a.muted = !isSpeakerOn;
     });
   }, [isSpeakerOn]);
 
   const handleToggle = () => {
-    setIsSpeakerOn(prev => !prev);
+    setIsSpeakerOn((prev) => !prev);
   };
 
   const renderAvatar = () => {
