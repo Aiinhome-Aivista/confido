@@ -36,7 +36,7 @@ export default function Header() {
 
   const sessionId = sessionStorage.getItem("sessionId");
 
-  const { isSpeakerOn, setIsSpeakerOn } = useContext(AuthContext);
+  const { isSpeakerOn, setIsSpeakerOn,isLoggedIn } = useContext(AuthContext);
   const audioObjectsRef = useRef([]);
   const isSpeakerOnRef = useRef(isSpeakerOn);
 
@@ -179,12 +179,12 @@ export default function Header() {
         </div>
         <div className="flex">
           <div className="terminateIconBg px-3">
-            {sessionId && <div onClick={() => setShowModal(true)} className="relative bg-[#76DE48] px-[0.5rem] py-[0.5rem] rounded-full cursor-pointer">
+            {isLoggedIn && <div onClick={() => setShowModal(true)} className="relative bg-[#76DE48] px-[0.5rem] py-[0.5rem] rounded-full cursor-pointer">
               <span className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-pulse-ring z-0" />
             </div>}
           </div>
 
-          {sessionId && (
+          {isLoggedIn && (
             <div
               onClick={handleToggle}
               className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition
