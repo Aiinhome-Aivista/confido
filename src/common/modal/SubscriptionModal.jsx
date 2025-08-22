@@ -24,22 +24,22 @@ export default function SubscriptionModal() {
   const renderAvatar = () => {
     switch (selectedAvatar) {
       case "Subho":
-        return <SubhoExperience />;
+        return <SubhoExperience disableWave />;
       case "Sita":
-        return <SitaExperience />;
+        return <SitaExperience disableWave />;
       case "Ravi":
-        return <RaviExperience />;
+        return <RaviExperience disableWave />;
       case "Hema":
-        return <Experience />;
+        return <Experience disableWave />;
       default:
-        return <RaviExperience />;
+        return <RaviExperience disableWave />;
     }
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50 animate-fadeIn">
       {/* Main Modal Container */}
-      <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[85%] relative transform animate-slideUp"
+      <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[80%] relative transform animate-slideUp overflow-hidden"
         style={{ boxShadow: "0 16px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.15)" }}>
         {/* Close Button */}
         <div className="flex justify-end mb-2">
@@ -115,8 +115,11 @@ export default function SubscriptionModal() {
                     duration-300 transform hover:scale-102 ${plan.isDefault ? 'cursor-pointer' : 'cursor-pointer'}`}
                   style={{
                     backgroundColor: plan.isDefault
-                      ? '#2D3748' // Specific color for the disabled button
-                      : hoveredPlanId === plan.id ? selectedHoverColor : selectedColor
+                      ? secondaryColor
+                      : hoveredPlanId === plan.id ? selectedHoverColor : selectedColor,
+                    color: plan.isDefault
+                      ? "rgba(255, 255, 255, 0.7)"
+                      : hoveredPlanId === plan.id ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.9)",
                   }}
                   onMouseEnter={() => !plan.isDefault && setHoveredPlanId(plan.id)}
                   onMouseLeave={() => setHoveredPlanId(null)}

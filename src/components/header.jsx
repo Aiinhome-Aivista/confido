@@ -156,7 +156,11 @@ export default function Header() {
                 >
                   <img src={item.icon} alt={item.title} className="icon-badge" />
                   <div className="icon-body">
-                    <div className="icon-title cursor-pointer" onClick={handleLoginClick}>{item.title}</div>
+                    <div className="icon-title cursor-pointer" onClick={() => {
+                      if (item.title === "Login") {
+                        handleLoginClick();
+                      }
+                    }}>{item.title}</div>
                     {item.id === "login" && storedName && (
                       <div
                         className="icon-option text-red-600 cursor-pointer"
