@@ -5,7 +5,7 @@ import { auth, googleProvider, facebookProvider } from "../../firebaseConfig.js"
 import { signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
 import { POST_url } from "../../connection/connection .jsx";
 import { apiService } from "../../Service/apiService.jsx";
-import ChooseAvatar from "../../components/select_avatar.jsx";
+import "./modal.css";
 import { SubhoExperience } from "../../features/characters/subho/subhoExperience.jsx";
 import { Experience } from "../../features/characters/hema/experience.jsx";
 import { SitaExperience } from "../../features/characters/sita/sitaExperience.jsx";
@@ -199,6 +199,7 @@ export default function LoginModal() {
             case "Subho":
                 return <SubhoExperience disableWave />;
             case "Sita":
+<<<<<<< HEAD
                 return <SitaExperience disableWave/>
             case "Ravi":
                 return <RaviExperience disableWave/>
@@ -207,13 +208,23 @@ export default function LoginModal() {
             default:
                 return (
                     <RaviExperience disableWave/>
+=======
+                return <SitaExperience disableWave />
+            case "Ravi":
+                return <RaviExperience disableWave />
+            case "Hema":
+                return <Experience disableWave />
+            default:
+                return (
+                    <RaviExperience disableWave />
+>>>>>>> 7214bb8de6c0930ba89628c7078bda41a8ccaf43
                 );
         }
     };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-5">
-            <div className={`loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center ${isClosing ? 'animate-zoom-out' : 'animate-zoom-in'}`}>
+            <div className={`loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center ${isClosing ? 'animate-zoom-out' : 'animate-fadeInUp'}`}>
                 <div className="flex flex-row items-start justify-between h-1/10 w-[100%]">
                     <div></div>
                     <button onClick={handleClose} className="modalCloseIcon rounded-full w-4 h-4 cursor-pointer"></button>

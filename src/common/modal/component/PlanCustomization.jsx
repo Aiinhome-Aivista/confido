@@ -195,7 +195,10 @@ function PlanCustomization({ selectedPlan, setSelectedPlan, setShowCustomization
                             onClick={handleBackToPlans}
                             className="bg-gray-400 text-white px-6 py-2 rounded-lg font-medium 
                     transition-all duration-300 hover:bg-gray-500 hover:scale-102 hover:shadow-md"
-                            style={{ backgroundColor: isBackButtonHovered ? hoverSecondaryColor : secondaryColor }}
+                            style={{
+                                backgroundColor: isBackButtonHovered ? hoverSecondaryColor : secondaryColor,
+                                color: isBackButtonHovered ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.7)"
+                            }}
                             onMouseEnter={() => setIsBackButtonHovered(true)}
                             onMouseLeave={() => setIsBackButtonHovered(false)}
                         >
@@ -204,7 +207,10 @@ function PlanCustomization({ selectedPlan, setSelectedPlan, setShowCustomization
                         <button
                             className={`bg-[${selectedColor}] text-white px-6 py-2 rounded-lg font-medium 
                   transition-all duration-300 hover:bg-[#7A4D5E] hover:scale-102 hover:shadow-md`}
-                            style={{ backgroundColor: isPayButtonHovered ? selectedHoverColor : selectedColor }}
+                            style={{
+                                backgroundColor: isPayButtonHovered ? selectedHoverColor : selectedColor,
+                                color: isPayButtonHovered ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.9)"
+                            }}
                             onMouseEnter={() => setIsPayButtonHovered(true)}
                             onMouseLeave={() => setIsPayButtonHovered(false)}
                         >

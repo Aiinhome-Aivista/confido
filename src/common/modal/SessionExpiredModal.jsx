@@ -14,15 +14,15 @@ export default function SessionExpiredModal() {
   const renderAvatar = () => {
     switch (selectedAvatar) {
       case "Subho":
-        return <SubhoExperience />;
+        return <SubhoExperience disableWave />;
       case "Sita":
-        return <SitaExperience />;
+        return <SitaExperience disableWave />;
       case "Ravi":
-        return <RaviExperience />;
+        return <RaviExperience disableWave />;
       case "Hema":
-        return <Experience />;
+        return <Experience disableWave />;
       default:
-        return <RaviExperience />;
+        return <RaviExperience disableWave />;
     }
   };
 
@@ -36,7 +36,7 @@ export default function SessionExpiredModal() {
           <div className="flex flex-col gap-6">
             {/* Avatar and Title */}
             <div className="flex flex-col items-center justify-center">
-              <div className="transform transition-all duration-300  avatar-container w-24 h-24  rounded-full border-2 border-[#7E4A5712] overflow-hidden shadow-md">
+              <div className="transform transition-all duration-300  avatar-container w-24 h-24  rounded-full border-2 border-gray-400 overflow-hidden shadow-md">
                 {renderAvatar()}
               </div>
             </div>
@@ -56,8 +56,11 @@ export default function SessionExpiredModal() {
             <div>
               <button
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
-                    duration-300 transform hover:scale-102 cursor-pointer text-white mb-2"
-                style={{ backgroundColor: isLeaveBtnHovered ? hoverSecondaryColor : secondaryColor }}
+                    duration-300 transform hover:scale-102 cursor-pointer mb-2"
+                style={{
+                  backgroundColor: isLeaveBtnHovered ? hoverSecondaryColor : secondaryColor,
+                  color: isLeaveBtnHovered ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.7)"
+                }}
                 onMouseEnter={() => setIsLeaveBtnHovered(true)}
                 onMouseLeave={() => setIsLeaveBtnHovered(false)}
                 onClick={() => setShowSessionExpiredModal(false)}
@@ -67,10 +70,17 @@ export default function SessionExpiredModal() {
               <button
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
                     duration-300 transform hover:scale-102 cursor-pointer text-white"
-                style={{ backgroundColor: isPlanBtnHovered ? selectedHoverColor : selectedColor }}
+                style={{
+                  backgroundColor: isPlanBtnHovered ? selectedHoverColor : selectedColor,
+                  color: isLeaveBtnHovered ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.9)"
+                }}
                 onMouseEnter={() => setIsPlanBtnHovered(true)}
                 onMouseLeave={() => setIsPlanBtnHovered(false)}
+<<<<<<< HEAD
               onClick={() => { setShowSubscriptionModal(true), setShowSessionExpiredModal(false) }}
+=======
+                onClick={() => { setShowSubscriptionModal(true), setShowSessionExpiredModal(false) }}
+>>>>>>> 7214bb8de6c0930ba89628c7078bda41a8ccaf43
               >
                 Choose Your Plan
               </button>
