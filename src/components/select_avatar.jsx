@@ -15,6 +15,7 @@ import { Experience } from "../features/characters/hema/experience";
 import { chatSession, setChatSession } from "../data/data.jsx";
 import { sanitizeTextForSpeech } from "../common/helper/helper.jsx";
 
+
 const avatars = [
   {
     id: 1,
@@ -72,7 +73,8 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, 
+    setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,setIsLoggedIn
   } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
   const currentAudioRef = useRef(null);
@@ -200,8 +202,9 @@ export default function ChooseAvatar() {
       if (data) {
         console.log("Session Created:", data);
         sessionStorage.setItem("session", JSON.stringify(data));
+        setIsLoggedIn(true);
 
-        // ✅ Save only sessionId separately
+        //  Save only sessionId separately
         if (data.data?.session_id || data.data?.sessionId) {
           const sid = data.data.session_id || data.data.sessionId;
           sessionStorage.setItem("sessionId", sid);

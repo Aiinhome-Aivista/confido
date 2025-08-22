@@ -2,9 +2,10 @@ import React, { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 
 const TerminateModal = ({ onClose }) => {
-    const { setSessionTerminated } = useContext(AuthContext);
+    const { setSessionTerminated, setIsLoggedIn } = useContext(AuthContext);
 
     const handleConfirm = () => {
+        setIsLoggedIn(false);
         // Clear sessionId
         sessionStorage.removeItem("sessionId");
         console.log("Session cleared");

@@ -20,6 +20,7 @@ export function AuthProvider({ children }) {
     const [charBackgroundColor, setCharBackgroundColor] = useState("rgba(149, 182, 137, 0.07)");
     const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
     const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         if (sessionStorage.getItem("sessionId")) {
@@ -47,7 +48,8 @@ export function AuthProvider({ children }) {
             selectedHoverColor, setSelectedHoverColor,
             secondaryColor, setSecondaryColor,
             hoverSecondaryColor, setHoverSecondaryColor,
-            charBackgroundColor, setCharBackgroundColor
+            charBackgroundColor, setCharBackgroundColor,
+            isLoggedIn, setIsLoggedIn,
         }}>
 
             {children}
