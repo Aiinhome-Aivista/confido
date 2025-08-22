@@ -143,11 +143,6 @@ export default function ChooseAvatar() {
     // Stop anything currently playing so we don't double-play
     stopHoverAudio();
     // Cancel any existing timeout
-<<<<<<< HEAD
-   
-     setHoverAvatar(avatarName);
-=======
->>>>>>> 3f80e537f350310818668dd16b1bb29f7e1a203e
 
 
     // set visual hover state
@@ -177,11 +172,6 @@ export default function ChooseAvatar() {
   };
 
   const handleAvatarLeave = () => {
-<<<<<<< HEAD
-    // Cancel the pending voice when mouse leaves
-    setHoverAvatar(null);
-    hoverTimeoutRef.current = null;
-=======
     // Immediately stop any hover audio and clear hover state
     // clear avatarSpeech so character components stop audio+lipsync
     try {
@@ -189,7 +179,6 @@ export default function ChooseAvatar() {
     } catch (e) { }
     stopHoverAudio();
     setHoverAvatar(null);
->>>>>>> 3f80e537f350310818668dd16b1bb29f7e1a203e
   };
 
   // cleanup on unmount

@@ -48,12 +48,8 @@ export const Hema = React.memo((props) => {
   const eyeRightRef = useRef();
 
   
-<<<<<<< HEAD
-  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } = useContext(AuthContext);
-=======
   const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
     useContext(AuthContext);
->>>>>>> 3f80e537f350310818668dd16b1bb29f7e1a203e
 
   const [lipSync, setLipSync] = useState(null);
   const [audio, setAudio] = useState(null);
@@ -185,21 +181,10 @@ export const Hema = React.memo((props) => {
   }, [actions]);
 
   const handlePointerOver = () => {
-<<<<<<< HEAD
-
-=======
->>>>>>> 3f80e537f350310818668dd16b1bb29f7e1a203e
     if (actions["Waving"]) {
       actions["Idle"]?.fadeOut(0.2);
       actions["Waving"].reset().fadeIn(0.2).play();
     }
-<<<<<<< HEAD
-      if(hoverAvatar == "Hema"){
-    selectionMessage();
-  }
-
-=======
->>>>>>> 3f80e537f350310818668dd16b1bb29f7e1a203e
   };
 
   const handlePointerOut = () => {
