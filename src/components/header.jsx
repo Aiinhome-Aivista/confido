@@ -16,6 +16,9 @@ import TerminateModal from "../features/terminateModal.jsx";
 import SubscriptionModal from "../common/modal/SubscriptionModal";
 import SessionExpiredModal from "../common/modal/SessionExpiredModal";
 
+import SpeakerOn from '../assets/icons/volume_up.svg';
+import SpeakerOff from '../assets/icons/volume_off.svg';
+
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
@@ -32,6 +35,44 @@ export default function Header() {
   const [selectedLanguage, setSelectedLanguage] = useState(sessionStorage.getItem("selectedLanguage") || "");
 
   const sessionId = sessionStorage.getItem("sessionId");
+
+  const { isSpeakerOn, setIsSpeakerOn } = useContext(AuthContext);
+  const audioObjectsRef = useRef([]);
+  const isSpeakerOnRef = useRef(isSpeakerOn);
+
+
+  //  Intercept Audio constructor
+  useEffect(() => {
+    const OriginalAudio = window.Audio;
+    window.Audio = function (...args) {
+      const audio = new OriginalAudio(...args);
+
+      // Always apply latest mute state
+      audio.muted = !isSpeakerOnRef.current;
+
+      audioObjectsRef.current.push(audio);
+      return audio;
+    };
+
+    return () => {
+      // cleanup: restore original Audio
+      window.Audio = OriginalAudio;
+      audioObjectsRef.current.forEach(a => a.pause());
+      audioObjectsRef.current = [];
+    };
+  }, []);
+
+  //  When toggle changes, update ref + mute all existing audios
+  useEffect(() => {
+    isSpeakerOnRef.current = isSpeakerOn; // keep latest state
+    audioObjectsRef.current.forEach((a) => {
+      a.muted = !isSpeakerOn;
+    });
+  }, [isSpeakerOn]);
+
+  const handleToggle = () => {
+    setIsSpeakerOn((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -142,6 +183,19 @@ export default function Header() {
               <span className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-pulse-ring z-0" />
             </div>}
           </div>
+
+          {sessionId && (
+            <div
+              onClick={handleToggle}
+              className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition
+                    "
+            >
+              <img
+                src={isSpeakerOn ? SpeakerOn : SpeakerOff}
+                alt={isSpeakerOn ? "Speaker On" : "Speaker Off"}
+              />
+            </div>
+          )}
 
 
           <div className="icon-wrapper">
