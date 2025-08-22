@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -88,13 +89,18 @@ function BeeScene({ mousePosition }) {
 
 
 function SplashScreen({ setLoadAvatars }) {
+
   const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
   const colors = ["#797979"];
   const words = ["Great", "Super", "Prime", "Elite", "Topaz", "Happy"];
   const [wordIndex, setWordIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
-
+  const { sessionTerminated, setIsChatscreenActive } = useContext(AuthContext);
   const mousePosition = useRef(null);
+
+  useEffect(() => {
+    setIsChatscreenActive(false);
+  }, [setIsChatscreenActive]);
 
   useEffect(() => {
     if (typeof window === "undefined") return; // prevent SSR issues
@@ -151,60 +157,60 @@ function SplashScreen({ setLoadAvatars }) {
 
       >
         <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito    z-2">
-         <motion.h1
-  className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
-  initial={{ opacity: 0, y: -40 }}
-  animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
-  transition={{ duration: 0.8, ease: "easeOut" }}
->
-  {/* Static "Say Hello to" */}
-  <span className="align-middle leading-[3.5rem] justify-center ml-20">
-    Say Hello to{" "}
-  </span>
+          <motion.h1
+            className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
+            initial={{ opacity: 0, y: -40 }}
+            animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {/* Static "Say Hello to" */}
+            <span className="align-middle leading-[3.5rem] justify-center ml-20">
+              Say Hello to{" "}
+            </span>
 
-  {/* Animated rotating words */}
-  <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[8ch] h-[4.5rem] md:h-[4.75rem]">
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.span
-        key={wordIndex}
-        initial={{ y: "120%", opacity: 0 }}
-        animate={{
-          y: ["120%", "-8%", "0%"], // bounce overshoot
-          opacity: [0, 1, 1],
-          color: !wordAnimationStarted
-            ? "#000"
-            : colors[wordIndex % colors.length],
-        }}
-        transition={{
-          duration: 0.7,
-          times: [0, 0.6, 1],
-          ease: "easeOut",
-        }}
-        exit={{
-          y: "-120%",
-          opacity: [1, 1, 0],
-          transition: {
-            y: { duration: 0.6, ease: "easeIn" },
-            opacity: { duration: 0.25, delay: 0.35 },
-          },
-        }}
-        className="absolute left-0 top-0 w-full text-left leading-[4.5rem] font-extrabold"
-      >
-        {words[wordIndex]}
-      </motion.span>
-    </AnimatePresence>
-  </span>
+            {/* Animated rotating words */}
+            <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[8ch] h-[4.5rem] md:h-[4.75rem]">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={wordIndex}
+                  initial={{ y: "120%", opacity: 0 }}
+                  animate={{
+                    y: ["120%", "-8%", "0%"], // bounce overshoot
+                    opacity: [0, 1, 1],
+                    color: !wordAnimationStarted
+                      ? "#000"
+                      : colors[wordIndex % colors.length],
+                  }}
+                  transition={{
+                    duration: 0.7,
+                    times: [0, 0.6, 1],
+                    ease: "easeOut",
+                  }}
+                  exit={{
+                    y: "-120%",
+                    opacity: [1, 1, 0],
+                    transition: {
+                      y: { duration: 0.6, ease: "easeIn" },
+                      opacity: { duration: 0.25, delay: 0.35 },
+                    },
+                  }}
+                  className="absolute left-0 top-0 w-full text-left leading-[4.5rem] font-extrabold"
+                >
+                  {words[wordIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </span>
 
-  {/* Static "Conversation." */}
-  <br />
-  Conversation.
-</motion.h1>
+            {/* Static "Conversation." */}
+            <br />
+            Conversation.
+          </motion.h1>
 
           <motion.p
             className="font-normal text-lg text-center mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay:1.5, duration: 0.8, ease: "easeOut" }}
+            transition={{ delay: 1.5, duration: 0.8, ease: "easeOut" }}
           >
             Overcome shyness with a simple hello.
           </motion.p>
