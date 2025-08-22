@@ -51,7 +51,7 @@ export default function SubscriptionModal() {
 
         {/* Avatar and Title */}
         <div className="flex flex-col items-center justify-center mb-6">
-          <div className="transform transition-all duration-300  avatar-container w-24 h-24  rounded-full border-2 border-[#7E4A5712] overflow-hidden shadow-md">
+          <div className="transform transition-all duration-300  avatar-container w-24 h-24  rounded-full border-2 border-gray-400 overflow-hidden shadow-md">
             {renderAvatar()}
           </div>
           <h2 className="text-lg font-bold text-black animate-fadeInUp">
