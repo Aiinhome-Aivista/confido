@@ -7,7 +7,7 @@ import { SitaExperience } from "../features/characters/sita/sitaExperience.jsx";
 import { RaviExperience } from "../features/characters/ravi/raviExperience.jsx";
 
 const TerminateModal = ({ onClose }) => {
-    const { setSessionTerminated, setIsLoggedIn } = useContext(AuthContext);
+    const { setSessionTerminated, setIsLoggedIn, selectedAvatar} = useContext(AuthContext);
 
     const handleConfirm = () => {
         setIsLoggedIn(false);
@@ -17,6 +17,24 @@ const TerminateModal = ({ onClose }) => {
         setSessionTerminated(true);
         onClose();
     };
+   const { selectedColor, selectedHoverColor, secondaryColor, hoverSecondaryColor, charBackgroundColor, showSubscriptionModal, setShowSubscriptionModal, setShowSessionExpiredModal } = useContext(AuthContext);
+    const [isLeaveBtnHovered, setIsLeaveBtnHovered] = useState(false);
+    const [isPlanBtnHovered, setIsPlanBtnHovered] = useState(false);
+
+  const renderAvatar = () => {
+    switch (selectedAvatar) {
+      case "Subho":
+        return <SubhoExperience disableWave />;
+      case "Sita":
+        return <SitaExperience disableWave />;
+      case "Ravi":
+        return <RaviExperience disableWave/>;
+      case "Hema":
+        return <HemaExperience disableWave/>;
+      default:
+        return <RaviExperience disableWave/>;
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-lg terminate-bg">
