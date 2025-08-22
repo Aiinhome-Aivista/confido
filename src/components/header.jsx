@@ -16,6 +16,9 @@ import TerminateModal from "../features/terminateModal.jsx";
 import SubscriptionModal from "../common/modal/SubscriptionModal";
 import SessionExpiredModal from "../common/modal/SessionExpiredModal";
 
+import SpeakerOn from '../assets/icons/volume_up.svg';
+import SpeakerOff from '../assets/icons/volume_off.svg';
+
 
 export default function Header() {
   const [hovered, setHovered] = useState(null);
@@ -32,6 +35,44 @@ export default function Header() {
   const [selectedLanguage, setSelectedLanguage] = useState(sessionStorage.getItem("selectedLanguage") || "");
 
   const sessionId = sessionStorage.getItem("sessionId");
+
+  const { isSpeakerOn, setIsSpeakerOn, isLoggedIn } = useContext(AuthContext);
+  const audioObjectsRef = useRef([]);
+  const isSpeakerOnRef = useRef(isSpeakerOn);
+
+
+  //  Intercept Audio constructor
+  useEffect(() => {
+    const OriginalAudio = window.Audio;
+    window.Audio = function (...args) {
+      const audio = new OriginalAudio(...args);
+
+      // Always apply latest mute state
+      audio.muted = !isSpeakerOnRef.current;
+
+      audioObjectsRef.current.push(audio);
+      return audio;
+    };
+
+    return () => {
+      // cleanup: restore original Audio
+      window.Audio = OriginalAudio;
+      audioObjectsRef.current.forEach(a => a.pause());
+      audioObjectsRef.current = [];
+    };
+  }, []);
+
+  //  When toggle changes, update ref + mute all existing audios
+  useEffect(() => {
+    isSpeakerOnRef.current = isSpeakerOn; // keep latest state
+    audioObjectsRef.current.forEach((a) => {
+      a.muted = !isSpeakerOn;
+    });
+  }, [isSpeakerOn]);
+
+  const handleToggle = () => {
+    setIsSpeakerOn((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -99,7 +140,7 @@ export default function Header() {
   };
 
 
-  const icons = [
+  const allIcons = [
     {
       id: "language",
       title: "Language",
@@ -120,6 +161,14 @@ export default function Header() {
     },
   ];
 
+  // ✅ Apply filter condition only while rendering
+  const icons = allIcons.filter((icon) => {
+    if (isLoggedIn) {
+      return icon.id !== "language" && icon.id !== "settings";
+    }
+    return true;
+  });
+
   const handleEnter = (id) => {
     if (leaveTimer.current) clearTimeout(leaveTimer.current);
     setHovered(id);
@@ -138,10 +187,23 @@ export default function Header() {
         </div>
         <div className="flex">
           <div className="terminateIconBg px-3">
-            {sessionId && <div onClick={() => setShowModal(true)} className="relative bg-[#76DE48] px-[0.5rem] py-[0.5rem] rounded-full cursor-pointer">
+            {isLoggedIn && <div onClick={() => setShowModal(true)} className="relative bg-[#76DE48] px-[0.5rem] py-[0.5rem] rounded-full cursor-pointer">
               <span className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-pulse-ring z-0" />
             </div>}
           </div>
+
+          {isLoggedIn && (
+            <div
+              onClick={handleToggle}
+              className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition
+                    "
+            >
+              <img
+                src={isSpeakerOn ? SpeakerOn : SpeakerOff}
+                alt={isSpeakerOn ? "Speaker On" : "Speaker Off"}
+              />
+            </div>
+          )}
 
 
           <div className="icon-wrapper">

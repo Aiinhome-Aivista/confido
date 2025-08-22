@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import ChatSectionAvatar from './Component/ChatSectionAvatar';
 import ChatSectionText from './Component/ChatSectionText';
-import { useContext } from 'react';
 import { AuthContext } from '../../common/helper/AuthContext.jsx';
 import ChooseAvatar from '../../components/select_avatar.jsx';
 
