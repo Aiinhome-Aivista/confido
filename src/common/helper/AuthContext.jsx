@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     const [secondaryColor, setSecondaryColor] = useState("rgba(149, 182, 137, 0.8)");
     const [hoverSecondaryColor, setHoverSecondaryColor] = useState("rgba(149, 182, 137, 0.7)");
     const [charBackgroundColor, setCharBackgroundColor] = useState("rgba(149, 182, 137, 0.07)");
-    const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(false);
+    const [showSessionExpiredModal, setShowSessionExpiredModal] = useState(true);
     const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
     useEffect(() => {

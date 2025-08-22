@@ -70,7 +70,7 @@ export default function SessionExpiredModal() {
                 style={{ backgroundColor: isPlanBtnHovered ? selectedHoverColor : selectedColor }}
                 onMouseEnter={() => setIsPlanBtnHovered(true)}
                 onMouseLeave={() => setIsPlanBtnHovered(false)}
-              /* onClick={() => { setShowSubscriptionModal(true), setShowSessionExpiredModal(false) }} */
+              onClick={() => { setShowSubscriptionModal(true), setShowSessionExpiredModal(false) }}
               >
                 Choose Your Plan
               </button>
