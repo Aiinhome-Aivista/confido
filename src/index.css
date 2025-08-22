@@ -59,7 +59,7 @@ background-color: var(--user-msg-color);
 .input-text-box {
   background-color: var(--ai-msg-color);
   color: var(--msg-text-color);
-  opacity: 0.85;
+  
 }
 
 .input-text-box input::placeholder {

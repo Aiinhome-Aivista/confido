@@ -15,6 +15,7 @@ import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
 import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
+import { startListening } from "./speechRecognization.jsx";
 
 
 const ChatSectionText = ({
@@ -22,7 +23,9 @@ const ChatSectionText = ({
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const { setAvatarSpeech, selectedColor, selectedAvatarId, showSessionExpiredModal, setShowSessionExpiredModal } = useContext(AuthContext);
+  const { setAvatarSpeech, selectedColor, selectedAvatarId, showSessionExpiredModal, setShowSessionExpiredModal, selectedAvatar } = useContext(AuthContext);
+  const [speakingText, setSpeakingText] = useState("");
+  const [avatarReading, setAvatarReading] = useState(false);
 
 
 
@@ -41,9 +44,12 @@ const ChatSectionText = ({
   // const [avatarReading, setAvatarReading] = useState(false);
   const [isMicHovered, setIsMicHovered] = useState(false);
   const [isCameraHovered, setIsCameraHovered] = useState(false);
-  const [isMicActive, setIsMicActive] = useState(false);
+  // const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
   const expiryTimer = useRef(null);
+
+  const [isMicActive, setIsMicActive] = useState(false);
+  const recognitionRef = useRef(null);
 
 
   const generateRandomID = () => {
@@ -132,10 +138,12 @@ const ChatSectionText = ({
     try {
       setIsAILoading(true);
 
+      console.log("selectedAvatarId",selectedAvatarId)
+
       // Call backend chat API
       const payload = {
         session_id: sessionId,
-        time: "5 min",
+        time: "50 min",
         user_input: text,
         avatar_id: selectedAvatarId
       };
@@ -151,12 +159,13 @@ const ChatSectionText = ({
       // check if session ended
       if (res?.data?.end === true) {
         setShowSessionExpiredModal(true);
+        setShowSubscriptionModal(true);
         return;
       }
 
 
       // Add AI response to session
-      if (res?.data?.message) {
+  if (res?.data?.message) {
         setSession((prev) => [
           ...prev,
           {
@@ -165,7 +174,8 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
-        setAvatarSpeech(res.data.message);
+  // Ensure the returned audio/lipsync (if any) targets the currently selected avatar
+  setAvatarSpeech({ ...res.data, avatarName: selectedAvatar });
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -191,24 +201,45 @@ const ChatSectionText = ({
     return new Promise((resolve) => {
       setSpeakingText(message);
 
-      setAvatarSpeech(message);
+      // Clear any avatarSpeech while using browser TTS (no precomputed lipsync available)
+      setAvatarSpeech(null);
+
       const utter = new SpeechSynthesisUtterance(message);
 
-      // Use avatar-specific voice configuration
-
-
+      // speak using the browser's speechSynthesis (this will not produce precomputed lipsync JSON)
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
 
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
 
       setSession((prev) => [
         ...prev,
         { role: "ai", message, time: new Date().toLocaleTimeString() },
       ]);
     });
+  };
+
+  const handleMicClick = () => {
+    if (!isMicActive) {
+      // Start listening
+      recognitionRef.current = startListening(
+        (transcript) => {
+          console.log("Voice Input:", transcript);
+          handleUserMessage(transcript); // send as input
+        },
+        () => setIsMicActive(false) // reset when recognition ends
+      );
+    } else {
+      // Stop listening
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    }
+    setIsMicActive((prev) => !prev);
   };
 
   return (
@@ -227,7 +258,7 @@ const ChatSectionText = ({
             >
               {item.role === "ai" ? (
                 <div
-                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg ${(formatMessage(item.message))
+                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg  ${(formatMessage(item.message))
                     ? "items-center"
                     : "items-start"
                     } backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md`}
@@ -315,7 +346,7 @@ const ChatSectionText = ({
             className="flex-1 rounded-2xl h-[2.6rem] outline-none placeholder:font-medium"
             placeholder="Type here" />
           <div className='buttons flex gap-2'>
-            <button
+            {/* <button
               className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onClick={() => setIsMicActive(prev => !prev)}
@@ -323,15 +354,24 @@ const ChatSectionText = ({
               onMouseLeave={() => setIsMicHovered(false)}
             >
               <SettingsVoiceRoundedIcon />
-            </button>
+            </button> */}
             <button
+              className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
+                } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
+              onClick={handleMicClick}
+              onMouseEnter={() => setIsMicHovered(true)}
+              onMouseLeave={() => setIsMicHovered(false)}
+            >
+              <SettingsVoiceRoundedIcon />
+            </button>
+            {/* <button
               className={`${isCameraHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onMouseEnter={() => setIsCameraHovered(true)}
               onMouseLeave={() => setIsCameraHovered(false)}
             >
               <CameraAltRoundedIcon />
-            </button>
+            </button> */}
           </div>
         </div>
         <button disabled={isTerminated}

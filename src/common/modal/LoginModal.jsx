@@ -15,7 +15,7 @@ import { AuthContext } from "../../common/helper/AuthContext.jsx";
 export default function LoginModal() {
 
     const location = useLocation();
-    const { selectedAvatar, setOpenLoginModal } = useContext(AuthContext)
+    const { selectedAvatar, setOpenLoginModal, setIsLogin } = useContext(AuthContext)
     const [isClosing, setIsClosing] = useState(false);
 
     console.log(selectedAvatar)
@@ -63,10 +63,12 @@ export default function LoginModal() {
 
                 // setRedirectToChat(true)
                 setLoginSuccess(true);
-                setIsClosing(true);
+                setIsLogin(true); // Signal login state change to update Header
+
+                // Show success message, then close the modal after a delay
                 setTimeout(() => {
-                    setOpenLoginModal(false);
-                }, 300);
+                    handleClose();
+                }, 1300);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -112,7 +114,12 @@ export default function LoginModal() {
                 }
                 // setRedirectToChat(true)
                 setLoginSuccess(true);
-                setTimeout(() => setRedirectToChat(true), 1500);
+                setIsLogin(true); // Signal login state change to update Header
+
+                // Show success message, then close the modal after a delay
+                setTimeout(() => {
+                    handleClose();
+                }, 1300);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -205,7 +212,7 @@ export default function LoginModal() {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-5">
             <div className={`loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center ${isClosing ? 'animate-zoom-out' : 'animate-zoom-in'}`}>
                 <div className="flex flex-row items-start justify-between h-1/10 w-[100%]">
                     <div></div>
