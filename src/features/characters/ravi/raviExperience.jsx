@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber"
 // already memoized
 import { Ravi } from "./ravi";
 
-export const RaviExperience = React.memo(() => {
+export const RaviExperience = React.memo(({ disableWave = false }) => {
   return (
  <Canvas
   shadows
@@ -21,7 +21,7 @@ export const RaviExperience = React.memo(() => {
 
   {/* Model position in 3D space: [x, y, z] */}
   {/* Increasing y moves the model UP in frame, decreasing y moves it DOWN */}
-  <Ravi position={[0, -2.2, 0]} scale={2} />
+  <Ravi position={[0, -2.2, 0]} scale={2} disableWave={disableWave} />
 
   {/* Environment lighting preset */}
   <Environment preset="sunset" />

@@ -44,8 +44,8 @@ export const Subho = React.memo((props) => {
   const group = useRef();
      const { actions } = useAnimations([IdleAnimation[0], Waving[0]], group);
   
-    const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
-        useContext(AuthContext);
+  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
+    useContext(AuthContext);
     
       const [lipSync, setLipSync] = useState(null);
       const [audio, setAudio] = useState(null);
@@ -73,19 +73,65 @@ export const Subho = React.memo((props) => {
           audio.play().catch(() => {});
         }
       }, [audio]);
-    
-      // LipSync Animation Frame
-    
+
+      // When speaker toggles off, immediately stop any audio and clear lipsync
       useEffect(() => {
-        console.log("avatarSpeech", avatarSpeech);
-        if (!avatarSpeech) return;
+        if (!isSpeakerOn) {
+          if (audio) {
+            try {
+              audio.pause();
+              audio.currentTime = 0;
+            } catch (e) {}
+          }
+          setAudio(null);
+          setLipSync(null);
+        }
+      }, [isSpeakerOn]);
+
+      // Stop audio when avatarSpeech is cleared
+      useEffect(() => {
+        if (!avatarSpeech && audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+          setAudio(null);
+          setLipSync(null);
+        }
+      }, [avatarSpeech]);
     
-        // Load new audio
+      // LipSync Animation Frame: only when avatarSpeech is for Subho
+      useEffect(() => {
+        if (!avatarSpeech || avatarSpeech.avatarName !== "Subho") {
+          if (audio) {
+            try {
+              audio.pause();
+              audio.currentTime = 0;
+            } catch (e) {}
+          }
+          setAudio(null);
+          setLipSync(null);
+          return;
+        }
+
+        // If speaker is off, don't load or play lipsync/audio; keep avatar silent
+        if (!isSpeakerOn) {
+          // ensure any existing audio is stopped and lipSync cleared
+          if (audio) {
+            try {
+              audio.pause();
+              audio.currentTime = 0;
+            } catch (e) {}
+          }
+          setAudio(null);
+          setLipSync(null);
+          return;
+        }
+
         const newAudio = new Audio(avatarSpeech.audio_url);
         newAudio.crossOrigin = "anonymous";
         setAudio(newAudio);
-    
-        // Fetch lipsync JSON
+
         fetch(avatarSpeech.lipsync_url)
           .then((res) => res.json())
           .then((data) => setLipSync(data))
@@ -93,8 +139,8 @@ export const Subho = React.memo((props) => {
       }, [avatarSpeech]);
     
       useFrame(() => {
-        if (!audio) return;
-    
+        if (!audio || !lipSync) return;
+
         const currentAudioTime = audio.currentTime;
         Object.values(corresponding).forEach((value) => {
           nodes.Wolf3D_Head.morphTargetInfluences[
@@ -104,7 +150,7 @@ export const Subho = React.memo((props) => {
             nodes.Wolf3D_Teeth.morphTargetDictionary[value]
           ] = 0;
         });
-        for (let i = 0; i < lipSync.mouthCues.length; i++) {
+        for (let i = 0; i < (lipSync.mouthCues || []).length; i++) {
           const mouthCue = lipSync.mouthCues[i];
           if (
             currentAudioTime >= mouthCue.start &&
@@ -118,7 +164,7 @@ export const Subho = React.memo((props) => {
                 corresponding[mouthCue.value]
               ]
             ] = 1;
-    
+
             break;
           }
         }
@@ -142,17 +188,14 @@ export const Subho = React.memo((props) => {
           actions["Idle"].reset().fadeIn(0.2).play();
         }
       }, [actions]);
+      
+  // ...existing code...
     
       const handlePointerOver = () => {
-        console
-      if(hoverAvatar == "Subho"){
         if (actions["Waving"]) {
           actions["Idle"]?.fadeOut(0.2);
           actions["Waving"].reset().fadeIn(0.2).play();
         }
-        selectionMessage();
-      }
-    
       };
     
       const handlePointerOut = () => {
@@ -167,8 +210,10 @@ export const Subho = React.memo((props) => {
       {...props}
       dispose={null}
       ref={group}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
+      // onPointerOver={handlePointerOver}
+      // onPointerOut={handlePointerOut}
+      onPointerOver={!props.disableWave ? handlePointerOver : undefined}
+  onPointerOut={!props.disableWave ? handlePointerOut : undefined}
     >
       <primitive object={nodes.Hips} />
       <skinnedMesh
