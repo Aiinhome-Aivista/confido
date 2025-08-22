@@ -95,12 +95,10 @@ function SplashScreen({ setLoadAvatars }) {
   const words = ["Great", "Super", "Prime", "Elite", "Topaz", "Happy"];
   const [wordIndex, setWordIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
-  const { sessionTerminated, setIsChatscreenActive } = useContext(AuthContext);
+  const { sessionTerminated } = useContext(AuthContext);
   const mousePosition = useRef(null);
 
-  useEffect(() => {
-    setIsChatscreenActive(false);
-  }, [setIsChatscreenActive]);
+  
 
   useEffect(() => {
     if (typeof window === "undefined") return; // prevent SSR issues

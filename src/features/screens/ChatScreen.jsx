@@ -5,12 +5,7 @@ import { AuthContext } from '../../common/helper/AuthContext.jsx';
 import ChooseAvatar from '../../components/select_avatar.jsx';
 
 function ChatScreen() {
-  const { sessionTerminated, setIsChatscreenActive } = useContext(AuthContext);
-
-  useEffect(() => {
-    setIsChatscreenActive(true);
-  }, [setIsChatscreenActive]);
-
+  const { sessionTerminated } = useContext(AuthContext);
 
   if (sessionTerminated) {
     return <ChooseAvatar />;

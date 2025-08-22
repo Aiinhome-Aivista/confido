@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 
 export default function AnimatedBlobs() {
-  const { selectedColor, isChatscreenActive } = useContext(AuthContext);
+  const { selectedColor, isLoggedIn } = useContext(AuthContext);
 
   const [blobs, setBlobs] = useState([
     { size: 300, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
@@ -20,7 +20,7 @@ export default function AnimatedBlobs() {
 
   // update colors when avatar changes
   useEffect(() => {
-    if (isChatscreenActive) {
+    if (isLoggedIn) {
       setBlobs((prev) =>
         prev.map((b) => ({
           ...b,
@@ -37,7 +37,7 @@ export default function AnimatedBlobs() {
         }))
       );
     }
-  }, [selectedColor, isChatscreenActive]);
+  }, [selectedColor, isLoggedIn]);
 
   // bouncing animation
   useEffect(() => {

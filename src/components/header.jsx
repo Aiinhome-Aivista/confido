@@ -36,7 +36,7 @@ export default function Header() {
 
   const sessionId = sessionStorage.getItem("sessionId");
 
-  const { isSpeakerOn, setIsSpeakerOn,isLoggedIn } = useContext(AuthContext);
+  const { isSpeakerOn, setIsSpeakerOn, isLoggedIn } = useContext(AuthContext);
   const audioObjectsRef = useRef([]);
   const isSpeakerOnRef = useRef(isSpeakerOn);
 
@@ -140,7 +140,7 @@ export default function Header() {
   };
 
 
-  const icons = [
+  const allIcons = [
     {
       id: "language",
       title: "Language",
@@ -160,6 +160,14 @@ export default function Header() {
       options: [],
     },
   ];
+
+  // ✅ Apply filter condition only while rendering
+  const icons = allIcons.filter((icon) => {
+    if (isLoggedIn) {
+      return icon.id !== "language" && icon.id !== "settings";
+    }
+    return true;
+  });
 
   const handleEnter = (id) => {
     if (leaveTimer.current) clearTimeout(leaveTimer.current);
