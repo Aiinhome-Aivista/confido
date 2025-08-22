@@ -5,7 +5,7 @@ import { auth, googleProvider, facebookProvider } from "../../firebaseConfig.js"
 import { signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
 import { POST_url } from "../../connection/connection .jsx";
 import { apiService } from "../../Service/apiService.jsx";
-import ChooseAvatar from "../../components/select_avatar.jsx";
+import "./modal.css";
 import { SubhoExperience } from "../../features/characters/subho/subhoExperience.jsx";
 import { Experience } from "../../features/characters/hema/experience.jsx";
 import { SitaExperience } from "../../features/characters/sita/sitaExperience.jsx";
@@ -15,7 +15,7 @@ import { AuthContext } from "../../common/helper/AuthContext.jsx";
 export default function LoginModal() {
 
     const location = useLocation();
-    const { selectedAvatar, setOpenLoginModal } = useContext(AuthContext)
+    const { selectedAvatar, setOpenLoginModal, setIsLogin } = useContext(AuthContext)
     const [isClosing, setIsClosing] = useState(false);
 
     console.log(selectedAvatar)
@@ -63,10 +63,12 @@ export default function LoginModal() {
 
                 // setRedirectToChat(true)
                 setLoginSuccess(true);
-                setIsClosing(true);
+                setIsLogin(true); // Signal login state change to update Header
+
+                // Show success message, then close the modal after a delay
                 setTimeout(() => {
-                    setOpenLoginModal(false);
-                }, 300);
+                    handleClose();
+                }, 1300);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -112,7 +114,12 @@ export default function LoginModal() {
                 }
                 // setRedirectToChat(true)
                 setLoginSuccess(true);
-                setTimeout(() => setRedirectToChat(true), 1500);
+                setIsLogin(true); // Signal login state change to update Header
+
+                // Show success message, then close the modal after a delay
+                setTimeout(() => {
+                    handleClose();
+                }, 1300);
             } else {
                 console.error("Login failed:", data.message);
                 alert("Login failed: " + data.message);
@@ -190,23 +197,23 @@ export default function LoginModal() {
     const renderAvatar = () => {
         switch (selectedAvatar) {
             case "Subho":
-                return <SubhoExperience />;
+                return <SubhoExperience disableWave />;
             case "Sita":
-                return <SitaExperience />
+                return <SitaExperience disableWave />
             case "Ravi":
-                return <RaviExperience />
+                return <RaviExperience disableWave />
             case "Hema":
-                return <Experience />
+                return <Experience disableWave />
             default:
                 return (
-                    <RaviExperience />
+                    <RaviExperience disableWave />
                 );
         }
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-50">
-            <div className={`loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center ${isClosing ? 'animate-zoom-out' : 'animate-zoom-in'}`}>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-lg z-5">
+            <div className={`loginModal rounded-2xl p-3 h-[46%] w-[22%] flex flex-col items-center justify-center ${isClosing ? 'animate-zoom-out' : 'animate-fadeInUp'}`}>
                 <div className="flex flex-row items-start justify-between h-1/10 w-[100%]">
                     <div></div>
                     <button onClick={handleClose} className="modalCloseIcon rounded-full w-4 h-4 cursor-pointer"></button>

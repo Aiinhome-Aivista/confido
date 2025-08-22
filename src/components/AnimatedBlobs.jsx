@@ -2,16 +2,15 @@ import React, { useEffect, useRef, useState, useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 
 export default function AnimatedBlobs() {
-  const { selectedColor } = useContext(AuthContext);
-  const sessionId = sessionStorage.getItem("sessionId");
+  const { selectedColor, isLoggedIn } = useContext(AuthContext);
 
   const [blobs, setBlobs] = useState([
     { size: 300, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
     { size: 350, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
     { size: 450, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
   ]);
-  
- 
+
+
 
   const blobRefs = useRef([]);
   const velocities = useRef([]);
@@ -21,7 +20,7 @@ export default function AnimatedBlobs() {
 
   // update colors when avatar changes
   useEffect(() => {
-    if (sessionId) {
+    if (isLoggedIn) {
       setBlobs((prev) =>
         prev.map((b) => ({
           ...b,
@@ -30,7 +29,7 @@ export default function AnimatedBlobs() {
       );
 
     }
-    else{
+    else {
       setBlobs((prev) =>
         prev.map((b) => ({
           ...b,
@@ -38,7 +37,7 @@ export default function AnimatedBlobs() {
         }))
       );
     }
-  }, [selectedColor,sessionId]);
+  }, [selectedColor, isLoggedIn]);
 
   // bouncing animation
   useEffect(() => {

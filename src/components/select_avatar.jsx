@@ -11,17 +11,57 @@ import { RaviExperience } from "../features/characters/ravi/raviExperience";
 import { SitaExperience } from "../features/characters/sita/sitaExperience";
 import { SubhoExperience } from "../features/characters/subho/subhoExperience";
 import { Experience } from "../features/characters/hema/experience";
-import {
-  playWelcomeWithDelay,
-  cancelWelcomeMessage
-} from "../utils/voiceUtils.js";
+// voiceUtils not required here; hover audio is handled locally
 import { chatSession, setChatSession } from "../data/data.jsx";
+import { sanitizeTextForSpeech } from "../common/helper/helper.jsx";
+
 
 const avatars = [
-  {id: 1, name: "Ravi", img: ravi, avatar: <RaviExperience />, color: "rgba(149, 182, 137, 1)" },
-  {id: 2, name: "Hema", img: hema, avatar: <Experience />, color: "rgba(150, 169, 184, 1)" },
-  {id: 3, name: "Subho", img: subho, avatar: <SubhoExperience />, color: "rgba(76, 73, 82, 1)" },
-  {id: 4, name: "Sita", img: sita, avatar: <SitaExperience />, color: "rgba(149, 87, 101, 1)" },
+  {
+    id: 1,
+    name: "Ravi",
+    img: ravi,
+    avatar: <RaviExperience />,
+    color: "rgba(149, 182, 137, 0.8)",
+    secondaryColor: "rgba(149, 182, 137, 0.4)",
+    hoverColor: "rgba(149, 182, 137, 1)",
+    hoverSecondaryColor: "rgba(149, 182, 137, 0.6)",
+    background: "rgba(149, 182, 137, 0.07)"
+  },
+  {
+    id: 2,
+    name: "Hema",
+    img: hema,
+    avatar: <Experience />,
+    color: "rgba(150, 169, 184, 0.8)",
+    secondaryColor: "rgba(150, 169, 184, 0.4)",
+    hoverColor: "rgba(150, 169, 184, 1)",
+    hoverSecondaryColor: "rgba(150, 169, 184, 0.6)",
+    background: "rgba(150, 169, 184, 0.07)",
+
+  },
+  {
+    id: 3,
+    name: "Subho",
+    img: subho,
+    avatar: <SubhoExperience />,
+    color: "rgba(76, 73, 82, 0.8)",
+    secondaryColor: "rgba(76, 73, 82, 0.4)",
+    hoverColor: "rgba(76, 73, 82, 1)",
+    hoverSecondaryColor: "rgba(76, 73, 82, 0.6)",
+    background: "rgba(76, 73, 82, 0.07)",
+  },
+  {
+    id: 4,
+    name: "Sita",
+    img: sita,
+    avatar: <SitaExperience />,
+    color: "rgba(149, 87, 101, 0.8)",
+    secondaryColor: "rgba(149, 87, 101, 0.4)",
+    hoverColor: "rgba(149, 87, 101, 1)",
+    hoverSecondaryColor: "rgba(149, 87, 101, 0.6)",
+    background: "rgba(149, 87, 101, 0.07)",
+  },
 ];
 
 const avatarId = [
@@ -33,25 +73,66 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar,
-setSelectedColor, setSelectedAvatarId
-  } = useContext(AuthContext);
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, 
+    setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,setIsLoggedIn } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
+  const currentAudioRef = useRef(null);
+  const isPlayingRef = useRef(false);
+  const currentHoverRef = useRef(null);
+
+  // helper to stop any hover audio immediately
+  const stopHoverAudio = () => {
+    // clear any hover timeout (if set elsewhere)
+    if (hoverTimeoutRef.current) {
+      try {
+        clearTimeout(hoverTimeoutRef.current);
+      } catch (e) { }
+      hoverTimeoutRef.current = null;
+    }
+
+    // stop any HTMLAudio playing and remove listeners
+    if (currentAudioRef.current) {
+      try {
+        currentAudioRef.current.pause();
+        currentAudioRef.current.currentTime = 0;
+        // remove onended handler
+        currentAudioRef.current.onended = null;
+      } catch (e) { }
+      currentAudioRef.current = null;
+    }
+
+    isPlayingRef.current = false;
+    currentHoverRef.current = null;
+  };
 
   const handleSelect = async (avatar) => {
     setSelectedAvatarId(avatar.id)
     setSelectedAvatar(avatar.name);
     setSelectedColor(avatar.color);
+    setSelectedHoverColor(avatar.hoverColor);
+    setSecondaryColor(avatar.secondaryColor);
+    setHoverSecondaryColor(avatar.hoverSecondaryColor);
+    setCharBackgroundColor(avatar.background);
 
     const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
     const storedEmail = storedUser.email || "";
     const storedName = storedUser.name || "";
 
     setSessionTerminated(false);
+    setAvatarSpeech(null);
 
     if (storedEmail && storedName) {
       await createSession(storedUser, avatar);
       setLoadChatscreen("chatscreen");
+      // trigger chat greeting for the selected avatar when entering chat screen
+      try {
+        const avatarName = avatar.name;
+        const audio_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.mp3`;
+        const lipsync_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.json`;
+        setAvatarSpeech({ avatarName, audio_url, lipsync_url, source: 'chat' });
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       // Not logged in → go to login
       setOpenLoginModal(true);
@@ -59,17 +140,64 @@ setSelectedColor, setSelectedAvatarId
   };
 
   const handleAvatarHover = (avatarName) => {
+    // Stop anything currently playing so we don't double-play
+    stopHoverAudio();
     // Cancel any existing timeout
+<<<<<<< HEAD
    
      setHoverAvatar(avatarName);
+=======
+>>>>>>> 3f80e537f350310818668dd16b1bb29f7e1a203e
 
+
+    // set visual hover state
+    setHoverAvatar(avatarName);
+    currentHoverRef.current = avatarName;
+
+    // Play the appropriate greeting depending on avatar (switch/case for clarity)
+    switch (avatarName) {
+      case "Ravi":
+      case "Subho":
+      case "Sita":
+      case "Hema":
+        // Instruct the character components to load and play their greeting + lipsync
+        try {
+          const audio_url = `/characters/${avatarName.toLowerCase()}/audio/greeting.mp3`;
+          const lipsync_url = `/characters/${avatarName.toLowerCase()}/audio/greeting.json`;
+          // include the avatar's name so character components only react to themselves
+          setAvatarSpeech({ avatarName, audio_url, lipsync_url });
+          isPlayingRef.current = true;
+        } catch (err) {
+          // ignore
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const handleAvatarLeave = () => {
+<<<<<<< HEAD
     // Cancel the pending voice when mouse leaves
     setHoverAvatar(null);
     hoverTimeoutRef.current = null;
+=======
+    // Immediately stop any hover audio and clear hover state
+    // clear avatarSpeech so character components stop audio+lipsync
+    try {
+      setAvatarSpeech(null);
+    } catch (e) { }
+    stopHoverAudio();
+    setHoverAvatar(null);
+>>>>>>> 3f80e537f350310818668dd16b1bb29f7e1a203e
   };
+
+  // cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopHoverAudio();
+    };
+  }, []);
 
   const createSession = async (user, avatar) => {
     try {
@@ -93,8 +221,9 @@ setSelectedColor, setSelectedAvatarId
       if (data) {
         console.log("Session Created:", data);
         sessionStorage.setItem("session", JSON.stringify(data));
+        setIsLoggedIn(true);
 
-        // ✅ Save only sessionId separately
+        //  Save only sessionId separately
         if (data.data?.session_id || data.data?.sessionId) {
           const sid = data.data.session_id || data.data.sessionId;
           sessionStorage.setItem("sessionId", sid);
@@ -110,6 +239,7 @@ setSelectedColor, setSelectedAvatarId
             time: new Date().toLocaleTimeString(),
           },
         ]);
+        //setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
       }
     } catch (error) {
       console.error("Session API Failed:", error);

@@ -16,7 +16,13 @@ export const apiService = async ({
             method,
             headers: {
                 "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
                 ...headers,
+
+
+              
+    
+
             },
         };
 

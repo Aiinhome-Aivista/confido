@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber"
 // already memoized
 import { Subho } from "./subho";
 
-export const SubhoExperience = React.memo(() => {
+export const SubhoExperience = React.memo(({ disableWave = false }) => {
   return (
  <Canvas
   shadows
@@ -21,7 +21,7 @@ export const SubhoExperience = React.memo(() => {
 
   {/* Model position in 3D space: [x, y, z] */}
   {/* Increasing y moves the model UP in frame, decreasing y moves it DOWN */}
-  <Subho position={[0, -2.2, 0]} scale={2} />
+  <Subho position={[0, -2.2, 0]} scale={2} disableWave={disableWave} />
 
   {/* Environment lighting preset */}
   <Environment preset="sunset" />
