@@ -44,8 +44,8 @@ export const Sita = React.memo((props) => {
   const group = useRef();
     const { actions } = useAnimations([IdleAnimation[0], Waving[0]], group);
  
-   const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
-       useContext(AuthContext);
+   const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
+     useContext(AuthContext);
    
      const [lipSync, setLipSync] = useState(null);
      const [audio, setAudio] = useState(null);
@@ -73,28 +73,62 @@ export const Sita = React.memo((props) => {
          audio.play().catch(() => {});
        }
      }, [audio]);
-   
-     // LipSync Animation Frame
-   
+
+    // When speaker toggles off, stop audio and clear lipSync
+    useEffect(() => {
+      if (!isSpeakerOn) {
+        if (audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+        }
+        setAudio(null);
+        setLipSync(null);
+      }
+    }, [isSpeakerOn]);
+
+     // Stop audio when avatarSpeech is cleared
+     // LipSync Animation Frame: respond only when speech is for Sita
      useEffect(() => {
-       console.log("avatarSpeech", avatarSpeech);
-       if (!avatarSpeech) return;
-   
-       // Load new audio
-       const newAudio = new Audio(avatarSpeech.audio_url);
-       newAudio.crossOrigin = "anonymous";
-       setAudio(newAudio);
-   
-       // Fetch lipsync JSON
-       fetch(avatarSpeech.lipsync_url)
-         .then((res) => res.json())
-         .then((data) => setLipSync(data))
-         .catch((err) => console.error("LipSync JSON load failed:", err));
+       if (!avatarSpeech || avatarSpeech.avatarName !== "Sita") {
+         if (audio) {
+           try {
+             audio.pause();
+             audio.currentTime = 0;
+           } catch (e) {}
+         }
+         setAudio(null);
+         setLipSync(null);
+         return;
+       }
+
+      // If global speaker is off, don't load audio/lipsync for this avatar
+      if (!isSpeakerOn) {
+        if (audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+        }
+        setAudio(null);
+        setLipSync(null);
+        return;
+      }
+
+      const newAudio = new Audio(avatarSpeech.audio_url);
+      newAudio.crossOrigin = "anonymous";
+      setAudio(newAudio);
+
+      fetch(avatarSpeech.lipsync_url)
+        .then((res) => res.json())
+        .then((data) => setLipSync(data))
+        .catch((err) => console.error("LipSync JSON load failed:", err));
      }, [avatarSpeech]);
    
      useFrame(() => {
-       if (!audio) return;
-   
+       if (!audio || !lipSync) return;
+
        const currentAudioTime = audio.currentTime;
        Object.values(corresponding).forEach((value) => {
          nodes.Wolf3D_Head.morphTargetInfluences[
@@ -104,7 +138,7 @@ export const Sita = React.memo((props) => {
            nodes.Wolf3D_Teeth.morphTargetDictionary[value]
          ] = 0;
        });
-       for (let i = 0; i < lipSync.mouthCues.length; i++) {
+       for (let i = 0; i < (lipSync.mouthCues || []).length; i++) {
          const mouthCue = lipSync.mouthCues[i];
          if (
            currentAudioTime >= mouthCue.start &&
@@ -118,7 +152,7 @@ export const Sita = React.memo((props) => {
                corresponding[mouthCue.value]
              ]
            ] = 1;
-   
+
            break;
          }
        }
@@ -143,17 +177,12 @@ export const Sita = React.memo((props) => {
        }
      }, [actions]);
    
-     const handlePointerOver = () => {
-       console
-     if(hoverAvatar == "Sita"){
-       if (actions["Waving"]) {
-         actions["Idle"]?.fadeOut(0.2);
-         actions["Waving"].reset().fadeIn(0.2).play();
-       }
-       selectionMessage();
-     }
-   
-     };
+    const handlePointerOver = () => {
+      if (actions["Waving"]) {
+        actions["Idle"]?.fadeOut(0.2);
+        actions["Waving"].reset().fadeIn(0.2).play();
+      }
+    };
    
      const handlePointerOut = () => {
        if (actions["Waving"]) {
@@ -167,8 +196,10 @@ export const Sita = React.memo((props) => {
       {...props}
       dispose={null}
       ref={group}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
+      // onPointerOver={handlePointerOver}
+      // onPointerOut={handlePointerOut}
+      onPointerOver={!props.disableWave ? handlePointerOver : undefined}
+  onPointerOut={!props.disableWave ? handlePointerOut : undefined}
     >
       <primitive object={nodes.Hips} />
       <skinnedMesh

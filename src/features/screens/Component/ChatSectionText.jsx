@@ -23,7 +23,9 @@ const ChatSectionText = ({
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const { setAvatarSpeech, selectedColor, selectedAvatarId, showSessionExpiredModal, setShowSessionExpiredModal } = useContext(AuthContext);
+  const { setAvatarSpeech, selectedColor, selectedAvatarId, showSessionExpiredModal, setShowSessionExpiredModal, selectedAvatar } = useContext(AuthContext);
+  const [speakingText, setSpeakingText] = useState("");
+  const [avatarReading, setAvatarReading] = useState(false);
 
 
 
@@ -163,7 +165,7 @@ const ChatSectionText = ({
 
 
       // Add AI response to session
-      if (res?.data?.message) {
+  if (res?.data?.message) {
         setSession((prev) => [
           ...prev,
           {
@@ -172,7 +174,8 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
-        setAvatarSpeech(res.data);
+  // Ensure the returned audio/lipsync (if any) targets the currently selected avatar
+  setAvatarSpeech({ ...res.data, avatarName: selectedAvatar });
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -198,18 +201,20 @@ const ChatSectionText = ({
     return new Promise((resolve) => {
       setSpeakingText(message);
 
-      setAvatarSpeech(message);
+      // Clear any avatarSpeech while using browser TTS (no precomputed lipsync available)
+      setAvatarSpeech(null);
+
       const utter = new SpeechSynthesisUtterance(message);
 
-      // Use avatar-specific voice configuration
-
-
+      // speak using the browser's speechSynthesis (this will not produce precomputed lipsync JSON)
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
 
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
 
       setSession((prev) => [
         ...prev,

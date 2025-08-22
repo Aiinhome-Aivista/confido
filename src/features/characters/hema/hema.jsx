@@ -9,7 +9,6 @@ import { useAnimations, useFBX, useGLTF } from "@react-three/drei";
 import { SkeletonUtils } from "three-stdlib";
 import * as THREE from "three";
 import { AuthContext } from "../../../common/helper/AuthContext";
-import { createVoiceUtterance } from "../../../utils/voiceUtils";
 
 const corresponding = {
   A: "viseme_PP",
@@ -49,7 +48,7 @@ export const Hema = React.memo((props) => {
   const eyeRightRef = useRef();
 
   
-  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar } =
+  const { greeting, avatarSpeech, setAvatarSpeech, selectedAvatar,hoverAvatar, isSpeakerOn } =
     useContext(AuthContext);
 
   const [lipSync, setLipSync] = useState(null);
@@ -75,18 +74,54 @@ export const Hema = React.memo((props) => {
     }
   }, [audio]);
 
-  // LipSync Animation Frame
+    // Stop and clear when speaker toggles off
+    useEffect(() => {
+      if (!isSpeakerOn) {
+        if (audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+        }
+        setAudio(null);
+        setLipSync(null);
+      }
+    }, [isSpeakerOn]);
 
+  // Stop audio when avatarSpeech is cleared
+  // Respond only when avatarSpeech is for this avatar; otherwise stop
   useEffect(() => {
-    console.log("avatarSpeech", avatarSpeech);
-    if (!avatarSpeech) return;
+    // if there's no avatarSpeech or it's for a different avatar, stop any playing audio
+    if (!avatarSpeech || avatarSpeech.avatarName !== "Hema") {
+      if (audio) {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch (e) {}
+      }
+      setAudio(null);
+      setLipSync(null);
+      return;
+    }
 
-    // Load new audio
+    // If speaker off, skip loading/playing lipsync or audio
+    if (!isSpeakerOn) {
+      if (audio) {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch (e) {}
+      }
+      setAudio(null);
+      setLipSync(null);
+      return;
+    }
+
+    // avatarSpeech is for Hema → load audio + lipsync
     const newAudio = new Audio(avatarSpeech.audio_url);
     newAudio.crossOrigin = "anonymous";
     setAudio(newAudio);
 
-    // Fetch lipsync JSON
     fetch(avatarSpeech.lipsync_url)
       .then((res) => res.json())
       .then((data) => setLipSync(data))
@@ -94,7 +129,7 @@ export const Hema = React.memo((props) => {
   }, [avatarSpeech]);
 
   useFrame(() => {
-    if (!audio) return;
+    if (!audio || !lipSync) return;
 
     const currentAudioTime = audio.currentTime;
     Object.values(corresponding).forEach((value) => {
@@ -105,7 +140,7 @@ export const Hema = React.memo((props) => {
         nodes.Wolf3D_Teeth.morphTargetDictionary[value]
       ] = 0;
     });
-    for (let i = 0; i < lipSync.mouthCues.length; i++) {
+    for (let i = 0; i < (lipSync.mouthCues || []).length; i++) {
       const mouthCue = lipSync.mouthCues[i];
       if (
         currentAudioTime >= mouthCue.start &&
@@ -145,15 +180,10 @@ export const Hema = React.memo((props) => {
   }, [actions]);
 
   const handlePointerOver = () => {
-    console
-  if(hoverAvatar == "Hema"){
     if (actions["Waving"]) {
       actions["Idle"]?.fadeOut(0.2);
       actions["Waving"].reset().fadeIn(0.2).play();
     }
-    selectionMessage();
-  }
-
   };
 
   const handlePointerOut = () => {
@@ -168,8 +198,10 @@ export const Hema = React.memo((props) => {
       {...props}
       dispose={null}
       ref={group}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
+      // onPointerOver={handlePointerOver}
+      // onPointerOut={handlePointerOut}
+        onPointerOver={!props.disableWave ? handlePointerOver : undefined}
+  onPointerOut={!props.disableWave ? handlePointerOut : undefined}
     >
       <primitive object={nodes.Hips} />
       <skinnedMesh
