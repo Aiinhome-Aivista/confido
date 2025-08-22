@@ -199,16 +199,6 @@ export default function LoginModal() {
             case "Subho":
                 return <SubhoExperience disableWave />;
             case "Sita":
-<<<<<<< HEAD
-                return <SitaExperience disableWave/>
-            case "Ravi":
-                return <RaviExperience disableWave/>
-            case "Hema":
-                return <Experience disableWave/>
-            default:
-                return (
-                    <RaviExperience disableWave/>
-=======
                 return <SitaExperience disableWave />
             case "Ravi":
                 return <RaviExperience disableWave />
@@ -217,7 +207,6 @@ export default function LoginModal() {
             default:
                 return (
                     <RaviExperience disableWave />
->>>>>>> 7214bb8de6c0930ba89628c7078bda41a8ccaf43
                 );
         }
     };

@@ -76,11 +76,7 @@ export default function SessionExpiredModal() {
                 }}
                 onMouseEnter={() => setIsPlanBtnHovered(true)}
                 onMouseLeave={() => setIsPlanBtnHovered(false)}
-<<<<<<< HEAD
-              onClick={() => { setShowSubscriptionModal(true), setShowSessionExpiredModal(false) }}
-=======
                 onClick={() => { setShowSubscriptionModal(true), setShowSessionExpiredModal(false) }}
->>>>>>> 7214bb8de6c0930ba89628c7078bda41a8ccaf43
               >
                 Choose Your Plan
               </button>
