@@ -123,6 +123,15 @@ export default function ChooseAvatar() {
     if (storedEmail && storedName) {
       await createSession(storedUser, avatar);
       setLoadChatscreen("chatscreen");
+      // trigger chat greeting for the selected avatar when entering chat screen
+      try {
+        const avatarName = avatar.name;
+        const audio_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.mp3`;
+        const lipsync_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.json`;
+        setAvatarSpeech({ avatarName, audio_url, lipsync_url, source: 'chat' });
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       // Not logged in → go to login
       setOpenLoginModal(true);
