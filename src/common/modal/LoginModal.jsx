@@ -197,16 +197,16 @@ export default function LoginModal() {
     const renderAvatar = () => {
         switch (selectedAvatar) {
             case "Subho":
-                return <SubhoExperience />;
+                return <SubhoExperience disableWave />;
             case "Sita":
-                return <SitaExperience />
+                return <SitaExperience disableWave/>
             case "Ravi":
-                return <RaviExperience />
+                return <RaviExperience disableWave/>
             case "Hema":
-                return <Experience />
+                return <Experience disableWave/>
             default:
                 return (
-                    <RaviExperience />
+                    <RaviExperience disableWave/>
                 );
         }
     };
