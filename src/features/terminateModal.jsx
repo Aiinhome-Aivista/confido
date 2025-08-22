@@ -1,5 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext,useState } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
+import warningicon from "../assets/icons/warning.svg";
+import { SubhoExperience } from "../features/characters/subho/subhoExperience.jsx";
+import { Experience as HemaExperience } from "../features/characters/hema/experience.jsx";
+import { SitaExperience } from "../features/characters/sita/sitaExperience.jsx";
+import { RaviExperience } from "../features/characters/ravi/raviExperience.jsx";
 
 const TerminateModal = ({ onClose }) => {
     const { setSessionTerminated, setIsLoggedIn } = useContext(AuthContext);
@@ -13,46 +18,59 @@ const TerminateModal = ({ onClose }) => {
         onClose();
     };
 
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-lg terminate-bg">
+      <div className="loginModal rounded-2xl p-6 w-[90%] max-w-sm relative text-center backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md">
+        <div className="absolute top-0 left-0 w-full h-9 ai-bg rounded-t-3xl flex items-center justify-end px-3 gap-2">
+          <div
+            onClick={onClose}
+            className="w-4 h-4 rounded-full modalCloseIcon cursor-pointer hover:scale-110 transition-transform"
+            aria-label="Close"
+            title="Close"
+          ></div>
+        </div>
 
+        <div className="avatar-container w-20 h-20 md:w-24 md:h-24 mx-auto mt-4 mb-4 rounded-full border-2  overflow-hidden shadow-md"
+        style={{ borderColor: selectedColor  }}>
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center terminate-bg">
-            <div className="loginModal rounded-2xl p-6 w-[90%] max-w-sm relative text-center backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md">
-                {/* Top bar with red dot as close trigger */}
-                <div className="absolute top-0 left-0 w-full h-9 ai-bg rounded-t-3xl flex items-center justify-end px-3 gap-2">
-                    {/* Clickable Red Dot (acts as close) */}
-                    <div
-                        onClick={onClose}
-                        className="w-4 h-4 rounded-full modalCloseIcon cursor-pointer hover:scale-110 transition-transform"
-                        aria-label="Close"
-                        title="Close"
-                    ></div>
-                </div>
+          {renderAvatar()}
+        </div>
+        <div className="flex items-center justify-center">
+          <img src={warningicon} alt="Old Woman" className="w-16 h-16" />
+        </div>
 
-                <div className="mt-16 username font-semibold text-sm mb-6">
-                    Do you really want to<br />close the session?
-                </div>
+        <div className="username font-semibold text-sm mb-6">
+          Do you really want to
+          <br />
+          close the session?
+        </div>
 
-                {/* Buttons */}
-                <div className="flex justify-center gap-3 mb-12">
-                    <button
-                        onClick={handleConfirm}
-                        className="user-msg text-xs font-normal px-4 py-1 rounded-full cursor-pointer transition-transform duration-200 hover:scale-105"
-                    >
-                        Yes
-                    </button>
-                    <button
-                        onClick={onClose}
-                        className="user-msg text-xs font-normal px-4 py-1 rounded-full cursor-pointer transition-transform duration-200 hover:scale-105"
-                    >
-                        No
-                    </button>
-                </div>
+        <div>
 
-
-            </div>
-        </div >
-    );
+          <button
+                className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
+                    duration-300 transform hover:scale-102 cursor-pointer text-white mb-2"
+                style={{ backgroundColor: isLeaveBtnHovered ? hoverSecondaryColor : selectedColor }}
+                onMouseEnter={() => setIsLeaveBtnHovered(true)}
+                onMouseLeave={() => setIsLeaveBtnHovered(false)}
+               onClick={handleConfirm}
+              >
+             Yes
+              </button>
+              <button
+                className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
+                    duration-300 transform hover:scale-102 cursor-pointer text-white"
+                style={{ backgroundColor: isPlanBtnHovered ? hoverSecondaryColor : selectedColor }}
+                onMouseEnter={() => setIsPlanBtnHovered(true)}
+                onMouseLeave={() => setIsPlanBtnHovered(false)}
+                onClick={onClose}
+              >
+                No
+              </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default TerminateModal;
