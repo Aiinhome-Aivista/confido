@@ -73,11 +73,15 @@ const avatarId = [
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
   const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,
-  } = useContext(AuthContext);
+    setIsChatscreenActive } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
   const currentAudioRef = useRef(null);
   const isPlayingRef = useRef(false);
   const currentHoverRef = useRef(null);
+
+  useEffect(() => {
+    setIsChatscreenActive(false);
+  }, [setIsChatscreenActive]);
 
   // helper to stop any hover audio immediately
   const stopHoverAudio = () => {
