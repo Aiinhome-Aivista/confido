@@ -15,6 +15,7 @@ import { Experience } from "../features/characters/hema/experience";
 import { chatSession, setChatSession } from "../data/data.jsx";
 import { sanitizeTextForSpeech } from "../common/helper/helper.jsx";
 
+
 const avatars = [
   {
     id: 1,
@@ -72,8 +73,8 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,
-  } = useContext(AuthContext);
+  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, 
+    setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,setIsLoggedIn } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
   const currentAudioRef = useRef(null);
   const isPlayingRef = useRef(false);
@@ -123,6 +124,15 @@ export default function ChooseAvatar() {
     if (storedEmail && storedName) {
       await createSession(storedUser, avatar);
       setLoadChatscreen("chatscreen");
+      // trigger chat greeting for the selected avatar when entering chat screen
+      try {
+        const avatarName = avatar.name;
+        const audio_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.mp3`;
+        const lipsync_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.json`;
+        setAvatarSpeech({ avatarName, audio_url, lipsync_url, source: 'chat' });
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       // Not logged in → go to login
       setOpenLoginModal(true);
@@ -200,8 +210,9 @@ export default function ChooseAvatar() {
       if (data) {
         console.log("Session Created:", data);
         sessionStorage.setItem("session", JSON.stringify(data));
+        setIsLoggedIn(true);
 
-        // ✅ Save only sessionId separately
+        //  Save only sessionId separately
         if (data.data?.session_id || data.data?.sessionId) {
           const sid = data.data.session_id || data.data.sessionId;
           sessionStorage.setItem("sessionId", sid);

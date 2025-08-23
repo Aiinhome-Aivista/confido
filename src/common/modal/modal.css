@@ -94,3 +94,6 @@
 /* .animate-bounce-subtle {
   animation: bounce-subtle 2s infinite;
 } */
+.loginModal {
+  background-color: var(--modal-bg-color);
+}
