@@ -1,15 +1,28 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider  } from "firebase/auth";
 
+console.log("API Key:", import.meta.env.VITE_FIREBASE_API_KEY);
 const firebaseConfig = {
-  apiKey: "AIzaSyDcNJFFnOOM8KSJzQM8nLsorTZW8S3fBl4",
-  authDomain: "confido-17834.firebaseapp.com",
-  projectId: "confido-17834",
-  storageBucket: "confido-17834.firebasestorage.app",
-  messagingSenderId: "872557856166",
-  appId: "1:872557856166:web:f59c59f786658144c1fb67",
-  measurementId: "G-1KK621VW43"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
+
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDcNJFFnOOM8KSJzQM8nLsorTZW8S3fBl4",
+//   authDomain: "confido-17834.firebaseapp.com",
+//   projectId: "confido-17834",
+//   storageBucket: "confido-17834.firebasestorage.app",
+//   messagingSenderId: "872557856166",
+//   appId: "1:872557856166:web:f59c59f786658144c1fb67",
+//   measurementId: "G-1KK621VW43"
+// };
+
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
