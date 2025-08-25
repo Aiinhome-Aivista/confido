@@ -1,20 +1,49 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { AuthContext } from "../common/helper/AuthContext.jsx";
 
-const blobs = [
-  { size: 300, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
-  { size: 350, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)"},
-  { size: 450, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)"},
-];
+export default function AnimatedBlobs() {
+  const { selectedColor, isLoggedIn } = useContext(AuthContext);
 
-function AnimatedBlobs() {
+  const [blobs, setBlobs] = useState([
+    { size: 300, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
+    { size: 350, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
+    { size: 450, color: "radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)" },
+  ]);
+
+
+
   const blobRefs = useRef([]);
   const velocities = useRef([]);
+  const speed = 0.2;
 
+
+
+  // update colors when avatar changes
+  useEffect(() => {
+    if (isLoggedIn) {
+      setBlobs((prev) =>
+        prev.map((b) => ({
+          ...b,
+          color: `radial-gradient(circle, ${selectedColor} 0%, ${selectedColor} 50%)`,
+        }))
+      );
+
+    }
+    else {
+      setBlobs((prev) =>
+        prev.map((b) => ({
+          ...b,
+          color: `radial-gradient(circle, #a8ef89ff 0%, #B2EF61 50%)`,
+        }))
+      );
+    }
+  }, [selectedColor, isLoggedIn]);
+
+  // bouncing animation
   useEffect(() => {
     const screenW = window.innerWidth;
     const screenH = window.innerHeight;
 
-    // Initialize random positions and velocities
     blobRefs.current.forEach((blob, i) => {
       if (blob) {
         const size = blobs[i].size;
@@ -22,8 +51,8 @@ function AnimatedBlobs() {
         blob.y = Math.random() * (screenH - size);
 
         velocities.current[i] = {
-          vx: (Math.random() - 0.5) * 2, // speed in px/frame
-          vy: (Math.random() - 0.5) * 2,
+          vx: (Math.random() - 0.5) * speed,
+          vy: (Math.random() - 0.5) * speed,
         };
 
         blob.style.transform = `translate(${blob.x}px, ${blob.y}px)`;
@@ -40,7 +69,6 @@ function AnimatedBlobs() {
         blob.x += vx;
         blob.y += vy;
 
-        // Bounce on edges
         if (blob.x <= 0 || blob.x + size >= screenW) {
           velocities.current[i].vx *= -1;
           blob.x = Math.max(0, Math.min(blob.x, screenW - size));
@@ -57,7 +85,7 @@ function AnimatedBlobs() {
     }
 
     animate();
-  }, []);
+  }, [blobs]);
 
   return (
     <>
@@ -81,4 +109,5 @@ function AnimatedBlobs() {
   );
 }
 
-export default AnimatedBlobs;
+
+

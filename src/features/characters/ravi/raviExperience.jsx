@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber"
 // already memoized
 import { Ravi } from "./ravi";
 
-export const RaviExperience = React.memo(() => {
+export const RaviExperience = React.memo(({ disableWave = false }) => {
   return (
  <Canvas
   shadows
@@ -17,11 +17,11 @@ export const RaviExperience = React.memo(() => {
 >
   {/* OrbitControls target sets the point camera looks at */}
   {/* [x, y, z] → y is most important for vertical focus */}
-  <OrbitControls target={[0, 1.2, 0]} /> // Focus on head area
+  <OrbitControls target={[0, 1.2, 0]} enableZoom={false} enableRotate={false} enablePan={false}/> // Focus on head area
 
   {/* Model position in 3D space: [x, y, z] */}
   {/* Increasing y moves the model UP in frame, decreasing y moves it DOWN */}
-  <Ravi position={[0, -2.2, 0]} scale={2} />
+  <Ravi position={[0, -2.2, 0]} scale={2} disableWave={disableWave} />
 
   {/* Environment lighting preset */}
   <Environment preset="sunset" />

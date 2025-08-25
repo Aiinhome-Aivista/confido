@@ -14,14 +14,20 @@ import { createVoiceUtterance } from "../../../utils/voiceUtils";
 import { apiService } from "../../../Service/apiService";
 import { POST_url } from "../../../connection/connection ";
 import TypingDots from "./TypingDots.jsx";
+import SessionExpiredModal from '../../../common/modal/SessionExpiredModal.jsx';
+import { startListening } from "./speechRecognization.jsx";
+
 
 const ChatSectionText = ({
   isTerminated,
   setIsTerminated,
   setIsRecorderActive,
 }) => {
-  const {setAvatarSpeech} = useContext(AuthContext);
-  const { selectedAvatar } = useContext(AuthContext);
+  const { setAvatarSpeech, selectedColor, selectedAvatarId, showSessionExpiredModal, setShowSessionExpiredModal, selectedAvatar } = useContext(AuthContext);
+  const [speakingText, setSpeakingText] = useState("");
+  const [avatarReading, setAvatarReading] = useState(false);
+
+
 
   // const [session, setSession] = useState([chatSession[0]]);
   const [sessionController, setSessionController] = useState(0);
@@ -38,10 +44,12 @@ const ChatSectionText = ({
   // const [avatarReading, setAvatarReading] = useState(false);
   const [isMicHovered, setIsMicHovered] = useState(false);
   const [isCameraHovered, setIsCameraHovered] = useState(false);
-  const [isMicActive, setIsMicActive] = useState(false);
+  // const [isMicActive, setIsMicActive] = useState(false);
   const [session, setSession] = useState(chatSession);
+  const expiryTimer = useRef(null);
 
-
+  const [isMicActive, setIsMicActive] = useState(false);
+  const recognitionRef = useRef(null);
 
 
   const generateRandomID = () => {
@@ -62,6 +70,10 @@ const ChatSectionText = ({
       setShowNewSessionBtn(true);
     }
   }, [isTerminated]);
+
+  useEffect(() => {
+    return () => clearTimeout(expiryTimer.current);
+  }, []);
 
   useEffect(() => {
     if (chatRef.current) {
@@ -104,6 +116,7 @@ const ChatSectionText = ({
 
   const sessionId = sessionStorage.getItem("sessionId");
 
+
   const handleUserMessage = async (text) => {
     if (!text) return;
     setIsMicActive(false);
@@ -125,11 +138,14 @@ const ChatSectionText = ({
     try {
       setIsAILoading(true);
 
+      console.log("selectedAvatarId",selectedAvatarId)
+
       // Call backend chat API
       const payload = {
-        session_id: sessionId,   
+        session_id: sessionId,
         time: "50 min",
         user_input: text,
+        avatar_id: selectedAvatarId
       };
 
       const res = await apiService({
@@ -140,8 +156,16 @@ const ChatSectionText = ({
 
       console.log("Chat API response:", res);
 
+      // check if session ended
+      if (res?.data?.end === true) {
+        setShowSessionExpiredModal(true);
+        setShowSubscriptionModal(true);
+        return;
+      }
+
+
       // Add AI response to session
-      if (res?.data?.message) {
+  if (res?.data?.message) {
         setSession((prev) => [
           ...prev,
           {
@@ -150,7 +174,8 @@ const ChatSectionText = ({
             time: new Date().toLocaleTimeString(),
           },
         ]);
-         setAvatarSpeech(res.data.message);
+  // Ensure the returned audio/lipsync (if any) targets the currently selected avatar
+  setAvatarSpeech({ ...res.data, avatarName: selectedAvatar });
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -170,30 +195,51 @@ const ChatSectionText = ({
 
   const speakAndAdd = async (message) => {
 
-    
+
     setAvatarReading(true);
 
     return new Promise((resolve) => {
       setSpeakingText(message);
 
-      setAvatarSpeech(message);
+      // Clear any avatarSpeech while using browser TTS (no precomputed lipsync available)
+      setAvatarSpeech(null);
+
       const utter = new SpeechSynthesisUtterance(message);
 
-      // Use avatar-specific voice configuration
-     
-
+      // speak using the browser's speechSynthesis (this will not produce precomputed lipsync JSON)
       utter.onend = () => {
         startInactivityTimer();
         resolve();
         setAvatarReading(false);
       };
-     
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
 
       setSession((prev) => [
         ...prev,
         { role: "ai", message, time: new Date().toLocaleTimeString() },
       ]);
     });
+  };
+
+  const handleMicClick = () => {
+    if (!isMicActive) {
+      // Start listening
+      recognitionRef.current = startListening(
+        (transcript) => {
+          console.log("Voice Input:", transcript);
+          handleUserMessage(transcript); // send as input
+        },
+        () => setIsMicActive(false) // reset when recognition ends
+      );
+    } else {
+      // Stop listening
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    }
+    setIsMicActive((prev) => !prev);
   };
 
   return (
@@ -212,10 +258,11 @@ const ChatSectionText = ({
             >
               {item.role === "ai" ? (
                 <div
-                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg ${(formatMessage(item.message))
+                  className={`max-w-[60%] flex gap-3 px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg  ${(formatMessage(item.message))
                     ? "items-center"
                     : "items-start"
-                    }`}
+                    } backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md`}
+                  style={{ paddingBottom: 0 }}
                 >
                   <div
                     className="flex"
@@ -226,7 +273,21 @@ const ChatSectionText = ({
                   ></div>
                 </div>
               ) : (
-                <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
+                // <div className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm user-msg">
+                //   {item.message}
+                // </div>
+                <div
+                  className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm"
+                  style={{
+                    backgroundColor: selectedColor.replace("1)", "0.07)"), // make it semi-transparent
+                    backdropFilter: "blur(16px)",
+                    WebkitBackdropFilter: "blur(16px)", // ✅ Safari support
+                    backgroundBlendMode: "overlay",
+                    border: "1px solid rgba(255, 255, 255, 0.17)",
+                    boxShadow:
+                      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)"
+                  }}
+                >
                   {item.message}
                 </div>
               )}
@@ -234,9 +295,9 @@ const ChatSectionText = ({
 
             {/* Typing loader for last AI message */}
             {isAILoading && index === session.length - 1 && (
-              <div className="mb-4 flex items-start">
+              <div className="mb-4 px-2 flex items-start">
                 <div className="max-w-[60%] px-4 py-2 rounded-t-3xl rounded-b-3xl text-sm ai-msg">
-                 
+
                   <TypingDots />
 
                 </div>
@@ -247,24 +308,26 @@ const ChatSectionText = ({
       </div>
 
       {/* New session button */}
-      {showNewSessionBtn && (
-        <div className="flex justify-center" ref={endOfChatRef}>
-          <button
-            className="px-6 py-2 rounded-xl cursor-pointer transition duration-200"
-            onClick={() => {
-              setShowNewSessionBtn(false);
-              //setIsTerminated(false);
-              setSession([chatSession[0]]);
-              generateRandomID();
-              //setIsRecorderActive(true);
-            }}
-          >
-            Do you want to start new session?
-          </button>
-        </div>
-      )}
+      {
+        showNewSessionBtn && (
+          <div className="flex justify-center" ref={endOfChatRef}>
+            <button
+              className="px-6 py-2 rounded-xl cursor-pointer transition duration-200"
+              onClick={() => {
+                setShowNewSessionBtn(false);
+                //setIsTerminated(false);
+                setSession([chatSession[0]]);
+                generateRandomID();
+                //setIsRecorderActive(true);
+              }}
+            >
+              Do you want to start new session?
+            </button>
+          </div>
+        )
+      }
       <div className="text-input-section flex justify-between items-center mt-4 gap-4 w-full">
-        <div className="input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
+        <div className=" backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md input-text-box flex flex-1 items-center px-3 py-2 rounded-2xl input-text-box">
           <input
             type="text"
             value={userInput}
@@ -283,7 +346,7 @@ const ChatSectionText = ({
             className="flex-1 rounded-2xl h-[2.6rem] outline-none placeholder:font-medium"
             placeholder="Type here" />
           <div className='buttons flex gap-2'>
-            <button
+            {/* <button
               className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onClick={() => setIsMicActive(prev => !prev)}
@@ -291,15 +354,24 @@ const ChatSectionText = ({
               onMouseLeave={() => setIsMicHovered(false)}
             >
               <SettingsVoiceRoundedIcon />
-            </button>
+            </button> */}
             <button
+              className={`${isMicActive ? "mic-active" : ""} ${isMicHovered ? "input-icon-hover" : "input-icon"
+                } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
+              onClick={handleMicClick}
+              onMouseEnter={() => setIsMicHovered(true)}
+              onMouseLeave={() => setIsMicHovered(false)}
+            >
+              <SettingsVoiceRoundedIcon />
+            </button>
+            {/* <button
               className={`${isCameraHovered ? "input-icon-hover" : "input-icon"
                 } rounded-full w-[2.3rem] h-[2.3rem] cursor-pointer flex items-center justify-center transition-colors duration-200`}
               onMouseEnter={() => setIsCameraHovered(true)}
               onMouseLeave={() => setIsCameraHovered(false)}
             >
               <CameraAltRoundedIcon />
-            </button>
+            </button> */}
           </div>
         </div>
         <button disabled={isTerminated}
@@ -308,12 +380,18 @@ const ChatSectionText = ({
             setUserInput("");
             userInputRef.current = "";
           }}
-          className="send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
+          className=" backdrop-blur-lg bg-blend-overlay border border-white/20 shadow-md send-icon w-[3.5rem] h-[3.5rem] rounded-2xl cursor-pointer flex items-center justify-center pl-1">
 
           <SendRoundedIcon fontSize='large' />
         </button>
       </div>
-    </div>
+      {/* ✅ sessionExpired Modal */}
+      {
+        showSessionExpiredModal && (
+          <SessionExpiredModal />
+        )
+      }
+    </div >
   );
 };
 

@@ -1,4 +1,3 @@
-// TypingDots.js
 import React from "react";
 import "./TypingDots.css";
 

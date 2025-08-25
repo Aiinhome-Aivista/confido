@@ -1,52 +1,34 @@
-// import { companies } from "../../../../data/companies";
-// const DEFAULT_ICON = "../../assets/person.svg";
 
 export const formatMessage = (message) => {
   let formatted = message;
 
-  // STEP 1: Remove "(yes/no)" or "yes/no" from end of sentence
-  // formatted = formatted.replace(/\(?yes\/no\)?/gi, "").trim();
+  // 1. Ensure space after commas if missing
+  formatted = formatted.replace(/,(\S)/g, ", $1");
 
-  // STEP 2: Inject buttons if the message asks for satisfaction confirmation
-  // let shouldAppendButtons = /are you satisfied with this answer\?/i.test(formatted);
-  // Dynamically replace company names with logos
-
-  // companies.forEach(({ companyName, logo }) => {
-  //     const regex = new RegExp(`\\b(${companyName})\\b`, "gi");
-
-  //     formatted = formatted.replace(regex, (match) => {
-  //         return `
-  //     <span class="company font-xs font-medium inline-flex items-center gap-1 cursor-pointer hover:scale-105 transition-transform mx-2">
-  //       <img 
-  //         src="${logo}" 
-  //         alt="${companyName} logo" 
-  //         class="w-4 h-4 inline-block" 
-  //         onerror="this.onerror=null;this.src='${DEFAULT_ICON}'"
-  //       />
-  //       ${match}
-  //     </span>`;
-  //     });
-  // });
-
-  // Put numbered bullet points on separate lines with <div>
+  // 2. Detect & bold top-level headers (lines ending with ":" or Markdown ###)
   formatted = formatted.replace(
-    /(\d+\.\s.*?)(?=\s\d+\.|$)/gs,
-    (match) =>
-      `<div clasname ="impact-card ">${match.trim()}</div>`
+    /(^|\n)(\s*(?:#{1,6}\s.*|[A-Z][^:\n]{2,}:))/g,
+    (match, p1, p2) =>
+      `${p1}<strong style="display:block; margin:6px 0;">${p2.replace(/:$/, "")}</strong>`
   );
 
-  //  Wrap them inside a row/grid container
-  formatted = `<div>${formatted}</div>`;
+  // 3. Format numbered bullet points and bold the subheader part before ":"
+  formatted = formatted.replace(
+    /(\d+\.\s*)([^:]+:)(\s*)(.*?)(?=\s\d+\.|$)/gs,
+    (match, num, subheader, space, desc) =>
+      `<div class="impact-card" style="margin-bottom:12px;">
+         ${num}<span style="font-weight:600;">${subheader.trim()} </span>${desc.trim()}
+       </div>`
+  );
 
-  //  Append Yes/No buttons if needed
-  // if (shouldAppendButtons) {
-  //   formatted += `
-  //     <div class="flex gap-2 justify-end mt-2">
-  //       <button class="username ai-img px-3 py-1 rounded-2xl text-xs cursor-pointer hover:scale-105 transition-transform bg-green-200">Yes</button>
-  //       <button class="username ai-img px-3 py-1 rounded-2xl text-xs cursor-pointer hover:scale-105 transition-transform bg-red-200">No</button>
-  //     </div>
-  //   `;
-  // }
+  // 4. Break long text into stanzas (paragraphs)
+  formatted = formatted
+    .split(/\n\s*\n|(?<=[.!?])\s{2,}/)
+    .map((para) => `<p style="margin-bottom:12px;">${para.trim()}</p>`)
+    .join("");
+
+  // Wrap in container
+  formatted = `<div>${formatted}</div>`;
 
   return formatted;
 };
