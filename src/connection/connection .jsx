@@ -10,6 +10,7 @@ export const POST_url = {
     logout: baseUrl + "auth/logout",
     session: baseUrl + "session",
     chat: baseUrl + "chat",
+    greetings: baseUrl + "greet",
 
 };
 

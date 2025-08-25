@@ -73,12 +73,13 @@ const avatarId = [
 
 export default function ChooseAvatar() {
   const [loadChatscreen, setLoadChatscreen] = useState("avatar");
-  const { setSelectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor, 
-    setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor,setIsLoggedIn } = useContext(AuthContext);
+  const { setSelectedAvatar,selectedAvatar, setAvatarSpeech, setOpenLoginModal, setSessionTerminated, setHoverAvatar, setSelectedColor,
+    setSelectedAvatarId, setSelectedHoverColor, setSecondaryColor, setHoverSecondaryColor, setCharBackgroundColor, setIsLoggedIn } = useContext(AuthContext);
   const hoverTimeoutRef = useRef(null);
   const currentAudioRef = useRef(null);
   const isPlayingRef = useRef(false);
   const currentHoverRef = useRef(null);
+
 
   // helper to stop any hover audio immediately
   const stopHoverAudio = () => {
@@ -125,14 +126,13 @@ export default function ChooseAvatar() {
       await createSession(storedUser, avatar);
       setLoadChatscreen("chatscreen");
       // trigger chat greeting for the selected avatar when entering chat screen
-      try {
-        const avatarName = avatar.name;
-        const audio_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.mp3`;
-        const lipsync_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.json`;
-        setAvatarSpeech({ avatarName, audio_url, lipsync_url, source: 'chat' });
-      } catch (e) {
-        console.log(e);
-      }
+    //   try {
+    //     const avatarName = avatar.name;
+    //     const audio_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.mp3`;
+    //     const lipsync_url = `/characters/${avatarName.toLowerCase()}/audio/chatGreeting.json`;
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
     } else {
       // Not logged in → go to login
       setOpenLoginModal(true);
@@ -160,7 +160,6 @@ export default function ChooseAvatar() {
           const audio_url = `/characters/${avatarName.toLowerCase()}/audio/greeting.mp3`;
           const lipsync_url = `/characters/${avatarName.toLowerCase()}/audio/greeting.json`;
           // include the avatar's name so character components only react to themselves
-          setAvatarSpeech({ avatarName, audio_url, lipsync_url });
           isPlayingRef.current = true;
         } catch (err) {
           // ignore
@@ -188,13 +187,61 @@ export default function ChooseAvatar() {
     };
   }, []);
 
+  // const createSession = async (user, avatar) => {
+  //   try {
+  //     const language = JSON.parse(sessionStorage.getItem("selectedLanguage"));
+  //     const sessionId = Math.floor(Math.random() * 1000000);
+  //     const matchedAvatar = avatarId.find((a) => a.name === avatar.name);
+
+  //     const data = await apiService({
+  //       url: POST_url.session,
+  //       method: "POST",
+  //       data: {
+  //         avatarName: avatar.name,
+  //         userName: user.name,
+  //         userId: user.user_id,
+  //         avatarId: matchedAvatar?.id,
+  //         languageId: language?.id,
+  //         sessionId: sessionId,
+  //       },
+  //     });
+
+  //     if (data) {
+  //       console.log("Session Created:", data);
+  //       sessionStorage.setItem("session", JSON.stringify(data));
+  //       setIsLoggedIn(true);
+
+  //       //  Save only sessionId separately
+  //       if (data.data?.session_id || data.data?.sessionId) {
+  //         const sid = data.data.session_id || data.data.sessionId;
+  //         sessionStorage.setItem("sessionId", sid);
+  //       } else {
+  //         sessionStorage.setItem("sessionId", sessionId); // fallback to generated
+  //       }
+
+  //       // Store dynamic first AI message globally
+  //       setChatSession([
+  //         {
+  //           role: "ai",
+  //           message: data.data.message,
+  //           time: new Date().toLocaleTimeString(),
+  //         },
+  //       ]);
+  //       //setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
+  //     }
+  //   } catch (error) {
+  //     console.error("Session API Failed:", error);
+  //   }
+  // };
+
   const createSession = async (user, avatar) => {
     try {
       const language = JSON.parse(sessionStorage.getItem("selectedLanguage"));
       const sessionId = Math.floor(Math.random() * 1000000);
       const matchedAvatar = avatarId.find((a) => a.name === avatar.name);
 
-      const data = await apiService({
+      // --- 1 Call original session API ---
+      const sessionData = await apiService({
         url: POST_url.session,
         method: "POST",
         data: {
@@ -207,33 +254,56 @@ export default function ChooseAvatar() {
         },
       });
 
-      if (data) {
-        console.log("Session Created:", data);
-        sessionStorage.setItem("session", JSON.stringify(data));
+      if (sessionData) {
+        console.log("Session Created:", sessionData);
+        sessionStorage.setItem("session", JSON.stringify(sessionData));
         setIsLoggedIn(true);
 
-        //  Save only sessionId separately
-        if (data.data?.session_id || data.data?.sessionId) {
-          const sid = data.data.session_id || data.data.sessionId;
+        // Save sessionId globally
+        if (sessionData.data?.session_id || sessionData.data?.sessionId) {
+          const sid = sessionData.data.session_id || sessionData.data.sessionId;
           sessionStorage.setItem("sessionId", sid);
         } else {
-          sessionStorage.setItem("sessionId", sessionId); // fallback to generated
+          sessionStorage.setItem("sessionId", sessionId); // fallback
         }
+      }
 
-        // Store dynamic first AI message globally
+      // --- 2 Call greetings API (with SAME sessionId) ---
+      const greetPayload = {
+        avatarName: avatar.name,
+        avatarId: matchedAvatar?.id?.toString(),
+        languageId: language?.id?.toString() || "1",
+        sessionId: sessionId.toString(),
+      };
+
+      const greetData = await apiService({
+        url: POST_url.greetings,
+        method: "POST",
+        data: greetPayload,
+      });
+
+      if (greetData) {
+        console.log("Greeting Response:", greetData);
+
+        setAvatarSpeech({ ...greetData.data, avatarName: selectedAvatar });
+
+        //  Store dynamic first AI message globally
         setChatSession([
           {
             role: "ai",
-            message: data.data.message,
+            message: greetData.data.message,
+            audioUrl: greetData.data.audio_url, 
+            lipsyncUrl: greetData.data.lipsync_url,
             time: new Date().toLocaleTimeString(),
           },
         ]);
-        //setAvatarSpeech(sanitizeTextForSpeech(data.data.message));
+       
       }
     } catch (error) {
-      console.error("Session API Failed:", error);
+      console.error("Session/Greeting API Failed:", error);
     }
   };
+
 
   if (loadChatscreen === "chatscreen") {
     return <ChatScreen onLoginSuccess={createSession} />;

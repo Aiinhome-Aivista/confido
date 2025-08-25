@@ -117,6 +117,81 @@ const ChatSectionText = ({
   const sessionId = sessionStorage.getItem("sessionId");
 
 
+  // const handleUserMessage = async (text) => {
+  //   if (!text) return;
+  //   setIsMicActive(false);
+
+  //   // Reset inactivity timers (if any)
+  //   clearTimeout(inactivityTimer.current);
+  //   sessionControllerRef.current = 0;
+  //   setSessionController(0);
+
+  //   // Add user message
+  //   const userMsg = {
+  //     role: "user",
+  //     message: text,
+  //     time: new Date().toLocaleTimeString(),
+  //   };
+  //   setSession((prev) => [...prev, userMsg]);
+  //   setUserInput("");
+
+  //   try {
+  //     setIsAILoading(true);
+
+  //     console.log("selectedAvatarId", selectedAvatarId)
+
+  //     // Call backend chat API
+  //     const payload = {
+  //       session_id: sessionId,
+  //       time: "50 min",
+  //       user_input: text,
+  //       avatar_id: selectedAvatarId
+  //     };
+
+  //     const res = await apiService({
+  //       url: POST_url.chat,
+  //       method: "POST",
+  //       data: payload,
+  //     });
+
+  //     console.log("Chat API response:", res);
+
+  //     // check if session ended
+  //     if (res?.data?.end === true) {
+  //       setShowSessionExpiredModal(true);
+  //       setShowSubscriptionModal(true);
+  //       return;
+  //     }
+
+
+  //     // Add AI response to session
+  //     if (res?.data?.message) {
+  //       setSession((prev) => [
+  //         ...prev,
+  //         {
+  //           role: "ai",
+  //           message: res.data.message,
+  //           time: new Date().toLocaleTimeString(),
+  //         },
+  //       ]);
+  //       // Ensure the returned audio/lipsync (if any) targets the currently selected avatar
+  //       setAvatarSpeech({ ...res.data, avatarName: selectedAvatar });
+  //     }
+  //   } catch (err) {
+  //     console.error("Chat API Error:", err);
+  //     setSession((prev) => [
+  //       ...prev,
+  //       {
+  //         role: "ai",
+  //         message: "Oops! Something went wrong. Please try again.",
+  //         time: new Date().toLocaleTimeString(),
+  //       },
+  //     ]);
+  //   } finally {
+  //     setIsAILoading(false);
+  //   }
+  // };
+
   const handleUserMessage = async (text) => {
     if (!text) return;
     setIsMicActive(false);
@@ -138,14 +213,11 @@ const ChatSectionText = ({
     try {
       setIsAILoading(true);
 
-      console.log("selectedAvatarId",selectedAvatarId)
-
-      // Call backend chat API
       const payload = {
         session_id: sessionId,
         time: "50 min",
         user_input: text,
-        avatar_id: selectedAvatarId
+        avatar_id: selectedAvatarId,
       };
 
       const res = await apiService({
@@ -163,19 +235,26 @@ const ChatSectionText = ({
         return;
       }
 
+      //  Add AI response (with audio + lipsync)
+      if (res?.data?.message) {
+        const aiMsg = {
+          role: "ai",
+          message: res.data.message,
+          audioUrl: res.data.audio_url || null,
+          lipsyncUrl: res.data.lipsync_url || null,
+          time: new Date().toLocaleTimeString(),
+        };
 
-      // Add AI response to session
-  if (res?.data?.message) {
-        setSession((prev) => [
-          ...prev,
-          {
-            role: "ai",
-            message: res.data.message,
-            time: new Date().toLocaleTimeString(),
-          },
-        ]);
-  // Ensure the returned audio/lipsync (if any) targets the currently selected avatar
-  setAvatarSpeech({ ...res.data, avatarName: selectedAvatar });
+        setSession((prev) => [...prev, aiMsg]);
+
+        //  play audio automatically
+        if (aiMsg.audioUrl) {
+          const audio = new Audio(aiMsg.audioUrl);
+          audio.play();
+        }
+
+        //  trigger avatar lipsync if available
+        setAvatarSpeech({ ...res.data, avatarName: selectedAvatar });
       }
     } catch (err) {
       console.error("Chat API Error:", err);
@@ -191,6 +270,7 @@ const ChatSectionText = ({
       setIsAILoading(false);
     }
   };
+
 
 
   const speakAndAdd = async (message) => {
@@ -281,7 +361,7 @@ const ChatSectionText = ({
                   style={{
                     backgroundColor: selectedColor.replace("1)", "0.07)"), // make it semi-transparent
                     backdropFilter: "blur(16px)",
-                    WebkitBackdropFilter: "blur(16px)", // ✅ Safari support
+                    WebkitBackdropFilter: "blur(16px)", //  Safari support
                     backgroundBlendMode: "overlay",
                     border: "1px solid rgba(255, 255, 255, 0.17)",
                     boxShadow:
@@ -385,7 +465,7 @@ const ChatSectionText = ({
           <SendRoundedIcon fontSize='large' />
         </button>
       </div>
-      {/* ✅ sessionExpired Modal */}
+      {/* sessionExpired Modal */}
       {
         showSessionExpiredModal && (
           <SessionExpiredModal />
