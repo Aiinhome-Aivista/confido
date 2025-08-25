@@ -10,6 +10,7 @@ import { createNoise2D } from "simplex-noise";
 import Header from "../components/header";
 import { useNavigate } from "react-router-dom";
 import { swipetextdata } from "../data/data";
+import ShinyText from "../components/ShinyText";
 
 // 🐝 Bee Component
 function Bee({ mousePosition }) {
@@ -129,7 +130,7 @@ function SplashScreen({ setLoadAvatars }) {
       interval = setInterval(() => {
         setTextIndex((prev) => (prev + 1) % swipetextdata.length);
         console.log(swipetextdata.length);
-      }, 1800);
+      }, 3000);
     }, 1400);
 
     return () => {
@@ -197,8 +198,8 @@ function SplashScreen({ setLoadAvatars }) {
                     color: showIntro ? "#1E1E1E" : colors[0], // black for intro, colored for swipe
                   }}
                 >
-                {showIntro ? "Say Hello to Great Conversation." : swipetextdata[textIndex]}
-                </motion.span>
+                  {showIntro ? "Say Hello to Great Conversation." : swipetextdata[textIndex]}
+             </motion.span>
 
               </AnimatePresence>
             </span>
@@ -234,14 +235,18 @@ function SplashScreen({ setLoadAvatars }) {
             easy and comfortable.
           </motion.p>
           <button
-            className=" start-button px-8 py-3 rounded-full font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-80"
+            className=" start-button px-8 py-3 rounded-full font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-100"
             onClick={() => {
               requestMicrophonePermission();
               setLoadAvatars(true);
             }}
           >
-            Start conversation
+            <ShinyText
+              text="Start Conversation"/>
           </button>
+
+
+
 
           <div
             style={{
