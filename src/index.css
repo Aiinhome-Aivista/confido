@@ -112,8 +112,16 @@ background-color: var(--user-msg-color);
 }
 
 .start-button {
-  background-color: var(--button-bg-color);
+  position: relative;
+  background: rgba(30, 30, 30, 0.07); /* translucent */
+  border-radius: 9999px; /* pill shape */
+  backdrop-filter: blur(10px); /* blur effect */
+  -webkit-backdrop-filter: blur(10px); /* safari support */
+  color: #1e1e1e;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: scale(1);
 }
+
 
 .modalCloseIcon {
   background-color: var(--modal-close-icon-color);
