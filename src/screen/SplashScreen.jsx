@@ -9,6 +9,7 @@ import { Experience } from "../features/characters/nisa/experience";
 import { createNoise2D } from "simplex-noise";
 import Header from "../components/header";
 import { useNavigate } from "react-router-dom";
+import { swipetextdata } from "../data/data";
 
 // 🐝 Bee Component
 function Bee({ mousePosition }) {
@@ -89,16 +90,12 @@ function BeeScene({ mousePosition }) {
 
 
 function SplashScreen({ setLoadAvatars }) {
-
-  const [wordAnimationStarted, setWordAnimationStarted] = React.useState(false);
   const colors = ["#797979"];
-  const words = ["Great", "Super", "Prime", "Elite", "Topaz", "Happy"];
-  const [wordIndex, setWordIndex] = React.useState(0);
+  const [showIntro, setShowIntro] = React.useState(true); // first line flag
+  const [textIndex, setTextIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
   const { sessionTerminated } = useContext(AuthContext);
   const mousePosition = useRef(null);
-
-  
 
   useEffect(() => {
     if (typeof window === "undefined") return; // prevent SSR issues
@@ -119,17 +116,28 @@ function SplashScreen({ setLoadAvatars }) {
     };
   }, []);
 
-  React.useEffect(() => {
-    setTimeout(() => setHeadlineVisible(true), 700);
+  useEffect(() => {
+    setTimeout(() => setHeadlineVisible(true), 2000);
+
+    // After 2.5s, hide intro and start cycling swipe texts
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+    }, 5000);
+
     let interval;
     setTimeout(() => {
-      setWordAnimationStarted(true);
       interval = setInterval(() => {
-        setWordIndex((prev) => (prev + 1) % words.length);
+        setTextIndex((prev) => (prev + 1) % swipetextdata.length);
+        console.log(swipetextdata.length);
       }, 1800);
     }, 1400);
-    return () => clearInterval(interval);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, []);
+
 
   const requestMicrophonePermission = async () => {
     try {
@@ -154,30 +162,21 @@ function SplashScreen({ setLoadAvatars }) {
         }}
 
       >
-        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito    z-2">
+        <div className="w-full min-h-screen flex flex-col items-center justify-start font-nunito">
           <motion.h1
-            className="font-extrabold text-5xl md:text-6xl text-center mb-2 leading-tight justify-center"
+            className="font-extrabold text-4xl md:text-5xl text-center mb-2 leading-tight justify-center"
             initial={{ opacity: 0, y: -40 }}
             animate={headlineVisible ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            {/* Static "Say Hello to" */}
-            <span className="align-middle leading-[3.5rem] justify-center ml-20">
-              Say Hello to{" "}
-            </span>
-
-            {/* Animated rotating words */}
-            <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[8ch] h-[4.5rem] md:h-[4.75rem]">
+            <span className="inline-block align-middle relative overflow-hidden px-2 min-w-[20ch] max-w-[90vw] h-auto">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
-                  key={wordIndex}
+                  key={showIntro ? "intro" : textIndex}
                   initial={{ y: "120%", opacity: 0 }}
                   animate={{
-                    y: ["120%", "-8%", "0%"], // bounce overshoot
+                    y: ["120%", "-8%", "0%"], // bounce effect
                     opacity: [0, 1, 1],
-                    color: !wordAnimationStarted
-                      ? "#000"
-                      : colors[wordIndex % colors.length],
                   }}
                   transition={{
                     duration: 0.7,
@@ -192,16 +191,17 @@ function SplashScreen({ setLoadAvatars }) {
                       opacity: { duration: 0.25, delay: 0.35 },
                     },
                   }}
-                  className="absolute left-0 top-0 w-full text-left leading-[4.5rem] font-extrabold"
+                  className="balanced-text block w-full font-extrabold leading-snug whitespace-normal break-words text-center"
+                  style={{
+                    textWrap: "balance",
+                    color: showIntro ? "#1E1E1E" : colors[0], // black for intro, colored for swipe
+                  }}
                 >
-                  {words[wordIndex]}
+                {showIntro ? "Say Hello to Great Conversation." : swipetextdata[textIndex]}
                 </motion.span>
+
               </AnimatePresence>
             </span>
-
-            {/* Static "Conversation." */}
-            <br />
-            Conversation.
           </motion.h1>
 
           <motion.p
@@ -233,9 +233,6 @@ function SplashScreen({ setLoadAvatars }) {
             shy, lonely, or just need someone to chat with, we’re here to make it
             easy and comfortable.
           </motion.p>
-
-
-
           <button
             className=" start-button px-8 py-3 rounded-full font-bold text-lg border-none cursor-pointer mb-8 shadow z-3 opacity-80"
             onClick={() => {

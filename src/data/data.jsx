@@ -72,6 +72,32 @@ export const plansData = [
       bgColor: "bg-white"
     },
 ];
+export const swipetextdata=[
+
+"Are you shy and reserved? Talk to a friendly voice today",
+
+"Not great at small talk? Here’s a space made for you",
+
+"Too shy to start conversations? Your virtual friend will",
+
+"Quiet in real life? Open up here, judgment-free",
+
+"Others like you are already chatting — why wait?",
+
+"Don’t let another day pass without being heard",
+
+"Your story matters. Share it before the moment slips",
+
+"Right now, someone is waiting to talk to you",
+
+"Shy souls welcome let your voice be heard",
+
+"Reserved? That’s your superpower here",
+
+"This is your safe adda speak freely",
+
+"No judgment. Just conversations that understand you"
+]
 
 
 /*  how to create sessionId 
