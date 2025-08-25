@@ -133,3 +133,11 @@ background-color: var(--user-msg-color);
     opacity: 0;
   }
 }
+.balanced-text {
+  display: inline-block;
+  text-align: center;
+  max-width: 80%; /* adjust width for better line breaks */
+  line-height: 1.4; /* better readability */
+  word-break: break-word;
+}
+
