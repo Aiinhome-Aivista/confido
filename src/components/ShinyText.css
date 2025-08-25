@@ -1,0 +1,29 @@
+
+.shiny-text {
+  color: #535252; /* Solid black base */
+  background: linear-gradient(
+    120deg,
+    rgb(77, 76, 76) 70%,   /* black base */
+    rgba(255, 255, 255, 0.9) 60%, /* white shine */
+    rgb(75, 74, 74) 80%    /* back to black */
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* Needed so gradient shows through */
+  display: inline-block;
+  animation: shine 2s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+.shiny-text.disabled {
+  animation: none;
+}

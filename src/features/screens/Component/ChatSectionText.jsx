@@ -279,7 +279,7 @@ const ChatSectionText = ({
                 <div
                   className="max-w-[40%] px-4 py-3 rounded-t-3xl rounded-b-3xl text-sm"
                   style={{
-                    backgroundColor: selectedColor.replace("1)", "0.07)"), // make it semi-transparent
+                    backgroundColor: selectedColor.replace("1)", "0.2)"), // make it semi-transparent
                     backdropFilter: "blur(16px)",
                     WebkitBackdropFilter: "blur(16px)", // ✅ Safari support
                     backgroundBlendMode: "overlay",

@@ -1,4 +1,4 @@
-import { devUrl, baseUrl } from "../env/env.jsx";
+import { devUrl, baseUrl } from "../envconfido/env.jsx";
 
 export const POST_url = {
     greeting: devUrl + "greet",
