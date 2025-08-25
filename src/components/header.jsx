@@ -146,7 +146,7 @@ export default function Header() {
     {
       id: "settings",
       title: "Settings",
-      icon: isLoggedIn ? (isSpeakerOn ? SpeakerOn : SpeakerOff) : settingsIcon,
+      icon: (isSpeakerOn ? SpeakerOn : SpeakerOff),
       options: ["Audio Off", "Audio On"],
     },
     {
@@ -223,7 +223,7 @@ export default function Header() {
                               (selectedLanguage.id === opt.id || selectedLanguage.name === opt.name);
                           }
 
-                          if (item.id === "settings" && isLoggedIn) {
+                          if (item.id === "settings") {
                             isSelected =
                               (opt === "Audio On" && isSpeakerOn) ||
                               (opt === "Audio Off" && !isSpeakerOn); 
@@ -238,7 +238,7 @@ export default function Header() {
                                   setSelectedLanguage(opt);
                                   sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
                                 }
-                                if (item.id === "settings" && isLoggedIn) {
+                                if (item.id === "settings") {
                                   setIsSpeakerOn(opt === "Audio On"); 
                                 }
                               }}
