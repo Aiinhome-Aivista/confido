@@ -12,10 +12,6 @@ import { GET_url } from "../connection/connection .jsx";
 import { useContext } from "react";
 import { AuthContext } from "../common/helper/AuthContext.jsx";
 import TerminateModal from "../features/terminateModal.jsx";
-
-import SubscriptionModal from "../common/modal/SubscriptionModal";
-import SessionExpiredModal from "../common/modal/SessionExpiredModal";
-
 import SpeakerOn from '../assets/icons/volume_up.svg';
 import SpeakerOff from '../assets/icons/volume_off.svg';
 
@@ -150,7 +146,7 @@ export default function Header() {
     {
       id: "settings",
       title: "Settings",
-      icon: settingsIcon,
+      icon: isLoggedIn ? (isSpeakerOn ? SpeakerOn : SpeakerOff) : settingsIcon,
       options: ["Audio Off", "Audio On"],
     },
     {
@@ -164,7 +160,7 @@ export default function Header() {
   // ✅ Apply filter condition only while rendering
   const icons = allIcons.filter((icon) => {
     if (isLoggedIn) {
-      return icon.id !== "language" && icon.id !== "settings";
+      return icon.id !== "language";
     }
     return true;
   });
@@ -191,21 +187,6 @@ export default function Header() {
               <span className="absolute top-0 left-0 w-full h-full rounded-full bg-green-400 opacity-75 animate-pulse-ring z-0" />
             </div>}
           </div>
-
-          {isLoggedIn && (
-            <div
-              onClick={handleToggle}
-              className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition
-                    "
-            >
-              <img
-                src={isSpeakerOn ? SpeakerOn : SpeakerOff}
-                alt={isSpeakerOn ? "Speaker On" : "Speaker Off"}
-              />
-            </div>
-          )}
-
-
           <div className="icon-wrapper">
             {icons.map((item) => {
               const expanded = hovered === item.id;
@@ -235,10 +216,18 @@ export default function Header() {
                     {item.options.length > 0 && (
                       <div className="icon-options">
                         {item.options.map((opt, i) => {
-                          const isSelected =
-                            item.id === "language" &&
-                            selectedLanguage &&
-                            (selectedLanguage.id === opt.id || selectedLanguage.name === opt.name);
+                          let isSelected = false;
+                          if (item.id === "language") {
+                            isSelected =
+                              selectedLanguage &&
+                              (selectedLanguage.id === opt.id || selectedLanguage.name === opt.name);
+                          }
+
+                          if (item.id === "settings" && isLoggedIn) {
+                            isSelected =
+                              (opt === "Audio On" && isSpeakerOn) ||
+                              (opt === "Audio Off" && !isSpeakerOn); 
+                          }
 
                           return (
                             <div
@@ -248,6 +237,9 @@ export default function Header() {
                                 if (item.id === "language") {
                                   setSelectedLanguage(opt);
                                   sessionStorage.setItem("selectedLanguage", JSON.stringify(opt));
+                                }
+                                if (item.id === "settings" && isLoggedIn) {
+                                  setIsSpeakerOn(opt === "Audio On"); 
                                 }
                               }}
                             >
