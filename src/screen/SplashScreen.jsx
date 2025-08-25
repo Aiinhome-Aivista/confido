@@ -91,7 +91,7 @@ function BeeScene({ mousePosition }) {
 
 
 function SplashScreen({ setLoadAvatars }) {
-  const colors = ["#797979"];
+  const colors = ["#1E1E1E"];
   const [showIntro, setShowIntro] = React.useState(true); // first line flag
   const [textIndex, setTextIndex] = React.useState(0);
   const [headlineVisible, setHeadlineVisible] = React.useState(false);
@@ -242,7 +242,9 @@ function SplashScreen({ setLoadAvatars }) {
             }}
           >
             <ShinyText
-              text="Start Conversation"/>
+              text="Start Conversation"
+              disabled={false}/>
+              
           </button>
 
 
