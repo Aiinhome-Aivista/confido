@@ -69,10 +69,11 @@ export const Subho = React.memo((props) => {
       };
     
       useEffect(() => {
+        if (props.suppressSpeech) return;
         if (audio) {
           audio.play().catch(() => {});
         }
-      }, [audio]);
+      }, [audio, props.suppressSpeech]);
 
       // When speaker toggles off, immediately stop any audio and clear lipsync
       useEffect(() => {
@@ -87,6 +88,18 @@ export const Subho = React.memo((props) => {
           setLipSync(null);
         }
       }, [isSpeakerOn]);
+
+      // If suppressSpeech prop is enabled, immediately stop and clear any audio/lipsync
+      useEffect(() => {
+        if (props.suppressSpeech && audio) {
+          try {
+            audio.pause();
+            audio.currentTime = 0;
+          } catch (e) {}
+          setAudio(null);
+          setLipSync(null);
+        }
+      }, [props.suppressSpeech]);
 
       // Stop audio when avatarSpeech is cleared
       useEffect(() => {
@@ -123,6 +136,12 @@ export const Subho = React.memo((props) => {
               audio.currentTime = 0;
             } catch (e) {}
           }
+          setAudio(null);
+          setLipSync(null);
+          return;
+        }
+
+        if (props.suppressSpeech) {
           setAudio(null);
           setLipSync(null);
           return;

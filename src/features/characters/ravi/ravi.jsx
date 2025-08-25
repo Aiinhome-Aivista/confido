@@ -66,10 +66,11 @@ export const Ravi = React.memo((props) => {
     };
   
     useEffect(() => {
+      if (props.suppressSpeech) return;
       if (audio) {
         audio.play().catch(() => {});
       }
-    }, [audio]);
+    }, [audio, props.suppressSpeech]);
 
       // Stop and clear when speaker toggles off
       useEffect(() => {
@@ -118,6 +119,12 @@ export const Ravi = React.memo((props) => {
             audio.currentTime = 0;
           } catch (e) {}
         }
+        setAudio(null);
+        setLipSync(null);
+        return;
+      }
+
+      if (props.suppressSpeech) {
         setAudio(null);
         setLipSync(null);
         return;

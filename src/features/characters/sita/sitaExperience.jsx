@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber"
 // already memoized
 import { Sita } from "./sita";
 
-export const SitaExperience = React.memo(({ disableWave = false }) => {
+export const SitaExperience = React.memo(({ disableWave = false, suppressSpeech = false }) => {
   return (
  <Canvas
   shadows
@@ -21,7 +21,7 @@ export const SitaExperience = React.memo(({ disableWave = false }) => {
 
   {/* Model position in 3D space: [x, y, z] */}
   {/* Increasing y moves the model UP in frame, decreasing y moves it DOWN */}
-  <Sita position={[0, -2.2, 0]} scale={2} disableWave={disableWave} />
+  <Sita position={[0, -2.2, 0]} scale={2} disableWave={disableWave} suppressSpeech={suppressSpeech} />
 
   {/* Environment lighting preset */}
   <Environment preset="sunset" />

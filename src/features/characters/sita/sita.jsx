@@ -69,9 +69,10 @@ export const Sita = React.memo((props) => {
      };
    
      useEffect(() => {
-       if (audio) {
-         audio.play().catch(() => {});
-       }
+      if (props.suppressSpeech) return;
+      if (audio) {
+        audio.play().catch(() => {});
+      }
      }, [audio]);
 
     // When speaker toggles off, stop audio and clear lipSync
@@ -111,6 +112,12 @@ export const Sita = React.memo((props) => {
             audio.currentTime = 0;
           } catch (e) {}
         }
+        setAudio(null);
+        setLipSync(null);
+        return;
+      }
+
+      if (props.suppressSpeech) {
         setAudio(null);
         setLipSync(null);
         return;

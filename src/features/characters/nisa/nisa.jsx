@@ -50,9 +50,10 @@ export const Nisa = React.memo((props) => {
   const lipSync = JSON.parse(jsonFile);
 
     useEffect(() => {
-    if (audio) {
-      audio.play().catch(() => {});
-    }
+      if (props.suppressSpeech) return;
+      if (audio) {
+        audio.play().catch(() => {});
+      }
   }, [audio]);
 
   // LipSync Animation Frame
@@ -136,7 +137,7 @@ export const Nisa = React.memo((props) => {
   }, [actions]);
 
   const handlePointerOver = () => {
-      audio.play();
+  if (!props.suppressSpeech) audio.play();
 
     if (actions["Waving"]) {
       actions["Idle"]?.fadeOut(0.2);
@@ -145,7 +146,7 @@ export const Nisa = React.memo((props) => {
   };
 
   const handlePointerOut = () => {
-    audio.pause();
+  if (!props.suppressSpeech) audio.pause();
     if (actions["Waving"]) {
       actions["Waving"].fadeOut(0.2);
       actions["Idle"]?.reset().fadeIn(0.2).play();

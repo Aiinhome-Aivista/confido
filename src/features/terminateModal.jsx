@@ -6,6 +6,7 @@ import { Experience as HemaExperience } from "../features/characters/hema/experi
 import { SitaExperience } from "../features/characters/sita/sitaExperience.jsx";
 import { RaviExperience } from "../features/characters/ravi/raviExperience.jsx";
 
+
 const TerminateModal = ({ onClose }) => {
     const { setSessionTerminated, setIsLoggedIn, selectedAvatar} = useContext(AuthContext);
 
@@ -21,18 +22,20 @@ const TerminateModal = ({ onClose }) => {
     const [isLeaveBtnHovered, setIsLeaveBtnHovered] = useState(false);
     const [isPlanBtnHovered, setIsPlanBtnHovered] = useState(false);
 
+  // Render a visual avatar inside the modal but suppress its speech (audio + lipsync).
   const renderAvatar = () => {
     switch (selectedAvatar) {
       case "Subho":
-        return <SubhoExperience disableWave />;
+        return <SubhoExperience disableWave suppressSpeech={true} />;
       case "Sita":
-        return <SitaExperience disableWave />;
+        return <SitaExperience disableWave suppressSpeech={true} />;
       case "Ravi":
-        return <RaviExperience disableWave/>;
+        return <RaviExperience disableWave suppressSpeech={true} />;
       case "Hema":
-        return <HemaExperience disableWave/>;
+        return <HemaExperience disableWave suppressSpeech={true} />;
+      
       default:
-        return <RaviExperience disableWave/>;
+        return <RaviExperience disableWave suppressSpeech={true} />;
     }
   };
 
@@ -42,6 +45,7 @@ const TerminateModal = ({ onClose }) => {
         <div className="absolute top-0 left-0 w-full h-9 ai-bg rounded-t-3xl flex items-center justify-end px-3 gap-2">
           <div
             onClick={onClose}
+            data-no-sound="true"
             className="w-4 h-4 rounded-full modalCloseIcon cursor-pointer hover:scale-110 transition-transform"
             aria-label="Close"
             title="Close"
@@ -66,6 +70,7 @@ const TerminateModal = ({ onClose }) => {
         <div>
 
           <button
+            data-no-sound="true"
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
                     duration-300 transform hover:scale-102 cursor-pointer text-white mb-2"
                 style={{ backgroundColor: isLeaveBtnHovered ? hoverSecondaryColor : selectedColor }}
@@ -76,6 +81,7 @@ const TerminateModal = ({ onClose }) => {
              Yes
               </button>
               <button
+                data-no-sound="true"
                 className="w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-all 
                     duration-300 transform hover:scale-102 cursor-pointer text-white"
                 style={{ backgroundColor: isPlanBtnHovered ? hoverSecondaryColor : selectedColor }}

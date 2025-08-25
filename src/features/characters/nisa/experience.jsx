@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber"
 // already memoized
 import { Nisa } from "./nisa";
 
-export const Experience = React.memo(() => {
+export const Experience = React.memo(({ suppressSpeech = false }) => {
   return (
     <Canvas
       shadows
@@ -21,7 +21,7 @@ export const Experience = React.memo(() => {
 
       {/* Model position in 3D space: [x, y, z] */}
       {/* Increasing y moves the model UP in frame, decreasing y moves it DOWN */}
-      <Nisa position={[0, -2.2, 0]} scale={2} />
+  <Nisa position={[0, -2.2, 0]} scale={2} suppressSpeech={suppressSpeech} />
 
       {/* Environment lighting preset */}
       <Environment preset="sunset" />

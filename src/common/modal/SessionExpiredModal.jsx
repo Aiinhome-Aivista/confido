@@ -14,15 +14,15 @@ export default function SessionExpiredModal() {
   const renderAvatar = () => {
     switch (selectedAvatar) {
       case "Subho":
-        return <SubhoExperience disableWave />;
+        return <SubhoExperience disableWave suppressSpeech={true} />;
       case "Sita":
-        return <SitaExperience disableWave />;
+        return <SitaExperience disableWave suppressSpeech={true} />;
       case "Ravi":
-        return <RaviExperience disableWave />;
+        return <RaviExperience disableWave suppressSpeech={true} />;
       case "Hema":
-        return <Experience disableWave />;
+        return <Experience disableWave suppressSpeech={true} />;
       default:
-        return <RaviExperience disableWave />;
+        return <RaviExperience disableWave suppressSpeech={true} />;
     }
   };
 
@@ -64,6 +64,7 @@ export default function SessionExpiredModal() {
                 onMouseEnter={() => setIsLeaveBtnHovered(true)}
                 onMouseLeave={() => setIsLeaveBtnHovered(false)}
                 onClick={() => setShowSessionExpiredModal(false)}
+                data-no-sound="true"
               >
                 Leave this room
               </button>
@@ -77,6 +78,7 @@ export default function SessionExpiredModal() {
                 onMouseEnter={() => setIsPlanBtnHovered(true)}
                 onMouseLeave={() => setIsPlanBtnHovered(false)}
                 onClick={() => { setShowSubscriptionModal(true), setShowSessionExpiredModal(false) }}
+                data-no-sound="true"
               >
                 Choose Your Plan
               </button>

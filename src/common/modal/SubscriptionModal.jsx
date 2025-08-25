@@ -24,15 +24,15 @@ export default function SubscriptionModal() {
   const renderAvatar = () => {
     switch (selectedAvatar) {
       case "Subho":
-        return <SubhoExperience disableWave />;
+        return <SubhoExperience disableWave suppressSpeech={true} />;
       case "Sita":
-        return <SitaExperience disableWave />;
+        return <SitaExperience disableWave suppressSpeech={true} />;
       case "Ravi":
-        return <RaviExperience disableWave />;
+        return <RaviExperience disableWave suppressSpeech={true} />;
       case "Hema":
-        return <Experience disableWave />;
+        return <Experience disableWave suppressSpeech={true} />;
       default:
-        return <RaviExperience disableWave />;
+        return <RaviExperience disableWave suppressSpeech={true} />;
     }
   };
 
@@ -42,8 +42,9 @@ export default function SubscriptionModal() {
       <div className="bg-[#C4C3C4] rounded-4xl p-6 max-w-[80%] relative transform animate-slideUp overflow-hidden"
         style={{ boxShadow: "0 16px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.15)" }}>
         {/* Close Button */}
-        <div className="flex justify-end mb-2">
+          <div className="flex justify-end mb-2">
           <button
+            data-no-sound="true"
             onClick={() => { setShowSubscriptionModal(false), setShowSessionExpiredModal(true) }}
             className="w-4 h-4 rounded-full bg-[#CA4C4C] cursor-pointer transition-all duration-200 hover:scale-110"
           ></button>
@@ -111,6 +112,7 @@ export default function SubscriptionModal() {
 
                 {/* Select Button */}
                 <button
+                  data-no-sound="true"
                   className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm text-white transition-all 
                     duration-300 transform hover:scale-102 ${plan.isDefault ? 'cursor-pointer' : 'cursor-pointer'}`}
                   style={{
